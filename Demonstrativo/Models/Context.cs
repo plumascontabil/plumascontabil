@@ -8,10 +8,10 @@ namespace Demonstrativo.Models
 {
     public class Context : DbContext
     {
-        public DbSet<Empresas> Empresas { get; set; }
-        public DbSet<Contas> Contas { get; set; }
-        public DbSet<Competencias> Competencias { get; set; }
-        public DbSet<Lancamentos> Demonstrativos { get; set; }
+        public DbSet<Empresa> Empresas { get; set; }
+        public DbSet<Conta> Contas { get; set; }
+        public DbSet<Competencia> Competencias { get; set; }
+        public DbSet<Lancamento> Demonstrativos { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=PLM366\SQLEXPRESS;Initial Catalog=teste;Integrated Security=True");
