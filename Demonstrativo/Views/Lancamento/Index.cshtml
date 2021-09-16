@@ -1,0 +1,130 @@
+﻿
+<div class="row">
+    <div class="col">
+        @foreach (var categoria in (List<Categoria>)ViewBag.Categorias)
+        {
+        <table class="table-sm table-bordered">
+            @if (categoria.Id < 10)
+            {
+                <thead>
+                    <tr>
+                        <th colspan="3">@categoria.Descricao</th>
+                    </tr>
+                </thead>
+            }
+            @foreach (var contas in (List<Conta>)ViewBag.Contas)
+            {
+                if ((int)contas.Categoria.Id == categoria.Id && categoria.Id <= 10 )
+                {
+                    <tbody>
+                        <tr>
+                            <td>@contas.Codigo</td>
+                            <td>@contas.Descricao</td>
+                            <td><input type="type" name="name" value="" /></td>
+                        </tr>
+                    </tbody>
+                }
+            }
+        </table>
+        }
+    </div>
+    <div class="col">
+        @foreach (var categoria in (List<Categoria>)ViewBag.Categorias)
+        {
+            <table class="table-sm table-bordered">
+                @if (categoria.Id >= 10 && categoria.Id <= 19)
+                {
+                    <thead>
+                        <tr>
+                            <th colspan="3">@categoria.Descricao</th>
+                        </tr>
+                    </thead>
+                }
+                @foreach (var contas in (List<Conta>)ViewBag.Contas)
+                {
+                    if ((int)contas.Categoria.Id == categoria.Id && categoria.Id >= 10 && categoria.Id <= 19)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>@contas.Codigo</td>
+                                <td>@contas.Descricao</td>
+                                <td><input type="type" name="name" value="" /></td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+            </table>
+        }
+    </div>
+    <div class="col">
+        @foreach (var categoria in (List<Categoria>)ViewBag.Categorias)
+        {
+            <table class="table-sm table-bordered">
+                @if (categoria.Id >= 20)
+                {
+                    <thead>
+                        <tr>
+                            <th colspan="3">@categoria.Descricao</th>
+                        </tr>
+                    </thead>
+                }
+                @foreach (var contas in (List<Conta>)ViewBag.Contas)
+                {
+                    if ((int)contas.Categoria.Id == categoria.Id && categoria.Id >= 20)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>@contas.Codigo</td>
+                                <td>@contas.Descricao</td>
+                                <td><input type="type" name="name" value="" /></td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+            </table>
+        }
+    </div>
+</div>
+    
+
+
+
+<!-- foreach (var categoria in (List<Categoria>)ViewBag.Categorias)
+     {-->
+<!-- /*switch (categoria.Id)
+    {
+    case 1:
+    foreach (var contas in (List<Conta>
+        )ViewBag.Contas)
+        {
+        if (contas.Categoria.Id == 1)
+        {
+        <tbody>
+            <tr>
+                <td>contas.Codigo</td>
+                <td>contas.Descricao</td>
+                <td></td>
+            </tr>
+        </tbody>
+        }
+        }
+        break;
+        case 2:
+        foreach (var contas in (List<Conta>
+            )ViewBag.Contas)
+            {
+            if (contas.Categoria.Id == 2)
+            {
+            <tbody>
+                <tr>
+                    <td>contas.Codigo</td>
+                    <td>contas.Descricao</td>
+                    <td></td>
+                </tr>
+            </tbody>
+            }
+            }
+            break;
+            default:
+            break;
+            }*/-->

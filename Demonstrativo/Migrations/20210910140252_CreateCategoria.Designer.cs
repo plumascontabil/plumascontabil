@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20210910135842_CreateCategoria")]
+    [Migration("20210910140252_CreateCategoria")]
     partial class CreateCategoria
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.Categoria", b =>
                 {
-                    b.Property<int>("Codigo")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -32,7 +32,7 @@ namespace Demonstrativo.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(40)");
 
-                    b.HasKey("Codigo");
+                    b.HasKey("Id");
 
                     b.ToTable("Categoria");
                 });

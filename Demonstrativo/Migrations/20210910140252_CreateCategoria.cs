@@ -17,13 +17,13 @@ namespace Demonstrativo.Migrations
                 name: "Categoria",
                 columns: table => new
                 {
-                    Codigo = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descricao = table.Column<string>(type: "varchar(40)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categoria", x => x.Codigo);
+                    table.PrimaryKey("PK_Categoria", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -36,7 +36,7 @@ namespace Demonstrativo.Migrations
                 table: "Contas",
                 column: "CategoriaId",
                 principalTable: "Categoria",
-                principalColumn: "Codigo",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
 

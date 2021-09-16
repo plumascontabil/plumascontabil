@@ -11,7 +11,7 @@ namespace Demonstrativo.Models
     {
         [Key]
         [Required]
-        public int Codigo { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [Column(TypeName = "varchar(40)")]
