@@ -21,6 +21,8 @@ namespace Demonstrativo.Controllers
             ViewBag.Lancamentos = lancamentos;
             ViewBag.Categorias = categorias;
 
+            categorias.Where(c => c.Id < 10);
+
             return View();
         }
     }

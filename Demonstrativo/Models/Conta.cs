@@ -10,7 +10,6 @@ namespace Demonstrativo.Models
     public class Conta
     {
         [Key]
-        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Codigo{ get; set; }
         
