@@ -10,8 +10,9 @@ namespace Demonstrativo.Models
     public class Conta
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Codigo{ get; set; }
+        public int Id { get; set; }
+
+        public int? Codigo { get; set; }
         
         [Required]
         [Column(TypeName = "varchar(70)")]
