@@ -17,8 +17,5 @@ namespace Demonstrativo.Models
         {
             optionsBuilder.UseSqlServer(@"Data Source=PLM366\SQLEXPRESS;Initial Catalog=teste;Integrated Security=True");
         }
-
-        //Eu havia relacionado as tabelas, porém tirei por causa que sempre que tentava inputar um dado dava erro
-
     }
 }

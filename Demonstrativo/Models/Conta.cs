@@ -18,16 +18,15 @@ namespace Demonstrativo.Models
         [Column(TypeName = "varchar(70)")]
         public string Descricao { get; set; }
         
-        [Required]
-        [MaxLength(5)]
-        public int LancamentoDebito { get; set; }
         
-        [Required]
         [MaxLength(5)]
-        public int LancamentoCredito { get; set; }
+        public int? LancamentoDebito { get; set; }
         
-        [Required]
-        public int LancamentoHistorico { get; set; }
+        
+        [MaxLength(5)]
+        public int? LancamentoCredito { get; set; }
+        
+        public int? LancamentoHistorico { get; set; }
         //public bool LancamentoSomar { get; set; }
         //public bool LancamentoExportaNo { get; set; }
         //public bool LancamentoExportaYes { get; set; }

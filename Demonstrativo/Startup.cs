@@ -50,7 +50,7 @@ namespace Demonstrativo
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Lancamento}/{action=Index}/{id?}");
             });
         }
     }

@@ -72,17 +72,35 @@ body {
 
 table
 {
-    width: 340px !important;
+    width: 450px !important;
 }
 
-th{
+th {
     text-align: center;
+    padding: 4px !important;
+}
+
+td {
+    padding: 4px !important;
 }
 input{
-    width: 50px;
+    width: 150px;
     margin: auto;
 }
 
 .codigo{
     width: 20px;
 }
+
+.descricao{
+    width: 270px;
+}
+
+.valor{
+    width:50px;
+}
+
+.container {
+        max-width: 1540px !important;
+        margin-left: auto !important;
+    }
