@@ -28,7 +28,18 @@
                         <tr>
                             <td class="codigo">@contas.Codigo</td>
                             <td class="descricao">@contas.Descricao</td>
-                            <td class="valor"><input type="number" name="name" value="" /></td>
+                            @if (((List<Lancamento>)ViewBag.LancamentosId).Any(l => l.ContaId == contas.Id))
+                            {
+                                @foreach (var lancamentos in ((List<Lancamento>)ViewBag.LancamentosId).Where(l => l.ContaId == contas.Id))
+                                {
+                                    <td class="valor"><input type="number" name="name" value="@lancamentos.Valor" /></td>
+                                }
+                            }
+                            else
+                            {
+                                <td class="valor"><input type="number" name="name" value="" /></td>
+                            }
+
                         </tr>
                     </tbody>
                 }
