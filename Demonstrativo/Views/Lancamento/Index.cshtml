@@ -2,7 +2,6 @@
     ViewData["Title"] = "Lançamento";
 }
 
-
 @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post))
 {
     <p>
@@ -28,18 +27,20 @@
                         <tr>
                             <td class="codigo">@contas.Codigo</td>
                             <td class="descricao">@contas.Descricao</td>
-                            @if (((List<Lancamento>)ViewBag.LancamentosId).Any(l => l.ContaId == contas.Id))
+
+                            @{
+                                var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
+                                
+                            }
+
+                            @if (lancamento != null)
                             {
-                                @foreach (var lancamentos in ((List<Lancamento>)ViewBag.LancamentosId).Where(l => l.ContaId == contas.Id))
-                                {
-                                    <td class="valor"><input type="number" name="name" value="@lancamentos.Valor" /></td>
-                                }
+                                <td class="valor"><input type="text" name="name" value="@lancamento.Valor" /></td>
                             }
                             else
                             {
-                                <td class="valor"><input type="number" name="name" value="" /></td>
+                                <td class="valor"><input type="text" name="name" value="" /></td>
                             }
-
                         </tr>
                     </tbody>
                 }
@@ -99,7 +100,19 @@
                             <tr>
                                 <td class="codigo">@contas.Codigo</td>
                                 <td class="descricao">@contas.Descricao</td>
-                                <td class="valor"><input type="number" name="name" value="" /></td>
+                                @{
+                                    var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
+
+                                }
+
+                                @if (lancamento != null)
+                                {
+                                    <td class="valor"><input type="text" name="name" value="@lancamento.Valor" /></td>
+                                }
+                                else
+                                {
+                                    <td class="valor"><input type="text" name="name" value="" /></td>
+                                }
                             </tr>
                             <tr>
                         </tbody>
@@ -184,7 +197,19 @@
                             <tr>
                                 <td class="codigo">@contas.Codigo</td>
                                 <td class="descricao">@contas.Descricao</td>
-                                <td class="valor"><input type="number" name="name" value="" /></td>
+                                @{
+                                    var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
+
+                                }
+
+                                @if (lancamento != null)
+                                {
+                                    <td class="valor"><input type="text" name="name" value="@lancamento.Valor" /></td>
+                                }
+                                else
+                                {
+                                    <td class="valor"><input type="text" name="name" value="" /></td>
+                                }
                             </tr>
                             <tr>
                         </tbody>

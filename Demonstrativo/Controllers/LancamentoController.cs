@@ -13,7 +13,6 @@ namespace Demonstrativo.Controllers
     public class LancamentoController : Controller
     {
         Context context = new Context();
-        [HttpPost]
         public IActionResult Index()
         {
             List<Conta> contas = context.Contas.ToList();
@@ -31,9 +30,7 @@ namespace Demonstrativo.Controllers
                 , "Value", "Text");
             ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
 
-
             return View();
-
         }
 
         [HttpPost]
@@ -45,6 +42,7 @@ namespace Demonstrativo.Controllers
             List<Conta> contas = context.Contas.ToList();
             List<Categoria> categorias = context.Categorias.ToList();
 
+            ViewBag.Competencias = competencias;
             ViewBag.Contas = contas;
             ViewBag.Categorias = categorias;
             ViewBag.CompetenciasId = new SelectList(
@@ -54,10 +52,7 @@ namespace Demonstrativo.Controllers
 
             if (competencias.Any(c => c.Data == CompetenciasId))
             {
-                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == EmpresaId && l.DataCompetencia == CompetenciasId))
-                {
-                    ViewBag.LancamentosId = lancamento;
-                }
+                ViewBag.LancamentosId = lancamentos.Where(l => l.EmpresaId == EmpresaId && l.DataCompetencia == CompetenciasId).ToList();             
             }
             else
             {
