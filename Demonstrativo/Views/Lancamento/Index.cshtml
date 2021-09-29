@@ -4,218 +4,242 @@
 
 @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post))
 {
+<div class="fixed-top-filter p-3">
     <p>
         Empresa: @Html.DropDownList("EmpresaId", String.Empty)
         Comeprencia: @Html.DropDownList("CompetenciasId", String.Empty)
         <input type="submit" value="Enviar" />
     </p>
+</div>
 }
+@using (Html.BeginForm("Inserir", "Lancamento", FormMethod.Post))
+{
 <!--Melhorar foreach-->
+<div><input type="submit" value="Enviar" /></div>
 <div class="row">
     <div class="col">
-        @foreach (var categoria in ((List<Categoria>)ViewBag.Categorias).Where(x => x.Id < 10))
+    @foreach (var categoria in ((List<Categoria>)ViewBag.Categorias).Where(x => x.Id < 10))
+    {
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="3">@categoria.Descricao</th>
+            </tr>
+        </thead>
+    @foreach (var contas in ((List<Conta>)ViewBag.Contas).Where(c => c.CategoriaId == categoria.Id))
+    {
+        <tbody>
+            <tr>
+                <td class="codigo">@contas.Codigo</td>
+                <td class="descricao">@contas.Descricao</td>
+                <td class="valor">
+                @{
+                    if ((List<Lancamento>)ViewBag.LancamentosId == null)
+                    {
+                        @Html.TextBox("name", "");
+                    }
+                    else
+                    {
+                        var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
+                        if (lancamento == null)
+                        {
+                            @Html.TextBox("name", "");
+                        }
+                        else
+                        {
+
+                            @Html.TextBox("name", lancamento.Valor.ToString())
+                        }
+                    }
+                }
+                </td>
+            </tr>
+        </tbody>
+    }
+    </table>
+    }
+    </div>
+    <div class="col">
+    @foreach (var categoria in ((List<Categoria>)ViewBag.Categorias).Where(c => c.Id >= 10 && c.Id <= 19))
+    {
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="3">@categoria.Descricao</th>
+            </tr>
+        </thead>
+        @if (categoria.Id == 19)
         {
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th colspan="3">@categoria.Descricao</th>
-                    </tr>
-                </thead>
-                @foreach (var contas in ((List<Conta>)ViewBag.Contas).Where(c => c.CategoriaId == categoria.Id))
+            <tbody>
+                @for (int i = 0; i < 8; i++)
                 {
-                    <tbody>
+                    <tr>
+                        <td class="codigo"></td>
+                        <td class="descricao"><input type="text" name="name" value="" /></td>
+                        <td class="valor"><input type="text" name="name" value="" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td class="codigo"></td>
+                    <td class="descricao">Total: </td>
+                    <td class="valor"><input type="text" name="name" value="" /></td>
+                </tr>
+            </tbody>
+        }
+        @foreach (var contas in ((List<Conta>)ViewBag.Contas).Where(c => c.CategoriaId == categoria.Id))
+        {
+            @if (contas.Codigo == 36)
+            {
+                <tbody>
+                    @for (int i = 0; i < 7; i++)
+                    {
                         <tr>
-                            <td class="codigo">@contas.Codigo</td>
-                            <td class="descricao">@contas.Descricao</td>
-
+                            <td class="codigo"></td>
+                            <td class="descricao"><input type="text" name="name" value="" /></td>
+                            <td class="valor"><input type="text" name="name" value="" /></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="codigo"></td>
+                        <td class="descricao">Total: </td>
+                        <td class="valor"><input type="text" name="name" value="" /></td>
+                    </tr>
+                </tbody>
+            }
+            else
+            {
+                <tbody>
+                    <tr>
+                        <td class="codigo">@contas.Codigo</td>
+                        <td class="descricao">@contas.Descricao</td>
+                        <td class="valor">
                             @{
-                                var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
-                                
-                            }
+                                if ((List<Lancamento>)ViewBag.LancamentosId == null)
+                                {
+                                    @Html.TextBox("name", "");
+                                }
+                                else
+                                {
+                                    var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
+                                    if (lancamento == null)
+                                    {
+                                        @Html.TextBox("name", "");
+                                    }
+                                    else
+                                    {
 
-                            @if (lancamento != null)
+                                        @Html.TextBox("name", lancamento.Valor.ToString())
+                                    }
+                                }
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                </tbody>
+            }
+        }
+    </table>
+    }
+    </div>
+    <div class="col">
+    @foreach (var categoria in ((List<Categoria>)ViewBag.Categorias).Where(c => c.Id > 19))
+    {
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="3">@categoria.Descricao</th>
+            </tr>
+        </thead>
+        @if (categoria.Id == 25)
+        {
+        <tbody>
+            @for (int i = 0; i < 8; i++)
+            {
+                <tr>
+                    <td class="codigo"></td>
+                    <td class="descricao"><input type="text" name="name" value="" /></td>
+                    <td class="valor"><input type="text" name="name" value="" /></td>
+                </tr>
+            }
+            <tr>
+                <td class="codigo"></td>
+                <td class="descricao">Total: </td>
+                <td class="valor"><input type="text" name="name" value="" /></td>
+            </tr>
+        </tbody>
+        }
+        @foreach (var contas in ((List<Conta>)ViewBag.Contas).Where(c => c.CategoriaId == categoria.Id))
+        {
+            @if (contas.Codigo == 38)
+            {
+            <tbody>
+                @for (int i = 0; i < 40; i++)
+                {
+                    <tr>
+                        <td class="codigo"></td>
+                        <td class="descricao"><input type="text" name="name" value="" /></td>
+                        <td class="valor"><input type="text" name="name" value="" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td>#</td>
+                    <td>Total:</td>
+                    <td><input type="text" name="name" value="" /></td>
+                </tr>
+            </tbody>
+            }
+            else if (contas.Codigo == 1)
+            {
+            <tbody>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <tr>
+                        <td class="codigo"></td>
+                        <td class="descricao"><input type="text" name="name" value="" /></td>
+                        <td class="valor"><input type="text" name="name" value="" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td class="codigo"></td>
+                    <td class="descricao">Total: </td>
+                    <td class="valor"><input type="text" name="name" value="" /></td>
+                </tr>
+            </tbody>
+            }
+            else
+            {
+            <tbody>
+                <tr>
+                    <td class="codigo">@contas.Codigo</td>
+                    <td class="descricao">@contas.Descricao</td>
+                    <td class="valor">
+                        @{
+                            if ((List<Lancamento>)ViewBag.LancamentosId == null)
                             {
-                                <td class="valor"><input type="text" name="name" value="@lancamento.Valor" /></td>
+                                @Html.TextBox("name", "");
                             }
                             else
                             {
-                                <td class="valor"><input type="text" name="name" value="" /></td>
-                            }
-                        </tr>
-                    </tbody>
-                }
-            </table>
-        }
-    </div>
-    <div class="col">
-        @foreach (var categoria in ((List<Categoria>)ViewBag.Categorias).Where(c => c.Id >= 10 && c.Id <= 19))
-        {
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th colspan="3">@categoria.Descricao</th>
-                    </tr>
-                </thead>
-                @if (categoria.Id == 19)
-                {
-                    <tbody>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <tr>
-                                <td class="codigo"></td>
-                                <td class="descricao"><input type="text" name="name" value="" /></td>
-                                <td class="valor"><input type="number" name="name" value="" /></td>
-                            </tr>
-                        }
-                        <tr>
-                            <td class="codigo"></td>
-                            <td class="descricao">Total: </td>
-                            <td class="valor"><input type="number" name="name" value="" /></td>
-                        </tr>
-                    </tbody>
-                }
-                @foreach (var contas in ((List<Conta>)ViewBag.Contas).Where(c => c.CategoriaId == categoria.Id))
-                {
-                    @if (contas.Codigo == 36)
-                    {
-                        <tbody>
-                            @for (int i = 0; i < 7; i++)
-                            {
-                                <tr>
-                                    <td class="codigo"></td>
-                                    <td class="descricao"><input type="text" name="name" value="" /></td>
-                                    <td class="valor"><input type="number" name="name" value="" /></td>
-                                </tr>
-                            }
-                            <tr>
-                                <td class="codigo"></td>
-                                <td class="descricao">Total: </td>
-                                <td class="valor"><input type="number" name="name" value="" /></td>
-                            </tr>
-                        </tbody>
-                    }
-                    else
-                    {
-                        <tbody>
-                            <tr>
-                                <td class="codigo">@contas.Codigo</td>
-                                <td class="descricao">@contas.Descricao</td>
-                                @{
-                                    var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
-
-                                }
-
-                                @if (lancamento != null)
+                                var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
+                                if (lancamento == null)
                                 {
-                                    <td class="valor"><input type="text" name="name" value="@lancamento.Valor" /></td>
+                                    @Html.TextBox("name", "");
                                 }
                                 else
                                 {
-                                    <td class="valor"><input type="text" name="name" value="" /></td>
-                                }
-                            </tr>
-                            <tr>
-                        </tbody>
-                    }
-                }
-                <tbody>
-                </tbody>
 
-            </table>
-        }
-    </div>
-    <div class="col">
-        @foreach (var categoria in ((List<Categoria>)ViewBag.Categorias).Where(c => c.Id > 19))
-        {
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th colspan="3">@categoria.Descricao</th>
-                    </tr>
-                </thead>
-                @if (categoria.Id == 25)
-                {
-                    <tbody>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <tr>
-                                <td class="codigo"></td>
-                                <td class="descricao"><input type="text" name="name" value="" /></td>
-                                <td class="valor"><input type="number" name="name" value="" /></td>
-                            </tr>
+                                    @Html.TextBox("name", lancamento.Valor.ToString())
+                                }
+                            }
                         }
-                        <tr>
-                            <td class="codigo"></td>
-                            <td class="descricao">Total: </td>
-                            <td class="valor"><input type="number" name="name" value="" /></td>
-                        </tr>
-                    </tbody>
-                }
-                @foreach (var contas in ((List<Conta>)ViewBag.Contas).Where(c => c.CategoriaId == categoria.Id))
-                {
-                    @if (contas.Codigo == 38)
-                    {
-                        <tbody>
-                            @for (int i = 0; i < 40; i++)
-                            {
-                                <tr>
-
-                                    <td class="codigo"></td>
-                                    <td class="descricao"><input type="text" name="name" value="" /></td>
-                                    <td class="valor"><input type="number" name="name" value="" /></td>
-
-                                </tr>
-                            }
-                            <tr>
-                                <td>#</td>
-                                <td>Total:</td>
-                                <td><input type="number" name="name" value="" /></td>
-                            </tr>
-                        </tbody>
-                    }
-                    else if (contas.Codigo == 1)
-                    {
-                        <tbody>
-                            @for (int i = 0; i < 3; i++)
-                            {
-                                <tr>
-                                    <td class="codigo"></td>
-                                    <td class="descricao"><input type="text" name="name" value="" /></td>
-                                    <td class="valor"><input type="number" name="name" value="" /></td>
-                                </tr>
-                            }
-                            <tr>
-                                <td class="codigo"></td>
-                                <td class="descricao">Total: </td>
-                                <td class="valor"><input type="number" name="name" value="" /></td>
-                            </tr>
-                        </tbody>
-                    }
-                    else
-                    {
-                        <tbody>
-                            <tr>
-                                <td class="codigo">@contas.Codigo</td>
-                                <td class="descricao">@contas.Descricao</td>
-                                @{
-                                    var lancamento = ((List<Lancamento>)ViewBag.LancamentosId).FirstOrDefault(l => l.ContaId == contas.Id);
-
-                                }
-
-                                @if (lancamento != null)
-                                {
-                                    <td class="valor"><input type="text" name="name" value="@lancamento.Valor" /></td>
-                                }
-                                else
-                                {
-                                    <td class="valor"><input type="text" name="name" value="" /></td>
-                                }
-                            </tr>
-                            <tr>
-                        </tbody>
-                    }
-                }
-            </table>
+                    </td>
+                </tr>
+                <tr>
+            </tbody>
+            }
         }
+    </table>
+    }
     </div>
 </div>
+}

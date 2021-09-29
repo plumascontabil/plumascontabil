@@ -19,12 +19,10 @@ namespace Demonstrativo.Controllers
             List<Categoria> categorias = context.Categorias.ToList();
             List<Empresa> empresas = context.Empresas.ToList();
             List<Competencia> competencias = context.Competencias.ToList();
-            List<Lancamento> lancamentos = context.Lancamentos.ToList();
 
             //melhorar essa viewbag
             ViewBag.Contas = contas;
             ViewBag.Categorias = categorias;
-            ViewBag.LancamentosId = lancamentos;
             ViewBag.CompetenciasId = new SelectList(
                 competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
                 , "Value", "Text");
@@ -61,6 +59,33 @@ namespace Demonstrativo.Controllers
                 context.Add(competencia);
                 context.SaveChanges();
             }
+            return View("Index");
+        }
+
+        public ActionResult Inserir(string[] name, int EmpresaId, DateTime CompetenciasId)
+        {
+            List<Conta> contas = context.Contas.ToList();
+            List<Categoria> categorias = context.Categorias.ToList();
+            List<Empresa> empresas = context.Empresas.ToList();
+            List<Competencia> competencias = context.Competencias.ToList();
+            List<Lancamento> lancamentos = context.Lancamentos.ToList();
+
+            ViewBag.Contas = contas;
+            ViewBag.Categorias = categorias;
+            ViewBag.CompetenciasId = new SelectList(
+                competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
+                , "Value", "Text");
+            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
+            ViewBag.LancamnetosId = lancamentos.ToList();
+
+            foreach (var valor in name)
+            {
+                Lancamento lantamentos = new Lancamento();
+                lantamentos.Valor = Convert.ToDecimal(valor);
+                context.Add(lantamentos);
+                context.SaveChanges();
+            }
+
             return View("Index");
         }
 
