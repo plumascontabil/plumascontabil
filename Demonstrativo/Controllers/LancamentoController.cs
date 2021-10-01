@@ -45,8 +45,10 @@ namespace Demonstrativo.Controllers
             ViewBag.Categorias = categorias;
             ViewBag.CompetenciasId = new SelectList(
                 competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-                , "Value", "Text");
-            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
+                , "Value", "Text", CompetenciasId.ToShortDateString());
+            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial",EmpresaId);
+            ViewBag.EmpresaSeleciodaId = EmpresaId;
+            ViewBag.CompetenciasSelecionadaId = CompetenciasId;
 
             if (competencias.Any(c => c.Data == CompetenciasId))
             {
@@ -56,37 +58,57 @@ namespace Demonstrativo.Controllers
             {
                 Competencia competencia = new Competencia();
                 competencia.Data = CompetenciasId;
-                context.Add(competencia);
+                context.Competencias.Add(competencia);
                 context.SaveChanges();
             }
+
             return View("Index");
         }
 
-        public ActionResult Inserir(string[] name, int EmpresaId, DateTime CompetenciasId)
+        [HttpPost]
+        public ActionResult Inserir(string[] codigo, 
+            string empresa, 
+            string competencia, 
+            string[] name,
+            string[] descricao,
+            string[] lancamentoId)
         {
-            List<Conta> contas = context.Contas.ToList();
-            List<Categoria> categorias = context.Categorias.ToList();
-            List<Empresa> empresas = context.Empresas.ToList();
-            List<Competencia> competencias = context.Competencias.ToList();
-            List<Lancamento> lancamentos = context.Lancamentos.ToList();
-
-            ViewBag.Contas = contas;
-            ViewBag.Categorias = categorias;
-            ViewBag.CompetenciasId = new SelectList(
-                competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-                , "Value", "Text");
-            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
-            ViewBag.LancamnetosId = lancamentos.ToList();
-
-            foreach (var valor in name)
+            for (int i = 0; i < codigo.Length; i++)
             {
-                Lancamento lantamentos = new Lancamento();
-                lantamentos.Valor = Convert.ToDecimal(valor);
-                context.Add(lantamentos);
-                context.SaveChanges();
+                if (string.IsNullOrEmpty(name[i]))
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(lancamentoId[i]))
+                {
+                    var lancamento = new Lancamento();
+                    lancamento.ContaId = Convert.ToInt32(codigo[i]);
+                    lancamento.EmpresaId = Convert.ToInt32(empresa);
+                    lancamento.DataCompetencia = Convert.ToDateTime(competencia);
+                    lancamento.Descricao = descricao[i];
+                    lancamento.Valor = Convert.ToDecimal(name[i]);
+
+                    context.Lancamentos.Add(lancamento);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    var lancamento = context.Lancamentos.Find(Convert.ToInt32(lancamentoId[i]));
+
+                    lancamento.ContaId = Convert.ToInt32(codigo[i]);
+                    lancamento.EmpresaId = Convert.ToInt32(empresa);
+                    lancamento.DataCompetencia = Convert.ToDateTime(competencia);
+                    lancamento.Descricao = descricao[i];
+                    lancamento.Valor = Convert.ToDecimal(name[i]);
+
+                    context.Lancamentos.Update(lancamento);
+                    context.SaveChanges();
+
+                }                
             }
 
-            return View("Index");
+            return Filtrar(Convert.ToInt32(empresa), Convert.ToDateTime(competencia));
         }
 
     }
