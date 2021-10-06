@@ -19,10 +19,52 @@ namespace Demonstrativo.Controllers
             List<Categoria> categorias = context.Categorias.ToList();
             List<Empresa> empresas = context.Empresas.ToList();
             List<Competencia> competencias = context.Competencias.ToList();
+            List<Lancamento> lancamentos = context.Lancamentos.ToList();
 
-            //melhorar essa viewbag
-            ViewBag.Contas = contas;
-            ViewBag.Categorias = categorias;
+            var categoriasViewModel = new List<CategoriaViewModel>();
+
+
+            foreach (var categoria in categorias)
+            {
+                var contasViewModel = new List<ContaViewModel>();
+
+                foreach (var conta in contas.Where(c => c.CategoriaId == categoria.Id))
+                {
+                    var lancamentosViewModel = new List<LancamentoViewModel>();
+
+                    foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
+                    {
+                        lancamentosViewModel.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Valor = lancamento.Valor,
+                            Descricao = lancamento.Descricao
+                        });
+
+                        ViewBag.ContasViewModel = contasViewModel;
+                    }
+
+                    contasViewModel.Add(new ContaViewModel()
+                    {
+                        Id = conta.Id,
+                        Codigo = conta.Codigo,
+                        Descricao = conta.Descricao,
+                        Lancamentos = lancamentosViewModel
+                    });
+                }
+
+                categoriasViewModel.Add(new CategoriaViewModel()
+                {
+                    Descricao = categoria.Descricao,
+                    Contas = contasViewModel
+                });
+            }
+
+
+
+            ViewBag.ContasViewModel = contasViewModel;
+            ViewBag.CategoriasViewModel = categoriasViewModel;
+
             ViewBag.CompetenciasId = new SelectList(
                 competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
                 , "Value", "Text");
@@ -65,13 +107,8 @@ namespace Demonstrativo.Controllers
             return View("Index");
         }
 
-        [HttpPost]
-        public ActionResult Inserir(string[] codigo, 
-            string empresa, 
-            string competencia, 
-            string[] name,
-            string[] descricao,
-            string[] lancamentoId)
+        /*[HttpPost]
+        public ActionResult Inserir(List<CategoriaViewModel> categoriaViewModels)
         {
             for (int i = 0; i < codigo.Length; i++)
             {
@@ -109,7 +146,7 @@ namespace Demonstrativo.Controllers
             }
 
             return Filtrar(Convert.ToInt32(empresa), Convert.ToDateTime(competencia));
-        }
+        }*/
 
     }
 }
