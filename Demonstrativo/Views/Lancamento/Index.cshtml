@@ -12,40 +12,61 @@
         </p>
     </div>
 }
-@using (Html.BeginForm("Inserir", "Lancamento", FormMethod.Post))
+@using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post))
 {
     <!--Melhorar foreach-->
-    <input type="hidden" value="@ViewBag.EmpresaSeleciodaId" name="empresa"/>
-    <input type="hidden" value="@ViewBag.CompetenciasSelecionadaId" name="competencia"/>
+    <input type="hidden" value="@ViewBag.EmpresaSeleciodaId" name="empresa" />
+    <input type="hidden" value="@ViewBag.CompetenciasSelecionadaId" name="competencia" />
 
     <div><input type="submit" value="Enviar" /></div>
     <div class="row">
+        @{ var indexLancamento = 0;}
 
-        <div class="col">
-            @foreach (var categoria in ViewBag.CategoriasViewModel)
-
-            {
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th colspan="3">@categoria.Descricao</th>
-                    </tr>
-                </thead>
-
-                @foreach (var contas in ViewBag.ContasViewModel)
-                {
-                    <tbody>
+        @foreach (var categoria in (List<CategoriaViewModel>)ViewBag.CategoriasViewModel)
+        {
+            <div class="col-4">
+                <table class="table table-bordered">
+                    <thead>
                         <tr>
-                            <td class="codigo">@contas.Codigo<input type="hidden" name="codigo[]" value="" /></td>
-                            <td class="descricao">@contas.Descricao<input type="hidden" name="descricao[]" value="" /></td>
-                            <td class="valor">
-
-                            </td>
+                            <th colspan="3">@categoria.Descricao</th>
                         </tr>
-                    </tbody>
-                }
-            </table>
-            }
-        </div>
+                    </thead>
+
+                    @for (var i = 0; i < categoria.Contas.Count; i++)
+                    {
+                        var conta = categoria.Contas[i];
+
+                        <tbody>
+                            @for (int j = 0; j < conta.Lancamentos.Count; j++)
+                            {
+                                var lancamento = conta.Lancamentos[j];
+
+
+                                <tr>
+                                    <td class="codigo">@conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" /></td>
+                                    <td class="descricao">
+                                        @if (lancamento.PodeDigitarDescricao)
+                                        {
+                                            <input type="text" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                        }
+                                        else
+                                        {
+                                            @conta.Descricao<input type="hidden" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                        }
+                                    </td>
+                                    <td class="valor">
+                                        <input type="text" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" />
+                                        <input type="hidden" name="lancamentos[@indexLancamento].Id" />
+                                    </td>
+                                </tr>
+
+                                indexLancamento++;
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+
+        }
     </div>
 }

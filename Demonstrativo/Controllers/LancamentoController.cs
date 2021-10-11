@@ -15,33 +15,101 @@ namespace Demonstrativo.Controllers
         Context context = new Context();
         public IActionResult Index()
         {
-            List<Conta> contas = context.Contas.ToList();
-            List<Categoria> categorias = context.Categorias.ToList();
+            AdicionarCompetenciaMesAtual();
+
+            CarregarEmpresasCompetencias();
+
+            CarregarCategorias();
+
+            return View();
+        }
+
+        private void AdicionarCompetenciaMesAtual()
+        {
+            DateTime competenciaAtual = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 01);
+
+            if(context.Competencias.Any(c => c.Data == competenciaAtual))
+            {
+                return;
+            }
+
+            Competencia competencia = new Competencia()
+            {
+                Data = competenciaAtual
+            };
+
+            context.Competencias.Add(competencia);
+            context.SaveChanges();
+        }
+
+        private void CarregarEmpresasCompetencias()
+        {
             List<Empresa> empresas = context.Empresas.ToList();
             List<Competencia> competencias = context.Competencias.ToList();
-            List<Lancamento> lancamentos = context.Lancamentos.ToList();
+
+            ViewBag.CompetenciasId = new SelectList(
+               competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
+               , "Value", "Text");
+
+            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
+        }
+
+        private void CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
+        {
+            List<Conta> contas = context.Contas.ToList();
+            List<Categoria> categorias = context.Categorias.ToList();
+
+            var lancamentos = new List<Lancamento>();
+
+            if (empresaId.HasValue && competenciasId.HasValue)
+            {
+                lancamentos =  context.Lancamentos.Where(x => x.EmpresaId == empresaId && x.DataCompetencia == competenciasId)
+                    .ToList();
+            }
 
             var categoriasViewModel = new List<CategoriaViewModel>();
-
 
             foreach (var categoria in categorias)
             {
                 var contasViewModel = new List<ContaViewModel>();
 
+                if(categoria.Id == 19 || categoria.Id == 25)
+                {
+                    contas.Add(new Conta() { CategoriaId = categoria.Id});
+                    contas.Add(new Conta() { CategoriaId = categoria.Id });
+                    contas.Add(new Conta() { CategoriaId = categoria.Id });
+                    contas.Add(new Conta() { CategoriaId = categoria.Id });
+                    contas.Add(new Conta() { CategoriaId = categoria.Id });
+                }
+
                 foreach (var conta in contas.Where(c => c.CategoriaId == categoria.Id))
                 {
                     var lancamentosViewModel = new List<LancamentoViewModel>();
-
+                   
                     foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel()
                         {
                             Id = lancamento.Id,
+                            Descricao = lancamento.Descricao,
                             Valor = lancamento.Valor,
-                            Descricao = lancamento.Descricao
+                            ContaId = lancamento.ContaId,
+                            DataCompetencia = lancamento.DataCompetencia,
+                            EmpresaId = lancamento.EmpresaId
                         });
+                    }
 
-                        ViewBag.ContasViewModel = contasViewModel;
+                    if(conta.Codigo == 38 || conta.Codigo == 36)
+                    {
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true});
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
+                    }
+                    else if (!lancamentosViewModel.Any())
+                    {
+                        lancamentosViewModel.Add(new LancamentoViewModel());
                     }
 
                     contasViewModel.Add(new ContaViewModel()
@@ -59,94 +127,29 @@ namespace Demonstrativo.Controllers
                     Contas = contasViewModel
                 });
             }
-
-
-
-            ViewBag.ContasViewModel = contasViewModel;
+            
             ViewBag.CategoriasViewModel = categoriasViewModel;
-
-            ViewBag.CompetenciasId = new SelectList(
-                competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-                , "Value", "Text");
-            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
-
-            return View();
         }
 
         [HttpPost]
-        public ActionResult Filtrar(int EmpresaId, DateTime CompetenciasId)
+        public IActionResult Filtrar(int empresaId, DateTime competenciasId)
         {
-            List<Empresa> empresas = context.Empresas.ToList();
-            List<Competencia> competencias = context.Competencias.ToList();
-            List<Lancamento> lancamentos = context.Lancamentos.ToList();
-            List<Conta> contas = context.Contas.ToList();
-            List<Categoria> categorias = context.Categorias.ToList();
+            CarregarCategorias(empresaId,competenciasId);
 
-            ViewBag.Competencias = competencias;
-            ViewBag.Contas = contas;
-            ViewBag.Categorias = categorias;
-            ViewBag.CompetenciasId = new SelectList(
-                competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-                , "Value", "Text", CompetenciasId.ToShortDateString());
-            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial",EmpresaId);
-            ViewBag.EmpresaSeleciodaId = EmpresaId;
-            ViewBag.CompetenciasSelecionadaId = CompetenciasId;
+            CarregarEmpresasCompetencias();
 
-            if (competencias.Any(c => c.Data == CompetenciasId))
-            {
-                ViewBag.LancamentosId = lancamentos.Where(l => l.EmpresaId == EmpresaId && l.DataCompetencia == CompetenciasId).ToList();             
-            }
-            else
-            {
-                Competencia competencia = new Competencia();
-                competencia.Data = CompetenciasId;
-                context.Competencias.Add(competencia);
-                context.SaveChanges();
-            }
+            ViewBag.EmpresaSeleciodaId = empresaId;
+            ViewBag.CompetenciasSelecionadaId = competenciasId;
 
             return View("Index");
         }
 
-        /*[HttpPost]
-        public ActionResult Inserir(List<CategoriaViewModel> categoriaViewModels)
+        [HttpPost]
+        public IActionResult Salvar(Lancamento[] lancamentos)
         {
-            for (int i = 0; i < codigo.Length; i++)
-            {
-                if (string.IsNullOrEmpty(name[i]))
-                {
-                    continue;
-                }
-
-                if (string.IsNullOrEmpty(lancamentoId[i]))
-                {
-                    var lancamento = new Lancamento();
-                    lancamento.ContaId = Convert.ToInt32(codigo[i]);
-                    lancamento.EmpresaId = Convert.ToInt32(empresa);
-                    lancamento.DataCompetencia = Convert.ToDateTime(competencia);
-                    lancamento.Descricao = descricao[i];
-                    lancamento.Valor = Convert.ToDecimal(name[i]);
-
-                    context.Lancamentos.Add(lancamento);
-                    context.SaveChanges();
-                }
-                else
-                {
-                    var lancamento = context.Lancamentos.Find(Convert.ToInt32(lancamentoId[i]));
-
-                    lancamento.ContaId = Convert.ToInt32(codigo[i]);
-                    lancamento.EmpresaId = Convert.ToInt32(empresa);
-                    lancamento.DataCompetencia = Convert.ToDateTime(competencia);
-                    lancamento.Descricao = descricao[i];
-                    lancamento.Valor = Convert.ToDecimal(name[i]);
-
-                    context.Lancamentos.Update(lancamento);
-                    context.SaveChanges();
-
-                }                
-            }
-
-            return Filtrar(Convert.ToInt32(empresa), Convert.ToDateTime(competencia));
-        }*/
+            
+            return Index();
+        }
 
     }
 }
