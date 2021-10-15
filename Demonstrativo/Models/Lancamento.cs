@@ -22,7 +22,9 @@ namespace Demonstrativo.Models
 
         [ForeignKey("ContaId")]
         public Conta Conta { get; set; }
+
         [Required]
+        [DataType(DataType.Date)]
         public DateTime DataCompetencia { get; set; }
 
         [ForeignKey("DataCompetencia")]

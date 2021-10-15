@@ -91,11 +91,11 @@ namespace Demonstrativo.Controllers
                         lancamentosViewModel.Add(new LancamentoViewModel()
                         {
                             Id = lancamento.Id,
+                            Data = lancamento.DataCompetencia,
+                            Empresa = lancamento.EmpresaId,
+                            Conta = lancamento.ContaId,
                             Descricao = lancamento.Descricao,
-                            Valor = lancamento.Valor,
-                            ContaId = lancamento.ContaId,
-                            DataCompetencia = lancamento.DataCompetencia,
-                            EmpresaId = lancamento.EmpresaId
+                            Valor = lancamento.Valor
                         });
                     }
 
@@ -139,17 +139,48 @@ namespace Demonstrativo.Controllers
             CarregarEmpresasCompetencias();
 
             ViewBag.EmpresaSeleciodaId = empresaId;
-            ViewBag.CompetenciasSelecionadaId = competenciasId;
+            ViewBag.CompetenciasSelecionadaId = competenciasId.ToString("yyyy-MM-dd");
 
             return View("Index");
         }
 
         [HttpPost]
-        public IActionResult Salvar(Lancamento[] lancamentos)
+        public IActionResult Salvar(List<Lancamento> lancamentos)
         {
-            
-            return Index();
-        }
+            foreach (var lancamento in lancamentos)
+            {
+                if (lancamento.Valor == 0)
+                {
+                    continue;
+                }
 
+                if (lancamento.Id == 0)
+                {
+                    var insertLancamento = new Lancamento();
+                    insertLancamento.ContaId = lancamento.ContaId;
+                    insertLancamento.EmpresaId = lancamento.EmpresaId;
+                    insertLancamento.DataCompetencia = lancamento.DataCompetencia;
+                    insertLancamento.Descricao = lancamento.Descricao;
+                    insertLancamento.Valor = lancamento.Valor;
+
+                    context.Lancamentos.Add(insertLancamento);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    var updateLancamento = context.Lancamentos.Find(Convert.ToInt32(lancamento.Id));
+
+                    updateLancamento.Descricao = lancamento.Descricao;
+                    updateLancamento.Valor = lancamento.Valor;
+
+                    context.Lancamentos.Update(updateLancamento);
+                    context.SaveChanges();
+                }
+            }
+
+            var primeiroLancamento = lancamentos.FirstOrDefault();
+              
+            return Filtrar(primeiroLancamento.EmpresaId, primeiroLancamento.DataCompetencia);
+        }
     }
 }

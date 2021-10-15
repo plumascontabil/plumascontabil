@@ -14,10 +14,6 @@
 }
 @using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post))
 {
-    <!--Melhorar foreach-->
-    <input type="hidden" value="@ViewBag.EmpresaSeleciodaId" name="empresa" />
-    <input type="hidden" value="@ViewBag.CompetenciasSelecionadaId" name="competencia" />
-
     <div><input type="submit" value="Enviar" /></div>
     <div class="row">
         @{ var indexLancamento = 0;}
@@ -41,9 +37,10 @@
                             {
                                 var lancamento = conta.Lancamentos[j];
 
-
                                 <tr>
-                                    <td class="codigo">@conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" /></td>
+                                    <td class="codigo">
+                                        @conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" />
+                                    </td>
                                     <td class="descricao">
                                         @if (lancamento.PodeDigitarDescricao)
                                         {
@@ -55,8 +52,10 @@
                                         }
                                     </td>
                                     <td class="valor">
+                                        <input type="hidden" name="lancamentos[@indexLancamento].Id" value="@lancamento.Id" />
                                         <input type="text" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" />
-                                        <input type="hidden" name="lancamentos[@indexLancamento].Id" />
+                                        <input type="hidden" name="lancamentos[@indexLancamento].EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
+                                        <input type="hidden" name="lancamentos[@indexLancamento].DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
                                     </td>
                                 </tr>
 
@@ -66,7 +65,6 @@
                     }
                 </table>
             </div>
-
         }
     </div>
 }
