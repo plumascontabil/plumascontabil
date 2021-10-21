@@ -19,9 +19,7 @@ namespace Demonstrativo.Controllers
 
             CarregarEmpresasCompetencias();
 
-            CarregarCategorias();
-
-            return View();
+            return View(CarregarCategorias());
         }
 
         private void AdicionarCompetenciaMesAtual()
@@ -42,19 +40,19 @@ namespace Demonstrativo.Controllers
             context.SaveChanges();
         }
 
-        private void CarregarEmpresasCompetencias()
+        private void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
         {
             List<Empresa> empresas = context.Empresas.ToList();
             List<Competencia> competencias = context.Competencias.ToList();
 
             ViewBag.CompetenciasId = new SelectList(
                competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-               , "Value", "Text");
+               , "Value", "Text", competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
-            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial");
+            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
         }
 
-        private void CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
+        private List<CategoriaViewModel> CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
         {
             List<Conta> contas = context.Contas.ToList();
             List<Categoria> categorias = context.Categorias.ToList();
@@ -128,20 +126,18 @@ namespace Demonstrativo.Controllers
                 });
             }
             
-            ViewBag.CategoriasViewModel = categoriasViewModel;
+            return categoriasViewModel;
         }
 
         [HttpPost]
         public IActionResult Filtrar(int empresaId, DateTime competenciasId)
         {
-            CarregarCategorias(empresaId,competenciasId);
-
-            CarregarEmpresasCompetencias();
+            CarregarEmpresasCompetencias(empresaId, competenciasId);
 
             ViewBag.EmpresaSeleciodaId = empresaId;
             ViewBag.CompetenciasSelecionadaId = competenciasId.ToString("yyyy-MM-dd");
 
-            return View("Index");
+            return View("Index", CarregarCategorias(empresaId, competenciasId));
         }
 
         [HttpPost]
@@ -149,8 +145,15 @@ namespace Demonstrativo.Controllers
         {
             foreach (var lancamento in lancamentos)
             {
-                if (lancamento.Valor == 0)
+                if (lancamento.Id == 0 && lancamento.Valor == 0)
                 {
+                    continue;
+                }
+
+                if(lancamento.Id != 0 && lancamento.Valor == 0)
+                {
+                    context.Lancamentos.Remove(lancamento);
+                    context.SaveChanges();
                     continue;
                 }
 
@@ -179,7 +182,7 @@ namespace Demonstrativo.Controllers
             }
 
             var primeiroLancamento = lancamentos.FirstOrDefault();
-              
+
             return Filtrar(primeiroLancamento.EmpresaId, primeiroLancamento.DataCompetencia);
         }
     }
