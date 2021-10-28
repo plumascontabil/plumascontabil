@@ -12,7 +12,7 @@ namespace Demonstrativo.Controllers
 {
     public class LancamentoController : Controller
     {
-        Context context = new Context();
+        Context context = new();
         public IActionResult Index()
         {
             AdicionarCompetenciaMesAtual();
@@ -50,6 +50,8 @@ namespace Demonstrativo.Controllers
                , "Value", "Text", competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
             ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
+
+            
         }
 
         private List<CategoriaViewModel> CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
@@ -137,6 +139,8 @@ namespace Demonstrativo.Controllers
             ViewBag.EmpresaSeleciodaId = empresaId;
             ViewBag.CompetenciasSelecionadaId = competenciasId.ToString("yyyy-MM-dd");
 
+            CarregarTrimestre(competenciasId);
+
             return View("Index", CarregarCategorias(empresaId, competenciasId));
         }
 
@@ -152,6 +156,7 @@ namespace Demonstrativo.Controllers
 
                 if(lancamento.Id != 0 && lancamento.Valor == 0)
                 {
+                    
                     context.Lancamentos.Remove(lancamento);
                     context.SaveChanges();
                     continue;
@@ -183,7 +188,63 @@ namespace Demonstrativo.Controllers
 
             var primeiroLancamento = lancamentos.FirstOrDefault();
 
-            return Filtrar(primeiroLancamento.EmpresaId, primeiroLancamento.DataCompetencia);
+            if (primeiroLancamento != null)
+                return Filtrar(primeiroLancamento.EmpresaId,primeiroLancamento.DataCompetencia );
+            else
+                return RedirectToAction("Index");
+        }
+    
+        public void CarregarTrimestre(DateTime? competenciasId = null)
+        {
+            if (competenciasId == null)
+            {
+                return;
+            }
+            else
+            {
+                var mes = competenciasId.Value.Month;
+                if (mes < 4)
+                {
+                    int[] trimestre = {1,2,3 };
+                    ViewBag.CompetenciasTrimestre = trimestre.ToList();
+                    SomarCompras();
+                }
+                else if (mes >= 4 && mes < 7)
+                {
+                    int[] trimestre = { 4, 5, 6 };
+                    ViewBag.CompetenciasTrimestre = trimestre.ToList();
+                    SomarCompras();
+                }
+                else if (mes >= 7 && mes < 10)
+                {
+                    int[] trimestre = { 7, 8, 9 };
+                    ViewBag.CompetenciasTrimestre = trimestre.ToList();
+                    SomarCompras();
+                }
+                else if (mes >= 10)
+                {
+                    int[] trimestre = { 10, 11, 12 };
+                    ViewBag.CompetenciasTrimestre = trimestre.ToList();
+                    SomarCompras();
+                }
+            }
+        }
+
+        public IActionResult SomarCompras()
+        {
+            var empresaId = ViewBag.EmpresaSeleciodaId;
+            var competenciasId = ViewBag.CompetenciaSelecionadaId;
+            var lancamentosTrimestre = new List<Lancamento>();
+
+            foreach (var competencia in (ViewBag.CompetenciasTrimestre))
+            {
+                List<Lancamento> lancamentos = context.Lancamentos.ToList();
+                var valorLancamento = lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.ContaId == 99).ToList();
+                lancamentosTrimestre.AddRange(valorLancamento);
+            }
+
+            ViewBag.ValorCompras = lancamentosTrimestre;
+            return View();
         }
     }
 }

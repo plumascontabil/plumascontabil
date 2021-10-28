@@ -117,3 +117,22 @@ input{
     z-index: 1030;
     text-align: right;
 }
+
+.float {
+    position: fixed;
+    width: 64px;
+    height: 64px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #1b6ec2;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 2;
+    border: none;
+}
+
+.form-lancamento{
+    margin-top: 30px;
+}

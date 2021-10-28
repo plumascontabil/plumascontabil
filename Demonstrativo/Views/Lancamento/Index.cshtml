@@ -4,253 +4,270 @@
     ViewData["Title"] = "Lançamento";
 }
 
-@using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post))
+@using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post,new { @class="form-lancamento"}))
 {
-    <div class="fixed-top-filter p-3">
-        <p>
-            Empresa: @Html.DropDownList("EmpresaId", String.Empty)
-            Comeprencia: @Html.DropDownList("CompetenciasId", String.Empty)
-            <input type="submit" value="Enviar" />
-        </p>
-    </div>
-}
-@using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post))
-{
-
-
     <div>
-        <input type="submit" value="Enviar" />
+        <button type="submit" value="Enviar" class="float">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+            </svg>
+        </button>
         @{
             var indexLancamento = 0;
-            var numero_take = 9;
+            var numeroSkip = 0;
+            var numeroTake = 9;
         }
     </div>
 
-    @while (numero_take < Model.Count)
-    {
-        var categorias = Model.Take(numero_take).ToList();
+    <div class="row">
+        @while (numeroSkip < Model.Count)
+        {
+            var categorias = Model.Skip(numeroSkip).Take(numeroTake).ToList();
 
-        <div class="row">
-            @foreach (var categoria in categorias)
-            {
-                <div class="col">
-                    <table class="table table-bordered inptable">
-                        <thead>
-                            <tr>
-                                <th colspan="3">@categoria.Descricao</th>
-                            </tr>
-                        </thead>
-
-                        @for (var i = 0; i < categoria.Contas.Count; i++)
-                        {
-                            var conta = categoria.Contas[i];
-
-                            <tbody>
-                                @for (int j = 0; j < conta.Lancamentos.Count; j++)
-                                {
-                                    var lancamento = conta.Lancamentos[j];
-
+            <div class="col">
+                <div class="row">
+                    @foreach (var categoria in categorias)
+                    {
+                        <div class="col">
+                            <table class="table table-bordered inptable mx-auto">
+                                <thead>
                                     <tr>
-                                        <td class="codigo">
-                                            @conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" />
-                                        </td>
-                                        <td class="descricao">
-                                            @if (lancamento.PodeDigitarDescricao)
-                                            {
-                                                <input type="text" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
-                                            }
-                                            else
-                                            {
-                                                @conta.Descricao<input type="hidden" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
-                                            }
-                                        </td>
-                                        <td class="valor">
-                                            <input type="hidden" name="lancamentos[@indexLancamento].Id" value="@lancamento.Id" />
-                                            <input type="text" class="mask-valor" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                            <input type="hidden" name="lancamentos[@indexLancamento].EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
-                                            <input type="hidden" name="lancamentos[@indexLancamento].DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
-                                        </td>
+                                        <th colspan="3">@categoria.Descricao</th>
                                     </tr>
+                                </thead>
 
-                                    indexLancamento++;
+                                @for (var i = 0; i < categoria.Contas.Count; i++)
+                                {
+                                    var conta = categoria.Contas[i];
+
+                                    <tbody>
+                                        @for (int j = 0; j < conta.Lancamentos.Count; j++)
+                                        {
+                                            var lancamento = conta.Lancamentos[j];
+
+                                            <tr>
+                                                <td class="codigo">
+                                                    @conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" />
+                                                </td>
+                                                <td class="descricao">
+                                                    @if (lancamento.PodeDigitarDescricao)
+                                                    {
+                                                        <input type="text" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                    }
+                                                    else
+                                                    {
+                                                        @conta.Descricao<input type="hidden" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                    }
+                                                </td>
+                                                <td class="valor">
+                                                    <input type="hidden" name="lancamentos[@indexLancamento].Id" value="@lancamento.Id" />
+                                                    <input type="text" class="mask-valor" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                    <input type="hidden" name="lancamentos[@indexLancamento].EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
+                                                    <input type="hidden" name="lancamentos[@indexLancamento].DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
+                                                </td>
+                                            </tr>
+
+                                            indexLancamento++;
+                                        }
+
+                                    </tbody>
                                 }
-
-                            </tbody>
-                        }
-                    </table>
+                            </table>
+                        </div>
+                    }
                 </div>
-            }
+            </div>
+            numeroSkip = numeroSkip + numeroTake;
+        }
+    </div>
+
+
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered inptable">
+                <thead>
+                    <tr>
+                        <th colspan="2">COMPRAS</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var forCompras = ViewBag.ValorCompras;
+
+                        if (forCompras == null)
+                        {
+                            for (int indexCompraNull = 1; indexCompraNull < 4; indexCompraNull++)
+                            {
+                                <tr>
+                                    <td colspan="2">Total Compras @indexCompraNull o. mês</td>
+                                    <td></td>
+                                </tr>
+                            }
+
+                        }
+                        else
+                        {
+                            int indexCompra = 1;
+                            foreach (var compra in ((List<Lancamento>)forCompras))
+                            {
+                                <tr>
+                                    <td colspan="2">Total Compras @indexCompra o. mês</td>
+                                    <td>@compra.Valor</td>
+                                </tr>
+                                indexCompra++;
+                            }
+                        }
+                    }
+
+
+                    <tr><td></td></tr>
+                    <tr>
+                        <td colspan="2">( - ) Estoque Final</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr>
+                        <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                </tbody>
+            </table>
         </div>
-        numero_take = numero_take + 9;
-    }
-}
-<div class="row">
-    <div class="col">
-        <table class="table table-bordered inptable">
-            <thead>
-                <tr>
-                    <th colspan="2">COMPRAS</th>
-                    <th>Resultado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2">Total Compras 1o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Total Compras 2o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Total Compras 3o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-                <tr>
-                    <td colspan="2">( - ) Estoque Final</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-                <tr>
-                    <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-            </tbody>
-        </table>
+        <div class="col">
+            <table class="table table-bordered inptable">
+                <thead>
+                    <tr>
+                        <th colspan="2">RECEITAS</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">Total Receitas 1o. mês</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total Receitas 2o. mês</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total Receitas 3o. mês</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">( = ) Lucro Bruto (R$)</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr>
+                        <td colspan="2">
+                            ( = ) Margem Bruta Total em %
+                        </td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table table-bordered inptable">
+                <thead>
+                    <tr>
+                        <th colspan="2">DESPESAS</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">Total Despesas 1o. mês</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total Despesas 2o. mês</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total Despesas 3o. mês</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">( - ) Provisão de 13° Salário</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr>
+                        <td colspan="2">( - ) Provisão de Férias</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr>
+                        <td colspan="2">( - ) Depreciações</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td></td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="col">
-        <table class="table table-bordered inptable">
-            <thead>
-                <tr>
-                    <th colspan="2">RECEITAS</th>
-                    <th>Resultado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2">Total Receitas 1o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Total Receitas 2o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Total Receitas 3o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">( = ) Lucro Bruto (R$)</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-                <tr>
-                    <td colspan="2">
-                        ( = ) Margem Bruta Total em %
-                    </td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="col">
-        <table class="table table-bordered inptable">
-            <thead>
-                <tr>
-                    <th colspan="2">DESPESAS</th>
-                    <th>Resultado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2">Total Despesas 1o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Total Despesas 2o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Total Despesas 3o. mês</td>
-                    <td>00,00</td>
-                </tr>
-                <tr>
-                    <td colspan="2">( - ) Provisão de 13° Salário</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-                <tr>
-                    <td colspan="2">( - ) Provisão de Férias</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-                <tr>
-                    <td colspan="2">( - ) Depreciações</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td></td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="row">
-    <table class="table table-bordered">
-        <tr>
-            <td colspan="4"> ( = ) Lucro do Período </td>
-            <td>0,00</td>
-        </tr>
-        <tr>
-            <td colspan="4"> ( - ) Saldo Prejuízos Acumulados </td>
-            <td>0,00</td>
-        </tr>
-        <tr>
-            <td colspan="4"> Compesação Prejuízo (30% Lucro do Período) </td>
-            <td>0,00</td>
-        <tr>
-            <td colspan="4">( = ) Base de Cálculo do CSLL/IRPJ</td>
-            <td>0,00</td>
-        </tr>
-    </table>
-</div>
-<div class="row">
-    <div class="col">
-        <table class="table table-bordered inptable">
-            <thead>
-                <tr>
-                    <th colspan="3">APURAR</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2">( - ) Contribuição Social - 9%</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td colspan="3"></td></tr>
-                <tr>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="2">( - ) Imposto de Renda - 15%</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td colspan="3"></td></tr>
-                <tr>
-                    <td colspan="2">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
-                    <td>00,00</td>
-                </tr>
-                <tr><td colspan="3"></td></tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="col">
+    <div class="row">
         <table class="table table-bordered">
             <tr>
-                <td colspan="4"> ( = ) Lucro Real </td>
+                <td colspan="4"> ( = ) Lucro do Período </td>
+                <td>0,00</td>
+            </tr>
+            <tr>
+                <td colspan="4"> ( - ) Saldo Prejuízos Acumulados </td>
+                <td>0,00</td>
+            </tr>
+            <tr>
+                <td colspan="4"> Compesação Prejuízo (30% Lucro do Período) </td>
+                <td>0,00</td>
+            <tr>
+                <td colspan="4">( = ) Base de Cálculo do CSLL/IRPJ</td>
                 <td>0,00</td>
             </tr>
         </table>
     </div>
-</div>
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered inptable">
+                <thead>
+                    <tr>
+                        <th colspan="3">APURAR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">( - ) Contribuição Social - 9%</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td colspan="3"></td></tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">( - ) Imposto de Renda - 15%</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td colspan="3"></td></tr>
+                    <tr>
+                        <td colspan="2">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
+                        <td>00,00</td>
+                    </tr>
+                    <tr><td colspan="3"></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="4"> ( = ) Lucro Real </td>
+                    <td>0,00</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
