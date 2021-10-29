@@ -54,8 +54,10 @@ namespace Demonstrativo.Controllers
             
         }
 
-        private List<CategoriaViewModel> CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
+        private List<TrimestreViewModel> CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
         {
+            var trimestreViewModel = new List<TrimestreViewModel>();
+
             List<Conta> contas = context.Contas.ToList();
             List<Categoria> categorias = context.Categorias.ToList();
 
@@ -126,9 +128,14 @@ namespace Demonstrativo.Controllers
                     Descricao = categoria.Descricao,
                     Contas = contasViewModel
                 });
+
+                trimestreViewModel.Add(new TrimestreViewModel()
+                {
+                    Categorias = categoriasViewModel
+                });
             }
             
-            return categoriasViewModel;
+            return trimestreViewModel;
         }
 
         [HttpPost]
@@ -229,7 +236,6 @@ namespace Demonstrativo.Controllers
                 }
             }
         }
-
         public IActionResult SomarCompras()
         {
             var empresaId = ViewBag.EmpresaSeleciodaId;
@@ -243,7 +249,13 @@ namespace Demonstrativo.Controllers
                 lancamentosTrimestre.AddRange(valorLancamento);
             }
 
-            ViewBag.ValorCompras = lancamentosTrimestre;
+            var trimestreViewModel = new List<TrimestreViewModel>();
+
+            trimestreViewModel.Add(new TrimestreViewModel()
+            {
+                ComprasTrimestre = lancamentosTrimestre.ToList()
+            }) ;
+
             return View();
         }
     }
