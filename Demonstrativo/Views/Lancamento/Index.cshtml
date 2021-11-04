@@ -98,9 +98,9 @@
                     @{
                         var index = 1;
                         decimal saldoTrimestre = 0;
-                        foreach (var compras in Model)
+                        foreach (var trimestre in Model)
                         {
-                            if (compras.ComprasTrimestre == null)
+                            if (trimestre.LancamentosCompra == null)
                             {
                                 <tr>
                                     <td colspan="2">Total Compras @index o. mês</td>
@@ -109,7 +109,7 @@
                             }
                             else
                             {
-                                foreach (var compra in compras.ComprasTrimestre)
+                                foreach (var compra in trimestre.LancamentosCompra)
                                 {
                                     <tr>
                                         <td colspan="2">Total Compras @index o. mês</td>
