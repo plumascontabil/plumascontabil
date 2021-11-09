@@ -1,4 +1,4 @@
-﻿@model List<TrimestreViewModel>
+﻿@model TrimestreViewModel
 
 @{
     ViewData["Title"] = "Lançamento";
@@ -20,68 +20,66 @@
         }
     </div>
     <div class="row">
-        @foreach (var trimestreCategoria in Model)
+        @while (numeroSkip < Model.Categorias.Count)
         {
-            @while (numeroSkip < trimestreCategoria.Categorias.Count)
-            {
-                var categorias = trimestreCategoria.Categorias.Skip(numeroSkip).Take(numeroTake).ToList();
+            var categorias = Model.Categorias.Skip(numeroSkip).Take(numeroTake).ToList();
 
-                <div class="col">
-                    <div class="row">
-                        @foreach (var categoria in categorias)
-                        {
-                            <div class="col">
-                                <table class="table table-bordered inptable mx-auto">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="3">@categoria.Descricao</th>
-                                        </tr>
-                                    </thead>
+            <div class="col">
+                <div class="row">
+                    @foreach (var categoria in categorias)
+                    {
+                        <div class="col">
+                            <table class="table table-bordered inptable mx-auto">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">@categoria.Descricao</th>
+                                    </tr>
+                                </thead>
 
-                                    @for (var i = 0; i < categoria.Contas.Count; i++)
-                                    {
-                                        var conta = categoria.Contas[i];
+                                @for (var i = 0; i < categoria.Contas.Count; i++)
+                                {
+                                    var conta = categoria.Contas[i];
 
-                                        <tbody>
-                                            @for (int j = 0; j < conta.Lancamentos.Count; j++)
-                                            {
-                                                var lancamento = conta.Lancamentos[j];
+                                    <tbody>
+                                        @for (int j = 0; j < conta.Lancamentos.Count; j++)
+                                        {
+                                            var lancamento = conta.Lancamentos[j];
 
-                                                <tr>
-                                                    <td class="codigo">
-                                                        @conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" />
-                                                    </td>
-                                                    <td class="descricao">
-                                                        @if (lancamento.PodeDigitarDescricao)
-                                                        {
-                                                            <input type="text" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
-                                                        }
-                                                        else
-                                                        {
-                                                            @conta.Descricao<input type="hidden" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
-                                                        }
-                                                    </td>
-                                                    <td class="valor">
-                                                        <input type="hidden" name="lancamentos[@indexLancamento].Id" value="@lancamento.Id" />
-                                                        <input type="text" class="mask-valor" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                        <input type="hidden" name="lancamentos[@indexLancamento].EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
-                                                        <input type="hidden" name="lancamentos[@indexLancamento].DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td class="codigo">
+                                                    @conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" />
+                                                </td>
+                                                <td class="descricao">
+                                                    @if (lancamento.PodeDigitarDescricao)
+                                                    {
+                                                        <input type="text" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                    }
+                                                    else
+                                                    {
+                                                        @conta.Descricao<input type="hidden" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                    }
+                                                </td>
+                                                <td class="valor">
+                                                    <input type="hidden" name="lancamentos[@indexLancamento].Id" value="@lancamento.Id" />
+                                                    <input type="text" class="mask-valor" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                    <input type="hidden" name="lancamentos[@indexLancamento].EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
+                                                    <input type="hidden" name="lancamentos[@indexLancamento].DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
+                                                </td>
+                                            </tr>
 
-                                                indexLancamento++;
-                                            }
+                                            indexLancamento++;
+                                        }
 
-                                        </tbody>
-                                    }
-                                </table>
-                            </div>
-                        }
-                    </div>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    }
                 </div>
-                numeroSkip = numeroSkip + numeroTake;
-            }
+            </div>
+            numeroSkip = numeroSkip + numeroTake;
         }
+
 
     </div>
 
@@ -97,47 +95,63 @@
                 <tbody>
                     @{
                         var index = 1;
-                        decimal saldoTrimestre = 0;
-                        foreach (var trimestre in Model)
+                        decimal totalTrimestre = 0;
+                        decimal estoqueInicial = 0;
+                        decimal estoqueFinal = 0;
+                        decimal custoMercadoriaVendida = 0;
+
+                        if (Model.LancamentosCompra == null)
                         {
-                            if (trimestre.LancamentosCompra == null)
+                            <tr>
+                                <td colspan="2">Compras</td>
+                                <td></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var compra in Model.LancamentosCompra.Where(lan => lan.Conta == 100))
+                            {
+                                estoqueInicial += compra.Valor;
+                            }
+                            <tr><td></td></tr>
+                            <tr>
+                                <td colspan="2">Estoque Inicial</td>
+                                <td>@estoqueInicial</td>
+                            </tr>
+                            <tr><td></td></tr>
+                            foreach (var compra in Model.LancamentosCompra.Where(lan => lan.Conta == 99))
                             {
                                 <tr>
                                     <td colspan="2">Total Compras @index o. mês</td>
-                                    <td></td>
+                                    <td>@compra.Valor</td>
                                 </tr>
+                                totalTrimestre += compra.Valor;
+
+                                index++;
                             }
-                            else
+                            <tr>
+                                <td colspan="2">Total Trimestre</td>
+                                <td>@totalTrimestre</td>
+                            </tr>
+                            foreach (var compra in Model.LancamentosCompra.Where(lan => lan.Conta == 101))
                             {
-                                foreach (var compra in trimestre.LancamentosCompra)
-                                {
-                                    <tr>
-                                        <td colspan="2">Total Compras @index o. mês</td>
-                                        <td>
-                                        </td>
-                                    </tr>
-                                    saldoTrimestre += compra.Valor;
-                                    <tr>
-                                        <td colspan="2">Total Trimestre</td>
-                                        <td>@saldoTrimestre</td>
-                                    </tr>
-                                    index++;
-                                }
+                                estoqueFinal += compra.Valor;
                             }
-                            break;
+                            <tr><td></td></tr>
+                            <tr>
+                                <td colspan="2">( - ) Estoque Final</td>
+                                <td>@estoqueFinal</td>
+                            </tr>
+                            <tr><td></td></tr>
+                            custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
                         }
+                        <tr>
+                            <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
+                            <td>@custoMercadoriaVendida</td>
+                        </tr>
+                        <tr><td></td></tr>
                     }
-                    <tr><td></td></tr>
-                    <tr>
-                        <td colspan="2">( - ) Estoque Final</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
-                    <tr>
-                        <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
+
                 </tbody>
             </table>
         </div>
@@ -151,7 +165,7 @@
                 </thead>
                 <tbody>
                     @{
-                        
+
                     }
 
                     <tr><td></td></tr>

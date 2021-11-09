@@ -7,7 +7,7 @@ namespace Demonstrativo.Models
 {
     public class TrimestreViewModel
     {
-        public List<LancamentoViewModel> LancamentosCompra { get; set; }
-        public List<CategoriaViewModel> Categorias { get; set; }
+        public List<LancamentoViewModel> LancamentosCompra { get; set; } = new List<LancamentoViewModel>();
+        public List<CategoriaViewModel> Categorias { get; set; } = new List<CategoriaViewModel>();
     }
 }
