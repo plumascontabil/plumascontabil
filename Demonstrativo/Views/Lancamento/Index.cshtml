@@ -79,10 +79,7 @@
             </div>
             numeroSkip = numeroSkip + numeroTake;
         }
-
-
     </div>
-
     <div class="row">
         <div class="col">
             <table class="table table-bordered inptable">
@@ -109,21 +106,21 @@
                         }
                         else
                         {
-                            foreach (var compra in Model.LancamentosCompra.Where(lan => lan.Conta == 100))
+                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 100))
                             {
                                 estoqueInicial += compra.Valor;
                             }
                             <tr><td></td></tr>
                             <tr>
                                 <td colspan="2">Estoque Inicial</td>
-                                <td>@estoqueInicial</td>
+                                <td class="mask-valor">@estoqueInicial</td>
                             </tr>
                             <tr><td></td></tr>
-                            foreach (var compra in Model.LancamentosCompra.Where(lan => lan.Conta == 99))
+                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 99))
                             {
                                 <tr>
                                     <td colspan="2">Total Compras @index o. mês</td>
-                                    <td>@compra.Valor</td>
+                                    <td class="mask-valor">@compra.Valor</td>
                                 </tr>
                                 totalTrimestre += compra.Valor;
 
@@ -131,27 +128,26 @@
                             }
                             <tr>
                                 <td colspan="2">Total Trimestre</td>
-                                <td>@totalTrimestre</td>
+                                <td class="mask-valor">@totalTrimestre</td>
                             </tr>
-                            foreach (var compra in Model.LancamentosCompra.Where(lan => lan.Conta == 101))
+                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
                             {
                                 estoqueFinal += compra.Valor;
                             }
                             <tr><td></td></tr>
                             <tr>
                                 <td colspan="2">( - ) Estoque Final</td>
-                                <td>@estoqueFinal</td>
+                                <td class="mask-valor">@estoqueFinal</td>
                             </tr>
                             <tr><td></td></tr>
                             custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
                         }
                         <tr>
                             <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
-                            <td>@custoMercadoriaVendida</td>
+                            <td class="mask-valor">@custoMercadoriaVendida</td>
                         </tr>
                         <tr><td></td></tr>
                     }
-
                 </tbody>
             </table>
         </div>
@@ -165,20 +161,72 @@
                 </thead>
                 <tbody>
                     @{
+                        if (Model.LancamentosReceita == null)
+                        {
+                            <tr>
+                                <td colspan="2"></td>
+                                <td></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            decimal somaReceitaTrimestre = 0;
+                            int j = 1;
+                            foreach (var trimestre in Model.Trimestre)
+                            {
 
+                                decimal somaReceita = 0;
+                                foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
+                                {
+                                    somaReceita += receita.Valor;
+                                }
+                                <tr>
+                                    <td colspan="2">Total Receitas @j o. mês</td>
+                                    <td class="mask-valor">@somaReceita</td>
+                                </tr>
+                                somaReceitaTrimestre += somaReceita;
+                                j++;
+
+                            }
+                            var lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
+                            if (somaReceitaTrimestre == 0)
+                            {
+                                <tr>
+                                    <td colspan="2">Total Receitas Trimestre</td>
+                                    <td class="mask-valor">@somaReceitaTrimestre</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">( = ) Lucro Bruto (R$)</td>
+                                    <td class="mask-valor">@lucroBruto</td>
+                                </tr>
+                                <tr><td></td></tr>
+                                <tr>
+                                    <td colspan="2">( = ) Margem Bruta Total em %</td>
+                                    <td class="mask-valor"></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                var margemLucroBruto = (lucroBruto / somaReceitaTrimestre) * 100;
+                                <tr>
+                                    <td colspan="2">Total Receitas Trimestre</td>
+                                    <td class="mask-valor">@somaReceitaTrimestre</td>
+                                </tr>
+
+                                <tr><td></td></tr>
+                                <tr>
+                                    <td colspan="2">( = ) Lucro Bruto (R$)</td>
+                                    <td class="mask-valor">@lucroBruto</td>
+                                </tr>
+                                <tr><td></td></tr>
+                                <tr>
+                                    <td colspan="2">( = ) Margem Bruta Total em %</td>
+                                    <td class="mask-valorDecimal">@margemLucroBruto</td>
+                                </tr>
+                                <tr><td></td></tr>
+                            }
+                        }
                     }
-
-                    <tr><td></td></tr>
-                    <tr>
-                        <td colspan="2">( = ) Lucro Bruto (R$)</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
-                    <tr>
-                        <td colspan="2">( = ) Margem Bruta Total em %</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
                 </tbody>
             </table>
         </div>
