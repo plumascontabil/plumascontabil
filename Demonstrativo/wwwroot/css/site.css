@@ -136,3 +136,7 @@ input{
 .form-lancamento{
     margin-top: 30px;
 }
+
+.btn-check{
+    width: 50px;
+}

@@ -50,8 +50,6 @@ namespace Demonstrativo.Controllers
                , "Value", "Text", competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
             ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
-
-            
         }
 
         private TrimestreViewModel CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
@@ -129,11 +127,13 @@ namespace Demonstrativo.Controllers
                 });
             }
 
-            var trimestre = CarregarTrimestre(competenciasId);
+            var trimestre = CarregarTrimestre(competenciasId, empresaId);
 
             trimestreViewModel.LancamentosCompra = trimestre.LancamentosCompra;
             trimestreViewModel.LancamentosReceita = trimestre.LancamentosReceita;
+            trimestreViewModel.LancamentosDespesa = trimestre.LancamentosDespesa;
             trimestreViewModel.Trimestre = trimestre.Trimestre;
+            trimestreViewModel.ProvisoesDepreciacoes = trimestre.ProvisoesDepreciacoes;
 
             return trimestreViewModel;
         }
@@ -150,8 +150,46 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        public IActionResult Salvar(List<Lancamento> lancamentos)
+        public IActionResult Salvar(List<Lancamento> lancamentos, 
+            int provisaoId,
+            DateTime provisaoData,
+            int provisaoEmpresa,
+            decimal? decimo,
+            decimal? ferias,
+            decimal? depreciacao,
+            decimal? prejuizo,
+            bool calcularCompensacao)
         {
+            if (provisaoId == 0)
+            {
+                var insertProvisoes = new ProvisoesDepreciacao();
+                insertProvisoes.DataCompetencia = provisaoData;
+                insertProvisoes.EmpresaId = provisaoEmpresa;
+                insertProvisoes.DecimoTerceiro = decimo;
+                insertProvisoes.Ferias = ferias;
+                insertProvisoes.Depreciacao = depreciacao;
+                insertProvisoes.SaldoPrejuizo = prejuizo;
+                insertProvisoes.CalcularCompensacao = calcularCompensacao;
+
+                context.ProvisoesDepreciacoes.Add(insertProvisoes);
+                context.SaveChanges();
+            }
+            else
+            {
+                var updateProvisoes = context.ProvisoesDepreciacoes.Find(Convert.ToInt32(provisaoId));
+
+                updateProvisoes.DataCompetencia = provisaoData;
+                updateProvisoes.EmpresaId = provisaoEmpresa;
+                updateProvisoes.DecimoTerceiro = decimo;
+                updateProvisoes.Ferias = ferias;
+                updateProvisoes.Depreciacao = depreciacao;
+                updateProvisoes.SaldoPrejuizo = prejuizo;
+                updateProvisoes.CalcularCompensacao = calcularCompensacao;
+
+                context.ProvisoesDepreciacoes.Update(updateProvisoes);
+                context.SaveChanges();
+            }
+
             foreach (var lancamento in lancamentos)
             {
                 if (lancamento.Id == 0 && lancamento.Valor == 0)
@@ -194,12 +232,12 @@ namespace Demonstrativo.Controllers
             var primeiroLancamento = lancamentos.FirstOrDefault();
 
             if (primeiroLancamento != null)
-                return Filtrar(primeiroLancamento.EmpresaId,primeiroLancamento.DataCompetencia );
+                return Filtrar(primeiroLancamento.EmpresaId,primeiroLancamento.DataCompetencia);
             else
                 return RedirectToAction("Index");
         }
     
-        public TrimestreViewModel CarregarTrimestre(DateTime? competenciasId = null)
+        public TrimestreViewModel CarregarTrimestre(DateTime? competenciasId = null, int? empresaId = null)
         {
             if (competenciasId == null)
             {
@@ -211,42 +249,41 @@ namespace Demonstrativo.Controllers
             if (mes < 4)
             {
                 int[] trimestre = {1,2,3 };
-                ViewBag.CompetenciasTrimestre = trimestre.ToList();
-                return SomarTrimestre();
+                return SomarTrimestre(trimestre, empresaId);
             }
             else if (mes >= 4 && mes < 7)
             {
                 int[] trimestre = { 4, 5, 6 };
-                ViewBag.CompetenciasTrimestre = trimestre.ToList();
-                return SomarTrimestre();
+                return SomarTrimestre(trimestre, empresaId);
             }
             else if (mes >= 7 && mes < 10)
             {
                 int[] trimestre = { 7, 8, 9 };
-                ViewBag.CompetenciasTrimestre = trimestre.ToList();
-                return SomarTrimestre();
+                return SomarTrimestre(trimestre, empresaId);
             }
             else
             {
                 int[] trimestre = { 10, 11, 12 };
-                ViewBag.CompetenciasTrimestre = trimestre.ToList();
-                return SomarTrimestre();
+                return SomarTrimestre(trimestre, empresaId);
             }
 
         }
-
+        
         //SOMA Trimestre
-        public TrimestreViewModel SomarTrimestre()
+        public TrimestreViewModel SomarTrimestre(int[]? trimestre, int? empresaId)
         {
-            var empresaId = ViewBag.EmpresaSeleciodaId;
-            var competenciasId = ViewBag.CompetenciaSelecionadaId;
             var trimestreViewModel = new TrimestreViewModel();
 
             List<Lancamento> lancamentos = context.Lancamentos.ToList();
+            List<Conta> contas = context.Contas.ToList();
+            List<ProvisoesDepreciacao> provisoes = context.ProvisoesDepreciacoes.ToList();
 
-            foreach (var competencia in ViewBag.CompetenciasTrimestre)
+            //ADD TRIMESTRE
+            trimestreViewModel.Trimestre = trimestre;
+
+            foreach (var competencia in trimestre)
             {
-                //SOMA TRIMESTRE COMPRAS
+                //TRIMESTRE COMPRAS
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.ContaId == 99))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
@@ -259,7 +296,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                //SOMA TRIMESTRE SALDO ESTOQUE INICIAL
+                //TRIMESTRE SALDO ESTOQUE INICIAL
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.ContaId == 100))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
@@ -272,7 +309,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                //SOMA TRIMESTRE SALDO ESTOQUE FINAL
+                //TRIMESTRE SALDO ESTOQUE FINAL
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.ContaId == 101))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
@@ -285,8 +322,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-
-                //SOMA TRIMESTRE RECEITAS
+                //TRIMESTRE RECEITAS
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.ContaId >= 102 && l.ContaId <= 111))
                 {
                     trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
@@ -298,10 +334,53 @@ namespace Demonstrativo.Controllers
                         Descricao = lancamento.Descricao,
                         Valor = lancamento.Valor
                     });
+                }
+                //TRIMESTRE DESPESAS 
+                foreach (var conta in contas.Where(c => (c.CategoriaId > 1 && c.CategoriaId < 7 || 
+                            c.CategoriaId == 10 || 
+                            c.CategoriaId == 12 || 
+                            c.CategoriaId == 13 || 
+                            c.CategoriaId == 15 || 
+                            c.CategoriaId == 20 || 
+                            c.CategoriaId == 21 || 
+                            c.CategoriaId == 23 || 
+                            c.CategoriaId == 24) && c.Id != 11 && c.Id != 12 && c.Id != 27 && c.Id != 33 && c.Id != 130))
+                {
+                    if(conta.Lancamentos == null)
+                    {
+                        continue;
+                    }
 
-                    trimestreViewModel.Trimestre = ViewBag.CompetenciasTrimestre.ToArray();
+                    foreach (var lancamento in conta.Lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia))
+                    {
+                        trimestreViewModel.LancamentosDespesa.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Data = lancamento.DataCompetencia,
+                            Empresa = lancamento.EmpresaId,
+                            Conta = lancamento.ContaId,
+                            Descricao = lancamento.Descricao,
+                            Valor = lancamento.Valor
+                        });
+                    }
+                }
+                //TRIMESTRE PROVISOES E DEPRECIASOES
+                foreach (var provisoesDepreciacao in provisoes.Where(p => p.EmpresaId == empresaId && p.DataCompetencia.Month == competencia))
+                {
+                    trimestreViewModel.ProvisoesDepreciacoes.Add(new ProvisoesDepreciacoesViewModel()
+                    {
+                        Id = provisoesDepreciacao.Id,
+                        Data = provisoesDepreciacao.DataCompetencia,
+                        Empresa = provisoesDepreciacao.EmpresaId,
+                        Ferias = provisoesDepreciacao.Ferias,
+                        DecimoTerceiro = provisoesDepreciacao.DecimoTerceiro,
+                        Depreciacao = provisoesDepreciacao.Depreciacao,
+                        SaldoPrejuizo = provisoesDepreciacao.SaldoPrejuizo,
+                        CalcularCompesacao = provisoesDepreciacao.CalcularCompensacao
+                    }) ;
                 }
             }
+
             return trimestreViewModel;
         }
     }

@@ -23,5 +23,6 @@ namespace Demonstrativo.Models
         [Column(TypeName = "varchar(14)")]
         public string Cnpj { get; set; }
         public List<Lancamento> Lancamentos { get; set; }
+        public List<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
     }
 }

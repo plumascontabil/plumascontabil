@@ -12,5 +12,6 @@ namespace Demonstrativo.Models
         [Required]
         public DateTime Data { get; set; }
         public List<Lancamento> Lancamentos { get; set; }
+        public List<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
     }
 }

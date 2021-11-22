@@ -161,6 +161,7 @@
                 </thead>
                 <tbody>
                     @{
+                        decimal lucroBruto = 0;
                         if (Model.LancamentosReceita == null)
                         {
                             <tr>
@@ -188,7 +189,7 @@
                                 j++;
 
                             }
-                            var lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
+                            lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
                             if (somaReceitaTrimestre == 0)
                             {
                                 <tr>
@@ -239,67 +240,143 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="2">Total Despesas 1o. mês</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Total Despesas 2o. mês</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Total Despesas 3o. mês</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">( - ) Provisão de 13° Salário</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
-                    <tr>
-                        <td colspan="2">( - ) Provisão de Férias</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
-                    <tr>
-                        <td colspan="2">( - ) Depreciações</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td></td></tr>
+                    @{
+
+                        decimal somaDespesaTrimestre = 0;
+                        if (Model.LancamentosDespesa == null)
+                        {
+                            <tr>
+                                <td colspan="2"></td>
+                                <td></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            int j = 1;
+                            foreach (var trimestre in Model.Trimestre)
+                            {
+
+                                decimal somaDespesa = 0;
+                                foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
+                                {
+                                    somaDespesa += despesa.Valor;
+                                }
+                                <tr>
+                                    <td colspan="2">Total Despesas @j o. mês</td>
+                                    <td class="mask-valor">@somaDespesa</td>
+                                </tr>
+                                somaDespesaTrimestre += somaDespesa;
+                                j++;
+
+                            }
+                            <tr>
+                                <td colspan="2">Total trimestre</td>
+                                <td>@somaDespesaTrimestre</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
     </div>
     <div class="row">
-        <table class="table table-bordered">
-            <tr>
-                <td colspan="4"> ( = ) Lucro do Período </td>
-                <td>0,00</td>
-            </tr>
-            <tr>
-                <td colspan="4"> ( - ) Saldo Prejuízos Acumulados </td>
-                <td>0,00</td>
-            </tr>
-            <tr>
-                <td colspan="4"> Compesação Prejuízo (30% Lucro do Período) </td>
-                <td>0,00</td>
-            <tr>
-                <td colspan="4">( = ) Base de Cálculo do CSLL/IRPJ</td>
-                <td>0,00</td>
-            </tr>
-        </table>
-    </div>
-    <div class="row">
+        <div class="col">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="3">Prejuisos e Compensações</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        decimal? decimo = 0;
+                        decimal? ferias = 0;
+                        decimal? depreciacao = 0;
+                        decimal? prejuizo = 0;
+                        bool compensacao = false;
+                        var provisaoId = 0;
+                        string provisaoData = ViewBag.CompetenciasSelecionadaId;
+                        var provisaoEmpresa = ViewBag.EmpresaSeleciodaId;
+
+                        foreach (var provisoes in Model.ProvisoesDepreciacoes.Where(d => d.Data.ToString("yyyy-MM-dd") == provisaoData && d.Empresa == provisaoEmpresa))
+                        {
+                            provisaoId = provisoes.Id;
+                            provisaoData = provisoes.Data.ToString("yyyy-MM-dd");
+                            provisaoEmpresa = provisoes.Empresa;
+                            decimo = provisoes.DecimoTerceiro;
+                            ferias = provisoes.Ferias;
+                            depreciacao = provisoes.Depreciacao;
+                            prejuizo = provisoes.SaldoPrejuizo;
+                            compensacao = provisoes.CalcularCompesacao;
+
+                        }
+
+                        <tr>
+                            <td colspan="3">
+                                ( - ) Provisão de 13° Salário
+                                <input type="hidden" name="provisaoId" value="@provisaoId" />
+                                <input type="hidden" name="provisaoData" value="@provisaoData" />
+                                <input type="hidden" name="provisaoEmpresa" value="@provisaoEmpresa" />
+                            </td>
+                            <td>
+                                <input type="text" class="mask-valor" name="decimo" value="@decimo" onfocus="this.setSelectionRange(0, this.value.length);" />
+                            </td>
+                        </tr>
+                        <tr><td></td></tr>
+                        <tr>
+                            <td colspan="3">( - ) Provisão de Férias</td>
+                            <td>
+                                <input type="text" class="mask-valor" name="ferias" value="@ferias" onfocus="this.setSelectionRange(0, this.value.length);" />
+                            </td>
+                        </tr>
+                        <tr><td></td></tr>
+                        <tr>
+                            <td colspan="3">( - ) Depreciações</td>
+                            <td>
+                                <input type="text" class="mask-valor" name="depreciacao" value="@depreciacao" onfocus="this.setSelectionRange(0, this.value.length);" />
+                            </td>
+                        </tr>
+                        <tr><td></td></tr>
+                        <tr>
+                            <td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
+                            <td>
+                                <input type="text" class="mask-valor" name="prejuizo" value="@prejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />
+                            </td>
+                        </tr>
+
+                        <tr><td></td></tr>
+                        <tr>
+                            <th colspan="3"> Calcular Compensação? </th>
+                            <td><input type="checkbox" asp-for="@compensacao" /></td>
+                        </tr>
+                        <tr><td></td></tr>
+                            double prejuizoCompensado = 0;
+                            if (compensacao == true)
+                            {
+                                prejuizoCompensado = (double)prejuizo - ((double)prejuizo * 0.3);
+                            }
+                        <tr>
+                            <td colspan="3"> Compesação Prejuízo (30% Lucro do Período) </td>
+                            <td>
+                                <output>@prejuizoCompensado</output>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
         <div class="col">
             <table class="table table-bordered inptable">
                 <thead>
                     <tr>
-                        <th colspan="3">APURAR</th>
+                        <th colspan="3">APURAR - S/N ?</th>
+                        <th><input class="btn-check" type="checkbox" name="" value="" /></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="2">( - ) Contribuição Social - 9%</td>
+                        <td colspan="3">( - ) Contribuição Social - 9%</td>
                         <td>00,00</td>
                     </tr>
                     <tr><td colspan="3"></td></tr>
@@ -307,12 +384,12 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="2">( - ) Imposto de Renda - 15%</td>
+                        <td colspan="3">( - ) Imposto de Renda - 15%</td>
                         <td>00,00</td>
                     </tr>
                     <tr><td colspan="3"></td></tr>
                     <tr>
-                        <td colspan="2">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
+                        <td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
                         <td>00,00</td>
                     </tr>
                     <tr><td colspan="3"></td></tr>
@@ -321,11 +398,27 @@
         </div>
         <div class="col">
             <table class="table table-bordered">
-                <tr>
-                    <td colspan="4"> ( = ) Lucro Real </td>
-                    <td>0,00</td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th colspan="3">Lucro</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3"> ( = ) Lucro do Período </td>
+                        <td>@(lucroBruto-somaDespesaTrimestre-decimo-ferias-depreciacao)</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
+                        <td>@((lucroBruto-somaDespesaTrimestre-decimo-ferias-depreciacao)-prejuizo)</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"> ( = ) Lucro Real </td>
+                        <td>0,00</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
-}
+ }

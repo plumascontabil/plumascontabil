@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20211116183806_ProvisoesDepreciao")]
+    partial class ProvisoesDepreciao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,29 +144,19 @@ namespace Demonstrativo.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("CalcularCompensacao")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("DataCompetencia")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("DecimoTerceiro")
-                        .IsRequired()
+                    b.Property<decimal>("DecimoTerceiro")
                         .HasColumnType("decimal(11,2)");
 
-                    b.Property<decimal?>("Depreciacao")
-                        .IsRequired()
+                    b.Property<decimal>("Depreciacao")
                         .HasColumnType("decimal(11,2)");
 
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Ferias")
-                        .IsRequired()
-                        .HasColumnType("decimal(11,2)");
-
-                    b.Property<decimal?>("SaldoPrejuizo")
-                        .IsRequired()
+                    b.Property<decimal>("Ferias")
                         .HasColumnType("decimal(11,2)");
 
                     b.HasKey("Id");
