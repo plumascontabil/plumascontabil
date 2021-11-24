@@ -206,7 +206,6 @@ namespace Demonstrativo.Controllers
 
                 if(lancamento.Id != 0 && lancamento.Valor == 0)
                 {
-                    
                     context.Lancamentos.Remove(lancamento);
                     context.SaveChanges();
                     continue;
@@ -215,6 +214,7 @@ namespace Demonstrativo.Controllers
                 if (lancamento.Id == 0)
                 {
                     var insertLancamento = new Lancamento();
+
                     insertLancamento.ContaId = lancamento.ContaId;
                     insertLancamento.EmpresaId = lancamento.EmpresaId;
                     insertLancamento.DataCompetencia = lancamento.DataCompetencia;
@@ -256,28 +256,27 @@ namespace Demonstrativo.Controllers
             if (mes < 4)
             {
                 int[] trimestre = {1,2,3 };
-                return SomarTrimestre(trimestre, empresaId);
+                return SomarTrimestre(trimestre, empresaId, competenciasId);
             }
             else if (mes >= 4 && mes < 7)
             {
                 int[] trimestre = { 4, 5, 6 };
-                return SomarTrimestre(trimestre, empresaId);
+                return SomarTrimestre(trimestre, empresaId, competenciasId);
             }
             else if (mes >= 7 && mes < 10)
             {
                 int[] trimestre = { 7, 8, 9 };
-                return SomarTrimestre(trimestre, empresaId);
+                return SomarTrimestre(trimestre, empresaId, competenciasId);
             }
             else
             {
                 int[] trimestre = { 10, 11, 12 };
-                return SomarTrimestre(trimestre, empresaId);
+                return SomarTrimestre(trimestre, empresaId, competenciasId);
             }
-
         }
         
         //SOMA Trimestre
-        public TrimestreViewModel SomarTrimestre(int[]? trimestre, int? empresaId)
+        public TrimestreViewModel SomarTrimestre(int[]? trimestre, int? empresaId, DateTime? competenciasId = null)
         {
             var trimestreViewModel = new TrimestreViewModel();
 
@@ -386,6 +385,14 @@ namespace Demonstrativo.Controllers
                         Depreciacao = provisaoDepreciacao.Depreciacao,
                         SaldoPrejuizo = provisaoDepreciacao.SaldoPrejuizo,
                         CalcularCompesacao = provisaoDepreciacao.CalcularCompensacao
+                    };
+                }
+                else
+                {
+                    trimestreViewModel.ProvisoesDepreciacoes = new ProvisoesDepreciacoesViewModel()
+                    {
+                        Data = (DateTime)competenciasId,
+                        Empresa = (int)empresaId
                     };
                 }
             }
