@@ -12,18 +12,18 @@ namespace Demonstrativo.Models
         [Key]
         [Required]
         public int Id { get; set; }
-        [Required]
+        
         [Column(TypeName = "decimal(11,2)")]
         public decimal? DecimoTerceiro { get; set; }
 
-        [Required]
+        
         [Column(TypeName = "decimal(11,2)")]
         public decimal? Ferias { get; set; }
 
-        [Required]
+        
         [Column(TypeName = "decimal(11,2)")]
         public decimal? Depreciacao { get; set; }
-        [Required]
+        
         [Column(TypeName = "decimal(11,2)")]
         public decimal? SaldoPrejuizo { get; set; }
         public bool CalcularCompensacao { get; set; }

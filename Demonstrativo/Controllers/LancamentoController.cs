@@ -150,45 +150,52 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        public IActionResult Salvar(List<Lancamento> lancamentos, 
-            int provisaoId,
-            DateTime provisaoData,
-            int provisaoEmpresa,
-            decimal? decimo,
-            decimal? ferias,
-            decimal? depreciacao,
-            decimal? prejuizo,
-            bool calcularCompensacao)
+        public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
-            if (provisaoId == 0)
+            var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
+            
+            if (provisoesDepreciacoes.Id == 0 )
             {
                 var insertProvisoes = new ProvisoesDepreciacao();
-                insertProvisoes.DataCompetencia = provisaoData;
-                insertProvisoes.EmpresaId = provisaoEmpresa;
-                insertProvisoes.DecimoTerceiro = decimo;
-                insertProvisoes.Ferias = ferias;
-                insertProvisoes.Depreciacao = depreciacao;
-                insertProvisoes.SaldoPrejuizo = prejuizo;
-                insertProvisoes.CalcularCompensacao = calcularCompensacao;
+
+                insertProvisoes.DataCompetencia = provisoesDepreciacoes.Data;
+                insertProvisoes.EmpresaId = provisoesDepreciacoes.Empresa;
+                insertProvisoes.DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro;
+                insertProvisoes.Ferias = provisoesDepreciacoes.Ferias;
+                insertProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
+                insertProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
+                insertProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
 
                 context.ProvisoesDepreciacoes.Add(insertProvisoes);
                 context.SaveChanges();
             }
             else
             {
-                var updateProvisoes = context.ProvisoesDepreciacoes.Find(Convert.ToInt32(provisaoId));
+                var updateProvisoes = context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
 
-                updateProvisoes.DataCompetencia = provisaoData;
-                updateProvisoes.EmpresaId = provisaoEmpresa;
-                updateProvisoes.DecimoTerceiro = decimo;
-                updateProvisoes.Ferias = ferias;
-                updateProvisoes.Depreciacao = depreciacao;
-                updateProvisoes.SaldoPrejuizo = prejuizo;
-                updateProvisoes.CalcularCompensacao = calcularCompensacao;
+                updateProvisoes.DataCompetencia = provisoesDepreciacoes.Data;
+                updateProvisoes.EmpresaId = provisoesDepreciacoes.Empresa;
+                updateProvisoes.DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro;
+                updateProvisoes.Ferias = provisoesDepreciacoes.Ferias;
+                updateProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
+                updateProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
+                updateProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
 
                 context.ProvisoesDepreciacoes.Update(updateProvisoes);
                 context.SaveChanges();
             }
+
+            var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.SelectMany(x => x.Lancamentos));
+           
+            var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
+            {
+                Id = x.Id,
+                ContaId = x.Conta,
+                DataCompetencia = x.Data,
+                Descricao = x.Descricao,
+                EmpresaId = x.Empresa,
+                Valor = x.Valor
+            });
 
             foreach (var lancamento in lancamentos)
             {
@@ -364,20 +371,22 @@ namespace Demonstrativo.Controllers
                         });
                     }
                 }
-                //TRIMESTRE PROVISOES E DEPRECIASOES
-                foreach (var provisoesDepreciacao in provisoes.Where(p => p.EmpresaId == empresaId && p.DataCompetencia.Month == competencia))
+
+                var provisaoDepreciacao = provisoes.FirstOrDefault(p => p.EmpresaId == empresaId && p.DataCompetencia.Month == competencia);
+
+                if(provisaoDepreciacao != null)
                 {
-                    trimestreViewModel.ProvisoesDepreciacoes.Add(new ProvisoesDepreciacoesViewModel()
+                    trimestreViewModel.ProvisoesDepreciacoes = new ProvisoesDepreciacoesViewModel()
                     {
-                        Id = provisoesDepreciacao.Id,
-                        Data = provisoesDepreciacao.DataCompetencia,
-                        Empresa = provisoesDepreciacao.EmpresaId,
-                        Ferias = provisoesDepreciacao.Ferias,
-                        DecimoTerceiro = provisoesDepreciacao.DecimoTerceiro,
-                        Depreciacao = provisoesDepreciacao.Depreciacao,
-                        SaldoPrejuizo = provisoesDepreciacao.SaldoPrejuizo,
-                        CalcularCompesacao = provisoesDepreciacao.CalcularCompensacao
-                    }) ;
+                        Id = provisaoDepreciacao.Id,
+                        Data = provisaoDepreciacao.DataCompetencia,
+                        Empresa = provisaoDepreciacao.EmpresaId,
+                        Ferias = provisaoDepreciacao.Ferias,
+                        DecimoTerceiro = provisaoDepreciacao.DecimoTerceiro,
+                        Depreciacao = provisaoDepreciacao.Depreciacao,
+                        SaldoPrejuizo = provisaoDepreciacao.SaldoPrejuizo,
+                        CalcularCompesacao = provisaoDepreciacao.CalcularCompensacao
+                    };
                 }
             }
 

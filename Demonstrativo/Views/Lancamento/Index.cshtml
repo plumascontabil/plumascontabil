@@ -14,7 +14,6 @@
             </svg>
         </button>
         @{
-            var indexLancamento = 0;
             var numeroSkip = 0;
             var numeroTake = 9;
         }
@@ -26,8 +25,10 @@
 
             <div class="col">
                 <div class="row">
-                    @foreach (var categoria in categorias)
+                    @for (var indexCategoria = 0; indexCategoria < categorias.Count; indexCategoria++)
                     {
+                        var categoria = categorias[indexCategoria];
+
                         <div class="col">
                             <table class="table table-bordered inptable mx-auto">
                                 <thead>
@@ -36,38 +37,37 @@
                                     </tr>
                                 </thead>
 
-                                @for (var i = 0; i < categoria.Contas.Count; i++)
+                                @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
                                 {
-                                    var conta = categoria.Contas[i];
+                                    var conta = categoria.Contas[indexConta];
 
                                     <tbody>
-                                        @for (int j = 0; j < conta.Lancamentos.Count; j++)
+                                        @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
                                         {
-                                            var lancamento = conta.Lancamentos[j];
+                                            var lancamento = conta.Lancamentos[indexLancamento];
+                                            var nameBase = "Categorias[" + indexCategoria + "].Contas[" + indexConta + "].Lancamentos[" + indexLancamento + "]";
 
                                             <tr>
                                                 <td class="codigo">
-                                                    @conta.Codigo<input type="hidden" name="lancamentos[@indexLancamento].ContaId" value="@conta.Id" />
+                                                    @conta.Codigo<input type="hidden" name="@(nameBase).ContaId" value="@conta.Id" />
                                                 </td>
                                                 <td class="descricao">
                                                     @if (lancamento.PodeDigitarDescricao)
                                                     {
-                                                        <input type="text" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                        <input type="text" name="@(nameBase).Descricao" value="@lancamento.Descricao" />
                                                     }
                                                     else
                                                     {
-                                                        @conta.Descricao<input type="hidden" name="lancamentos[@indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                        @conta.Descricao<input type="hidden" name="@(nameBase).Descricao" value="@lancamento.Descricao" />
                                                     }
                                                 </td>
                                                 <td class="valor">
-                                                    <input type="hidden" name="lancamentos[@indexLancamento].Id" value="@lancamento.Id" />
-                                                    <input type="text" class="mask-valor" name="lancamentos[@indexLancamento].Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                    <input type="hidden" name="lancamentos[@indexLancamento].EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
-                                                    <input type="hidden" name="lancamentos[@indexLancamento].DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
+                                                    <input type="hidden" name="@(nameBase).Id" value="@lancamento.Id" />
+                                                    <input type="text" class="mask-valor" name="@(nameBase).Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                    <input type="hidden" name="@(nameBase).EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
+                                                    <input type="hidden" name="@(nameBase).DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
                                                 </td>
                                             </tr>
-
-                                            indexLancamento++;
                                         }
 
                                     </tbody>
@@ -289,73 +289,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @{
-                        decimal? decimo = 0;
-                        decimal? ferias = 0;
-                        decimal? depreciacao = 0;
-                        decimal? prejuizo = 0;
-                        bool compensacao = false;
-                        var provisaoId = 0;
-                        string provisaoData = ViewBag.CompetenciasSelecionadaId;
-                        var provisaoEmpresa = ViewBag.EmpresaSeleciodaId;
-
-                        foreach (var provisoes in Model.ProvisoesDepreciacoes.Where(d => d.Data.ToString("yyyy-MM-dd") == provisaoData && d.Empresa == provisaoEmpresa))
-                        {
-                            provisaoId = provisoes.Id;
-                            provisaoData = provisoes.Data.ToString("yyyy-MM-dd");
-                            provisaoEmpresa = provisoes.Empresa;
-                            decimo = provisoes.DecimoTerceiro;
-                            ferias = provisoes.Ferias;
-                            depreciacao = provisoes.Depreciacao;
-                            prejuizo = provisoes.SaldoPrejuizo;
-                            compensacao = provisoes.CalcularCompesacao;
-
-                        }
+                    @{  
+                            var provisoesDepreciacoes = Model.ProvisoesDepreciacoes;
 
                         <tr>
                             <td colspan="3">
                                 ( - ) Provisão de 13° Salário
-                                <input type="hidden" name="provisaoId" value="@provisaoId" />
-                                <input type="hidden" name="provisaoData" value="@provisaoData" />
-                                <input type="hidden" name="provisaoEmpresa" value="@provisaoEmpresa" />
+                                <input type="hidden" name="ProvisoesDepreciacoes.Id" value="@provisoesDepreciacoes.Id" />
+                                <input type="hidden" name="ProvisoesDepreciacoes.Data" value="@provisoesDepreciacoes.Data" />
+                                <input type="hidden" name="ProvisoesDepreciacoes.Empresa" value="@provisoesDepreciacoes.Empresa" />
                             </td>
                             <td>
-                                <input type="text" class="mask-valor" name="decimo" value="@decimo" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.DecimoTerceiro" value="@provisoesDepreciacoes.DecimoTerceiro" onfocus="this.setSelectionRange(0, this.value.length);" />
                             </td>
                         </tr>
                         <tr><td></td></tr>
                         <tr>
                             <td colspan="3">( - ) Provisão de Férias</td>
                             <td>
-                                <input type="text" class="mask-valor" name="ferias" value="@ferias" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.Ferias" value="@provisoesDepreciacoes.Ferias" onfocus="this.setSelectionRange(0, this.value.length);" />
                             </td>
                         </tr>
                         <tr><td></td></tr>
                         <tr>
                             <td colspan="3">( - ) Depreciações</td>
                             <td>
-                                <input type="text" class="mask-valor" name="depreciacao" value="@depreciacao" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.Depreciacao" value="@provisoesDepreciacoes.Depreciacao" onfocus="this.setSelectionRange(0, this.value.length);" />
                             </td>
                         </tr>
                         <tr><td></td></tr>
                         <tr>
                             <td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
                             <td>
-                                <input type="text" class="mask-valor" name="prejuizo" value="@prejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.SaldoPrejuizo" value="@provisoesDepreciacoes.SaldoPrejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />
                             </td>
                         </tr>
 
                         <tr><td></td></tr>
                         <tr>
                             <th colspan="3"> Calcular Compensação? </th>
-                            <td><input type="checkbox" asp-for="@compensacao" /></td>
+                            <td><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
                         </tr>
                         <tr><td></td></tr>
                             double prejuizoCompensado = 0;
-                            if (compensacao == true)
+                            if (provisoesDepreciacoes.CalcularCompesacao)
                             {
-                                prejuizoCompensado = (double)prejuizo - ((double)prejuizo * 0.3);
-                            }
+                                prejuizoCompensado = (double)Model.ProvisoesDepreciacoes.SaldoPrejuizo - ((double)Model.ProvisoesDepreciacoes.SaldoPrejuizo * 0.3);
+                    }
                         <tr>
                             <td colspan="3"> Compesação Prejuízo (30% Lucro do Período) </td>
                             <td>
@@ -407,11 +387,15 @@
                 <tbody>
                     <tr>
                         <td colspan="3"> ( = ) Lucro do Período </td>
-                        <td>@(lucroBruto-somaDespesaTrimestre-decimo-ferias-depreciacao)</td>
+                        <td>
+                            @(lucroBruto-somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao)
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
-                        <td>@((lucroBruto-somaDespesaTrimestre-decimo-ferias-depreciacao)-prejuizo)</td>
+                        <td>
+                            @((lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao) - provisoesDepreciacoes.SaldoPrejuizo)
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="3"> ( = ) Lucro Real </td>
