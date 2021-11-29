@@ -27,6 +27,7 @@ namespace Demonstrativo.Models
         [Column(TypeName = "decimal(11,2)")]
         public decimal? SaldoPrejuizo { get; set; }
         public bool CalcularCompensacao { get; set; }
+        public bool Apurar { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

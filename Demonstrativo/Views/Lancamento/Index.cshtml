@@ -16,68 +16,65 @@
         @{
             var numeroSkip = 0;
             var numeroTake = 9;
+            var indexCategoria = 0;
         }
     </div>
     <div class="row">
         @while (numeroSkip < Model.Categorias.Count)
         {
-            var categorias = Model.Categorias.Skip(numeroSkip).Take(numeroTake).ToList();
+            //var Categorias = Model.Categorias.Skip(numeroSkip).Take(numeroTake).ToList();
 
-            <div class="col">
-                <div class="row">
-                    @for (var indexCategoria = 0; indexCategoria < categorias.Count; indexCategoria++)
-                    {
-                        var categoria = categorias[indexCategoria];
+        <div class="col">
+            <div class="row">
+                @foreach (var categoria in Model.Categorias.Skip(numeroSkip).Take(numeroTake))
+                {
+                    <div class="col">
+                        <table class="table table-bordered inptable mx-auto">
+                            <thead>
+                                <tr>
+                                    <th colspan="3">@categoria.Descricao</th>
+                                </tr>
+                            </thead>
+                            @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
+                            {
+                                var conta = categoria.Contas[indexConta];
+                                <tbody>
 
-                        <div class="col">
-                            <table class="table table-bordered inptable mx-auto">
-                                <thead>
-                                    <tr>
-                                        <th colspan="3">@categoria.Descricao</th>
-                                    </tr>
-                                </thead>
+                                    @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+                                    {
+                                        var lancamento = conta.Lancamentos[indexLancamento];
 
-                                @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
-                                {
-                                    var conta = categoria.Contas[indexConta];
-
-                                    <tbody>
-                                        @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
-                                        {
-                                            var lancamento = conta.Lancamentos[indexLancamento];
-                                            var nameBase = "Categorias[" + indexCategoria + "].Contas[" + indexConta + "].Lancamentos[" + indexLancamento + "]";
-
-                                            <tr>
-                                                <td class="codigo">
-                                                    @conta.Codigo<input type="hidden" name="@(nameBase).ContaId" value="@conta.Id" />
-                                                </td>
-                                                <td class="descricao">
-                                                    @if (lancamento.PodeDigitarDescricao)
-                                                    {
-                                                        <input type="text" name="@(nameBase).Descricao" value="@lancamento.Descricao" />
-                                                    }
-                                                    else
-                                                    {
-                                                        @conta.Descricao<input type="hidden" name="@(nameBase).Descricao" value="@lancamento.Descricao" />
-                                                    }
-                                                </td>
-                                                <td class="valor">
-                                                    <input type="hidden" name="@(nameBase).Id" value="@lancamento.Id" />
-                                                    <input type="text" class="mask-valor" name="@(nameBase).Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                    <input type="hidden" name="@(nameBase).EmpresaId" value="@ViewBag.EmpresaSeleciodaId" />
-                                                    <input type="hidden" name="@(nameBase).DataCompetencia" value="@ViewBag.CompetenciasSelecionadaId" />
-                                                </td>
-                                            </tr>
-                                        }
-
-                                    </tbody>
-                                }
-                            </table>
-                        </div>
-                    }
-                </div>
+                                        <tr>
+                                            <td class="codigo">
+                                                @conta.Codigo<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Conta" value="@conta.Id" />
+                                            </td>
+                                            <td class="descricao">
+                                                @if (lancamento.PodeDigitarDescricao)
+                                                {
+                                                    <input type="text" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                }
+                                                else
+                                                {
+                                                    @conta.Descricao<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                }
+                                            </td>
+                                            <td class="valor">
+                                                <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
+                                                <input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@lancamento.Valor" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
+                                                <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                    indexCategoria++;
+                }
             </div>
-            numeroSkip = numeroSkip + numeroTake;
+        </div>
+            numeroSkip += numeroTake;
         }
     </div>
     <div class="row">
@@ -289,8 +286,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @{  
-                            var provisoesDepreciacoes = Model.ProvisoesDepreciacoes;
+                    @{
+                        var provisoesDepreciacoes = Model.ProvisoesDepreciacoes;
 
                         <tr>
                             <td colspan="3">
@@ -331,49 +328,75 @@
                             <td><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
                         </tr>
                         <tr><td></td></tr>
-                            double prejuizoCompensado = 0;
-                            if (provisoesDepreciacoes.CalcularCompesacao)
-                            {
-                                prejuizoCompensado = (double)Model.ProvisoesDepreciacoes.SaldoPrejuizo - ((double)Model.ProvisoesDepreciacoes.SaldoPrejuizo * 0.3);
-                    }
+                        double prejuizoCompensado = 0;
+                        if (provisoesDepreciacoes.CalcularCompesacao)
+                        {
+                            prejuizoCompensado = (double)Model.ProvisoesDepreciacoes.SaldoPrejuizo - ((double)Model.ProvisoesDepreciacoes.SaldoPrejuizo * 0.3);
+                        }
                         <tr>
                             <td colspan="3"> Compesação Prejuízo (30% Lucro do Período) </td>
                             <td>
-                                <output>@prejuizoCompensado</output>
+                                <output class="mask-valor">@prejuizoCompensado</output>
                             </td>
                         </tr>
+
                     }
                 </tbody>
             </table>
         </div>
         <div class="col">
             <table class="table table-bordered inptable">
-                <thead>
-                    <tr>
-                        <th colspan="3">APURAR - S/N ?</th>
-                        <th><input class="btn-check" type="checkbox" name="" value="" /></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="3">( - ) Contribuição Social - 9%</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td colspan="3"></td></tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">( - ) Imposto de Renda - 15%</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td colspan="3"></td></tr>
-                    <tr>
-                        <td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
-                        <td>00,00</td>
-                    </tr>
-                    <tr><td colspan="3"></td></tr>
-                </tbody>
+
+                @{
+                    var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
+                    <thead>
+                        <tr>
+                            <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
+                            <td>
+                                <output class="mask-valor"> @(csll) </output>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">APURAR - S/N ?</th>
+                            <td><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
+                        </tr>
+                    </thead>
+                    double contribuicaoSocial = 0;
+                    double impostoRenda = 0;
+                    double adcionalIr = 0;
+                    if (provisoesDepreciacoes.Apurar)
+                    {
+                        contribuicaoSocial = (double)csll * 0.09;
+                        impostoRenda = (double)csll * 0.15;
+                        if (csll > 60000)
+                        {
+                            adcionalIr = (double)csll * 0.10;
+                        }
+                    }
+                    <tbody>
+
+                        <tr>
+                            <td colspan="3">( - ) Contribuição Social - 9%</td>
+                            <td>
+                                <output class="mask-valor"> @(contribuicaoSocial) </output>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">( - ) Imposto de Renda - 15%</td>
+                            <td>
+                                <output class="mask-valor">@impostoRenda </output>
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"></td></tr>
+                        <tr>
+                            <td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
+                            <td>
+                                <output class="mask-valor"> @adcionalIr </output>
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"></td></tr>
+                    </tbody>
+                }
             </table>
         </div>
         <div class="col">
@@ -385,24 +408,45 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     <tr>
                         <td colspan="3"> ( = ) Lucro do Período </td>
                         <td>
-                            @(lucroBruto-somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao)
+                            <output class="mask-valor">
+                                @(lucroBruto-somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao)
+                            </output>
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
-                        <td>
-                            @((lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao) - provisoesDepreciacoes.SaldoPrejuizo)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3"> ( = ) Lucro Real </td>
-                        <td>0,00</td>
-                    </tr>
+
+                    @{
+                        double lucroReal = 0;
+                        if (csll != null)
+                        {
+                            if (provisoesDepreciacoes.Apurar)
+                            {
+                                lucroReal = (double)csll - (double)contribuicaoSocial - (double)impostoRenda - (double)adcionalIr;
+                                <tr>
+                                    <td colspan="3"> ( = ) Lucro Real </td>
+                                    <td>
+                                        <output class="mask-valor">@lucroReal</output>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3"> ( = ) Lucro Real </td>
+                                    <td>
+                                        <output class="mask-valor">@csll</output>
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    }
+
                 </tbody>
             </table>
         </div>
     </div>
- }
+}

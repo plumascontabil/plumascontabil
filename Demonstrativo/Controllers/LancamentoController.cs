@@ -165,6 +165,7 @@ namespace Demonstrativo.Controllers
                 insertProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
                 insertProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
                 insertProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
+                insertProvisoes.Apurar = provisoesDepreciacoes.Apurar;
 
                 context.ProvisoesDepreciacoes.Add(insertProvisoes);
                 context.SaveChanges();
@@ -180,6 +181,7 @@ namespace Demonstrativo.Controllers
                 updateProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
                 updateProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
                 updateProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
+                updateProvisoes.Apurar = provisoesDepreciacoes.Apurar;
 
                 context.ProvisoesDepreciacoes.Update(updateProvisoes);
                 context.SaveChanges();
@@ -384,7 +386,8 @@ namespace Demonstrativo.Controllers
                         DecimoTerceiro = provisaoDepreciacao.DecimoTerceiro,
                         Depreciacao = provisaoDepreciacao.Depreciacao,
                         SaldoPrejuizo = provisaoDepreciacao.SaldoPrejuizo,
-                        CalcularCompesacao = provisaoDepreciacao.CalcularCompensacao
+                        CalcularCompesacao = provisaoDepreciacao.CalcularCompensacao,
+                        Apurar = provisaoDepreciacao.Apurar
                     };
                 }
                 else

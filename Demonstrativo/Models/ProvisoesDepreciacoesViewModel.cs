@@ -15,6 +15,7 @@ namespace Demonstrativo.Models
         public DateTime Data { get; set; }
         public int Empresa { get; set; }
         public bool CalcularCompesacao { get; set; }
+        public bool Apurar { get; set; }
 
     }
 }
