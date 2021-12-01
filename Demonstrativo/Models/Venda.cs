@@ -10,21 +10,19 @@ namespace Demonstrativo.Models
     public class Venda
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [ForeignKey("EmpresaId")]
         public Empresa Empresa { get; set; }
-        public int? EmpresaId { get; set; }
+        public int EmpresaId { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
-        [ForeignKey("DataCompetencia")]
         public DateTime DataCompetencia { get; set; }
+        [ForeignKey("DataCompetencia")]
         public Competencia Competencia { get; set; }
-
-        public string? Observacao { get; set; }
-
+        [Column(TypeName = "varchar(max)")]
+        public string Observacao { get; set; }
         public List<ItemVenda> ItemVendas { get; set; }
+
     }
 }

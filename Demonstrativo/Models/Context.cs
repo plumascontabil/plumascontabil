@@ -15,10 +15,13 @@ namespace Demonstrativo.Models
         public DbSet<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<TipoConta> TiposContas { get; set; }
+        public DbSet<Venda> Vendas { get; set; }
+        public DbSet<ItemVenda> ItensVendas { get; set; }
+        public DbSet<Produto> Produtos { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public Context(DbContextOptions<Context> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=PLM366\SQLEXPRESS;Initial Catalog=teste;Integrated Security=True");
+
         }
     }
 }

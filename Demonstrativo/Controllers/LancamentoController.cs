@@ -351,7 +351,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                //TRIMESTRE DESPESAS 
+                
                 foreach (var conta in contas.Where(c => c.TipoContaId == (int)ETipoConta.Despesas))
                 {
                     if(conta.Lancamentos == null)

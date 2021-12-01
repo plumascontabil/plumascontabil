@@ -12,6 +12,8 @@ namespace Demonstrativo.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(20)")]
         public string Nome { get; set; }
         public List<ItemVenda> ItemVendas { get; set; }
     }

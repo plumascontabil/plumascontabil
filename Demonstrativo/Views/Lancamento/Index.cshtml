@@ -88,11 +88,13 @@
                 </thead>
                 <tbody>
                     @{
+
                         var index = 1;
                         decimal totalTrimestre = 0;
                         decimal estoqueInicial = 0;
                         decimal estoqueFinal = 0;
                         decimal custoMercadoriaVendida = 0;
+                        decimal somaCompraTrimestre = 0;
 
                         if (Model.LancamentosCompra == null)
                         {
@@ -103,6 +105,7 @@
                         }
                         else
                         {
+
                             foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 100))
                             {
                                 estoqueInicial += compra.Valor;
@@ -113,19 +116,24 @@
                                 <td class="mask-valor">@estoqueInicial</td>
                             </tr>
                             <tr><td></td></tr>
-                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 99))
+                            int j = 1;
+                            foreach (var trimestre in Model.Trimestre)
                             {
+                                decimal somaCompra = 0;
+                                foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
+                                {
+                                    somaCompra += compra.Valor;
+                                }
                                 <tr>
-                                    <td colspan="2">Total Compras @index o. mês</td>
-                                    <td class="mask-valor">@compra.Valor</td>
+                                    <td colspan="2">Total Compras @j o. mês</td>
+                                    <td class="mask-valor">@somaCompra</td>
                                 </tr>
-                                totalTrimestre += compra.Valor;
-
-                                index++;
+                                somaCompraTrimestre += somaCompra;
+                                j++;
                             }
                             <tr>
                                 <td colspan="2">Total Trimestre</td>
-                                <td class="mask-valor">@totalTrimestre</td>
+                                <td class="mask-valor">@somaCompraTrimestre</td>
                             </tr>
                             foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
                             {
@@ -444,5 +452,28 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Estoque Combustível</th>
+                </tr>
+                <tr>
+                    <th>Combustíveis</th>
+                    <th>Estoque Final (LT)</th>
+                    <th>Valor Unitário(R$)</th>
+                    <th>Estoque Final(R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tbody>
+        </table>
     </div>
 }

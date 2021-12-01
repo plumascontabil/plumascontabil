@@ -10,17 +10,17 @@ namespace Demonstrativo.Models
     public class ItemVenda
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [ForeignKey("VendaId")]
         public Venda Venda { get; set; }
-        public int? vendaId { get; set; }
+        public int VendaId { get; set; }
 
         [ForeignKey("ProdutoId")]
         public Produto Produto { get; set; }
-        public int? ProdutoId { get; set; }
+        public int ProdutoId { get; set; }
 
-        public int Quatidade { get; set; }
+        public int Quantidade { get; set; }
+        public decimal Preco { get; set; }
     }
 }
