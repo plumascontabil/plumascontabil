@@ -331,7 +331,7 @@
                         double prejuizoCompensado = 0;
                         if (provisoesDepreciacoes.CalcularCompesacao)
                         {
-                            prejuizoCompensado = (double)Model.ProvisoesDepreciacoes.SaldoPrejuizo - ((double)Model.ProvisoesDepreciacoes.SaldoPrejuizo * 0.3);
+                            prejuizoCompensado = (double)provisoesDepreciacoes.SaldoPrejuizo * 0.3;
                         }
                         <tr>
                             <td colspan="3"> Compesação Prejuízo (30% Lucro do Período) </td>
@@ -408,7 +408,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     <tr>
                         <td colspan="3"> ( = ) Lucro do Período </td>
                         <td>
@@ -417,7 +416,6 @@
                             </output>
                         </td>
                     </tr>
-
                     @{
                         double lucroReal = 0;
                         if (csll != null)
@@ -442,9 +440,7 @@
                                 </tr>
                             }
                         }
-
                     }
-
                 </tbody>
             </table>
         </div>

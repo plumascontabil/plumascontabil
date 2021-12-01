@@ -6,13 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Demonstrativo.Models
-{    
-    public class TipoConta
+{
+    public class Descricao
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
-        public string Descricao { get; set; }
-        public List<Conta> Contas { get; set; }
+        public string Observacao { get; set; }
+        public Venda Venda { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using Demonstrativo.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -25,6 +26,8 @@ namespace Demonstrativo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<Context>();
 
             services.Configure<FormOptions>(options =>
             {

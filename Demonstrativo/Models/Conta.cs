@@ -37,8 +37,8 @@ namespace Demonstrativo.Models
         [ForeignKey("CategoriaId ")]
         public Categoria Categoria { get; set; }
 
-        //[ForeignKey("TipoContaId ")]
-        //public TipoConta Tipo { get; set; }
-        //public int? TipoContaId { get; set; }
+        [ForeignKey("TipoContaId")]
+        public TipoConta Tipo { get; set; }
+        public int? TipoContaId { get; set; }
     }
 }

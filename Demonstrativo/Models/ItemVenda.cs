@@ -6,13 +6,21 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Demonstrativo.Models
-{    
-    public class TipoConta
+{
+    public class ItemVenda
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
-        public string Descricao { get; set; }
-        public List<Conta> Contas { get; set; }
+
+        [ForeignKey("VendaId")]
+        public Venda Venda { get; set; }
+        public int? vendaId { get; set; }
+
+        [ForeignKey("ProdutoId")]
+        public Produto Produto { get; set; }
+        public int? ProdutoId { get; set; }
+
+        public int Quatidade { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace Demonstrativo.Models
         public DbSet<Lancamento> Lancamentos { get; set; }
         public DbSet<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<TipoConta> TiposContas { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=PLM366\SQLEXPRESS;Initial Catalog=teste;Integrated Security=True");
