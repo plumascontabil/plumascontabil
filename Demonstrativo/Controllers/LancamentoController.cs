@@ -102,7 +102,6 @@ namespace Demonstrativo.Controllers
                             Descricao = lancamento.Descricao,
                             Valor = lancamento.Valor
                         });
-
                     }
 
                     if(conta.Codigo == 38 || conta.Codigo == 36)
@@ -135,12 +134,14 @@ namespace Demonstrativo.Controllers
             }
 
             var trimestre = CarregarTrimestre(competenciasId, empresaId);
+            var estorqueVenda = CarregarVenda(competenciasId, empresaId);
 
             trimestreViewModel.LancamentosCompra = trimestre.LancamentosCompra;
             trimestreViewModel.LancamentosReceita = trimestre.LancamentosReceita;
             trimestreViewModel.LancamentosDespesa = trimestre.LancamentosDespesa;
             trimestreViewModel.Trimestre = trimestre.Trimestre;
             trimestreViewModel.ProvisoesDepreciacoes = trimestre.ProvisoesDepreciacoes;
+            trimestreViewModel.EstoqueVendas = estorqueVenda.EstoqueVendas;
 
             return trimestreViewModel;
         }
@@ -284,7 +285,6 @@ namespace Demonstrativo.Controllers
             }
         }
         
-        //SOMA Trimestre
         public TrimestreViewModel SomarTrimestre(int[]? trimestre, int? empresaId, DateTime? competenciasId = null)
         {
             var trimestreViewModel = new TrimestreViewModel();
@@ -294,12 +294,10 @@ namespace Demonstrativo.Controllers
             List<Conta> contas = _context.Contas.ToList();
             List<ProvisoesDepreciacao> provisoes = _context.ProvisoesDepreciacoes.ToList();
 
-            //ADD TRIMESTRE
             trimestreViewModel.Trimestre = trimestre;
 
             foreach (var competencia in trimestre)
             {
-                //TRIMESTRE COMPRAS
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia  && l.Conta?.TipoContaId == (int)ETipoConta.Compras))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
@@ -312,7 +310,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                //TRIMESTRE SALDO ESTOQUE INICIAL
+
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.EstoqueInicial))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
@@ -325,7 +323,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                //TRIMESTRE SALDO ESTOQUE FINAL
+
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.EstoqueFinal))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
@@ -338,7 +336,7 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                //TRIMESTRE RECEITAS
+
                 foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.Receitas))
                 {
                     trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
@@ -402,5 +400,58 @@ namespace Demonstrativo.Controllers
 
             return trimestreViewModel;
         }
+
+        public TrimestreViewModel CarregarVenda(DateTime? competenciasId = null, int? empresaId = null)
+        {
+            var trimestreViewModel = new TrimestreViewModel();
+            
+            List<Venda> vendas = _context.Vendas.ToList();
+            List<ItemVenda> itensVendas = _context.ItensVendas.ToList();
+            List<Produto> produtos = _context.Produtos.ToList();
+
+            var vendasPorEmpresa = vendas.Where(v => v.DataCompetencia == competenciasId && v.EmpresaId == empresaId);
+                        
+            foreach (var venda in vendasPorEmpresa)
+            {
+                List<ItemVendaViewModel> itensVendasViewModel = new List<ItemVendaViewModel>();                
+
+                foreach (var itemVenda in itensVendas.Where(i => i.VendaId == venda.Id))
+                {
+                    var produtoViewModel = new ProdutoViewModel() { Id = itemVenda.ProdutoId, Nome = itemVenda.Produto.Nome };
+
+                    itensVendasViewModel.Add(new ItemVendaViewModel()
+                    {
+                        Id = itemVenda.Id,
+                        VendaId = itemVenda.VendaId,
+                        ProdutoId = itemVenda.ProdutoId,
+                        Quantidade = itemVenda.Quantidade,
+                        Preco = itemVenda.Preco,
+                        Produto = produtoViewModel
+                    });
+                }
+
+                trimestreViewModel.EstoqueVendas = new VendaViewModel()
+                {
+                    Id = venda.Id,
+                    Observacao = venda.Observacao,
+                    Data = venda.DataCompetencia,
+                    Empresa = venda.EmpresaId,
+                    ItensVendas = itensVendasViewModel,
+                    Produtos = produtos.Select(p => new ProdutoViewModel() { Id = p.Id,Nome = p.Nome}).ToList()
+                };
+            }
+            
+            if(trimestreViewModel.EstoqueVendas.Id == 0)
+            {
+                trimestreViewModel.EstoqueVendas = new VendaViewModel()
+                {
+                    Data = competenciasId,
+                    Empresa = empresaId,
+                    Produtos = produtos.Select(p => new ProdutoViewModel() { Id = p.Id, Nome = p.Nome }).ToList()
+                };
+            }
+
+            return trimestreViewModel;
+        } 
     }
 }

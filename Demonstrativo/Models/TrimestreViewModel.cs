@@ -11,6 +11,7 @@ namespace Demonstrativo.Models
         public List<LancamentoViewModel> LancamentosReceita { get; set; } = new List<LancamentoViewModel>();
         public List<LancamentoViewModel> LancamentosDespesa { get; set; } = new List<LancamentoViewModel>();
         public ProvisoesDepreciacoesViewModel ProvisoesDepreciacoes { get; set; } = new ProvisoesDepreciacoesViewModel();
+        public VendaViewModel EstoqueVendas { get; set; } = new VendaViewModel();
         public int[] Trimestre { get; set; } = new int[] { };
         public List<CategoriaViewModel> Categorias { get; set; } = new List<CategoriaViewModel>();
     }

@@ -87,9 +87,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @{
-
-                        var index = 1;
+                    @{  
                         decimal totalTrimestre = 0;
                         decimal estoqueInicial = 0;
                         decimal estoqueFinal = 0;
@@ -457,7 +455,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Estoque Combustível</th>
+                    <th colspan="4">Estoque Combustível</th>
                 </tr>
                 <tr>
                     <th>Combustíveis</th>
@@ -467,12 +465,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+                @{
+                    for (int j = 0; j < Model.EstoqueVendas.Produtos.Count; j++)
+                    {
+                        var produtos = Model.EstoqueVendas.Produtos[j];
+
+                        var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
+
+                        <tr>
+                            <th>@produtos.Nome</th>
+                            <td><input type="text" name="EstoqueVendas.ItensVendas[@j].Quantidade" value="@itemVenda?.Quantidade" /></td>
+                            <td><input type="text" name="EstoqueVendas.ItensVendas[@j].Preco" value="@itemVenda?.Preco" /></td>
+                            <td><input type="text" value="" /></td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
