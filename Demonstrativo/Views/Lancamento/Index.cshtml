@@ -473,10 +473,16 @@
                         var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
 
                         <tr>
-                            <th>@produtos.Nome</th>
+                            <th>@produtos.Nome<input type="hidden" name="EstoqueVendas.Data" value="@ViewBag.CompetenciasSelecionadaId" />
+                            <input type="hidden" name="EstoqueVendas.Empresa"  value="@ViewBag.EmpresaSeleciodaId" /></th>
                             <td><input type="text" name="EstoqueVendas.ItensVendas[@j].Quantidade" value="@itemVenda?.Quantidade" /></td>
-                            <td><input type="text" name="EstoqueVendas.ItensVendas[@j].Preco" value="@itemVenda?.Preco" /></td>
-                            <td><input type="text" value="" /></td>
+                            <td>
+                                <input type="text" name="EstoqueVendas.ItensVendas[@j].Preco" value="@itemVenda?.Preco" />
+                                <input type="hidden" name="EstoqueVendas.ItensVendas[@j].ProdutoId" value="@produtos.Id" />
+                                <input type="hidden" name="EstoqueVendas.ItensVendas[@j].Id" value="@itemVenda?.Id" />
+                                <input type="hidden" name="EstoqueVendas.Id" value="@Model.EstoqueVendas.Id" />
+                            </td>
+                            <td></td>
                         </tr>
                     }
                 }

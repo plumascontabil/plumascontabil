@@ -160,6 +160,89 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
+            var estoqueVendas = trimestreViewModel.EstoqueVendas;
+
+            if (estoqueVendas.Id == 0 )
+            {
+                var insertEstoqueVendas = new Venda();
+
+                insertEstoqueVendas.DataCompetencia = (DateTime)estoqueVendas.Data;
+                insertEstoqueVendas.EmpresaId = (int)estoqueVendas.Empresa;
+                insertEstoqueVendas.Observacao = estoqueVendas.Observacao;
+
+                _context.Vendas.Add(insertEstoqueVendas);
+                _context.SaveChanges();
+                
+                foreach (var itemVenda in estoqueVendas.ItensVendas)
+                {
+                    var insertItemVenda = new ItemVenda();
+
+                    if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
+                    {
+                        continue;
+                    }
+
+                    if (itemVenda.Id == 0)
+                    {
+                        insertItemVenda.VendaId = insertEstoqueVendas.Id;
+                        insertItemVenda.ProdutoId = itemVenda.ProdutoId;
+                        insertItemVenda.Quantidade = itemVenda.Quantidade;
+                        insertItemVenda.Preco = itemVenda.Preco;
+
+                        _context.ItensVendas.Add(insertItemVenda);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
+
+                        updateItemVenda.Quantidade = itemVenda.Quantidade;
+                        updateItemVenda.Preco = itemVenda.Preco;
+
+                        _context.ItensVendas.Update(updateItemVenda);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            else
+            {
+                var updateEstoqueVendas = _context.Vendas.Find(Convert.ToInt32(estoqueVendas.Id));
+
+                updateEstoqueVendas.DataCompetencia = (DateTime)estoqueVendas.Data;
+                updateEstoqueVendas.EmpresaId = (int)estoqueVendas.Empresa;
+                updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
+                
+                foreach (var itemVenda in estoqueVendas.ItensVendas)
+                {
+                    if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
+                    {
+                        continue;
+                    }
+
+                    var insertItemVenda = new ItemVenda();
+                    if (itemVenda.Id == 0)
+                    {
+                        insertItemVenda.VendaId = updateEstoqueVendas.Id;
+                        insertItemVenda.ProdutoId = itemVenda.ProdutoId;
+                        insertItemVenda.Quantidade = itemVenda.Quantidade;
+                        insertItemVenda.Preco = itemVenda.Preco;
+
+                        _context.ItensVendas.Add(insertItemVenda);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
+
+                        updateItemVenda.Quantidade = itemVenda.Quantidade;
+                        updateItemVenda.Preco = itemVenda.Preco;
+
+                        _context.ItensVendas.Update(updateItemVenda);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+
             var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
             
             if (provisoesDepreciacoes.Id == 0 )
