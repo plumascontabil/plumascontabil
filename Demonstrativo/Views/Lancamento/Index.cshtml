@@ -22,7 +22,6 @@
     <div class="row">
         @while (numeroSkip < Model.Categorias.Count)
         {
-            //var Categorias = Model.Categorias.Skip(numeroSkip).Take(numeroTake).ToList();
 
         <div class="col">
             <div class="row">
@@ -482,11 +481,28 @@
                                 <input type="hidden" name="EstoqueVendas.ItensVendas[@j].Id" value="@itemVenda?.Id" />
                                 <input type="hidden" name="EstoqueVendas.Id" value="@Model.EstoqueVendas.Id" />
                             </td>
-                            <td></td>
+                            <td>
+                                @{
+                                    decimal totalEstoque = 0;
+                                    var quantidade = itemVenda?.Quantidade;
+                                    var preco = itemVenda?.Preco;
+                                    if(quantidade != null && preco != null)
+                                    {
+                                        totalEstoque = Convert.ToDecimal(quantidade * preco);
+                                    }
+                                }
+                                @totalEstoque 
+                            </td>
                         </tr>
                     }
                 }
             </tbody>
         </table>
+        
+                    <div>
+                        <hr>
+                        <h3>Observações:</h3>
+                        <textarea class="form-control" name="EstoqueVendas.Observacao" value="@Model.EstoqueVendas.Observacao">@Model.EstoqueVendas.Observacao</textarea>
+                    </div>
     </div>
 }

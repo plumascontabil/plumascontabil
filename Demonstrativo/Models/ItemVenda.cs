@@ -20,7 +20,7 @@ namespace Demonstrativo.Models
         public Produto Produto { get; set; }
         public int ProdutoId { get; set; }
 
-        public double Quantidade { get; set; }
+        public decimal Quantidade { get; set; }
         public decimal Preco { get; set; }
     }
 }

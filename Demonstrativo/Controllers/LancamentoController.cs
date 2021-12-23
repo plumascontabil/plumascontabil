@@ -11,6 +11,8 @@ using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Demonstrativo.Controllers
 {
+
+    [Authorize]
     public class LancamentoController : Controller
     {
         Context _context;
@@ -19,7 +21,7 @@ namespace Demonstrativo.Controllers
         {
             _context = context;
         }
-
+        
         public IActionResult Index()
         {
             AdicionarCompetenciaMesAtual();
