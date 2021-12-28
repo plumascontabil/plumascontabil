@@ -1,6 +1,6 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
-
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&display=swap');
 body {
     padding-top: 70px;
     padding-bottom:30px;
@@ -134,9 +134,46 @@ input{
 }
 
 .form-lancamento{
-    margin-top: 30px;
+    margin-top: 60px;
 }
 
 .btn-check{
     width: 50px;
 }
+
+.bg-categoria {
+    background-color: #313155 !important;
+}
+
+.btn-plumas {
+    color: #fff;
+    background-color: #313155;
+    border-color: #313155;
+}
+
+.btn-plumas:hover {
+    margin: 2px;
+    color: #313155;
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.btn-plumas-w {
+    margin: 2px;
+    color: #313155;
+    background-color: #fff;
+    border-color: #313155;
+}
+
+.btn-plumas-w:hover {
+    color: #fff;
+    background-color: #313155;
+    border-color: #313155;
+}
+
+.text-plumas {
+    color: #313155;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 40px;
+}
+
