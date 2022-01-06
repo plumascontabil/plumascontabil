@@ -102,20 +102,18 @@ namespace Demonstrativo.Controllers
                             Empresa = lancamento.EmpresaId,
                             Conta = lancamento.ContaId,
                             Descricao = lancamento.Descricao,
+                            PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36,
                             Valor = lancamento.Valor
                         });
-                        if (conta.Descricao == null)
-                        {
-                            lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Descricao = lancamento.Descricao });
-                        }
+
                     }
                     if (conta.Codigo == 38 || conta.Codigo == 36)
                     {
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo});
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                     }
                     
                     
