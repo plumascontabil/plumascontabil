@@ -42,10 +42,10 @@
                                     @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
                                     {
                                         var lancamento = conta.Lancamentos[indexLancamento];
-
+                                        
                                         <tr>
                                             <td class="codigo">
-                                                @conta.Codigo<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Conta" value="@conta.Id" />
+                                            @conta.Codigo<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Conta" value="@conta.Id" />    
                                             </td>
                                             <td class="descricao">
                                                 @if (lancamento.PodeDigitarDescricao)
@@ -81,8 +81,8 @@
             <table class="table table-bordered inptable">
                 <thead>
                     <tr>
-                        <th colspan="2">COMPRAS</th>
-                        <th>Resultado</th>
+                        <th colspan="2" class="bg-categoria text-white">COMPRAS</th>
+                        <th class="bg-categoria text-white">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,8 +96,8 @@
                         if (Model.LancamentosCompra == null)
                         {
                             <tr>
-                                <td colspan="2">Compras</td>
-                                <td></td>
+                                <td colspan="2" class="bg-categoria text-white">Compras</td>
+                                <td class="bg-categoria text-white"></td>
                             </tr>
                         }
                         else
@@ -157,8 +157,8 @@
             <table class="table table-bordered inptable">
                 <thead>
                     <tr>
-                        <th colspan="2">RECEITAS</th>
-                        <th>Resultado</th>
+                        <th colspan="2" class="bg-categoria text-white">RECEITAS</th>
+                        <th class="bg-categoria text-white">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -237,8 +237,8 @@
             <table class="table table-bordered inptable">
                 <thead>
                     <tr>
-                        <th colspan="2">DESPESAS</th>
-                        <th>Resultado</th>
+                        <th colspan="2" class="bg-categoria text-white">DESPESAS</th>
+                        <th class="bg-categoria text-white">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -286,8 +286,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan="3">Prejuisos e Compensações</th>
-                        <th>Resultado</th>
+                        <th colspan="3" class="bg-categoria text-white">Prejuisos e Compensações</th>
+                        <th class="bg-categoria text-white">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -329,8 +329,8 @@
 
                         <tr><td></td></tr>
                         <tr>
-                            <th colspan="3"> Calcular Compensação? </th>
-                            <td><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
+                            <th colspan="3" class="bg-categoria text-white"> Calcular Compensação? </th>
+                            <td class="bg-categoria text-white"><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
                         </tr>
                         <tr><td></td></tr>
                         double prejuizoCompensado = 0;
@@ -362,8 +362,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <th colspan="3">APURAR - S/N ?</th>
-                            <td><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
+                            <th colspan="3" class="bg-categoria text-white">APURAR - S/N ?</th>
+                            <td class="bg-categoria text-white"><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
                         </tr>
                     </thead>
                     double contribuicaoSocial = 0;
@@ -408,8 +408,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan="3">Lucro</th>
-                        <th>Resultado</th>
+                        <th colspan="3" class="bg-categoria text-white">Lucro</th>
+                        <th class="bg-categoria text-white">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -454,13 +454,13 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th colspan="4">Estoque Combustível</th>
+                    <th colspan="4" class="bg-categoria text-white">Estoque Combustível</th>
                 </tr>
                 <tr>
-                    <th>Combustíveis</th>
-                    <th>Estoque Final (LT)</th>
-                    <th>Valor Unitário(R$)</th>
-                    <th>Estoque Final(R$)</th>
+                    <th class="bg-light">Combustíveis</th>
+                    <th class="bg-light">Estoque Final (LT)</th>
+                    <th class="bg-light">Valor Unitário(R$)</th>
+                    <th class="bg-light">Estoque Final(R$)</th>
                 </tr>
             </thead>
             <tbody>

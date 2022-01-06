@@ -61,6 +61,13 @@ namespace Demonstrativo
                 //options.ReturnUrlParameter=""
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("roleAdministrador", policy =>
+                policy.RequireRole("Administrador")
+                );
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

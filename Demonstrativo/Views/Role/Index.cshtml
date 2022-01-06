@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Lista de Função";
+}
+
+<div class="row form-lancamento">
+    <section class="col-md-4 table-bordered mx-auto rounded-lg bg-light">
+        <div class="text-plumas">
+            <br/>
+            @ViewData["Title"]
+            <br/>
+        </div>
+        <hr/>
+        <div>
+            <a asp-action="Create">Create</a>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>Id</td>
+                        <td>Nome</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var role in Model)
+                    {
+                    <tr>
+                        <td>@role.Id</td>
+                        <td>@role.Name</td>
+                    </tr>   
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

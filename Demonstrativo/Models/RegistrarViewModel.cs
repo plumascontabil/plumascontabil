@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demonstrativo.Models
 {
@@ -22,5 +24,10 @@ namespace Demonstrativo.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
+        [Display(Name = "User Role")]
+        public List<IdentityRole> UserRoles { get; set; }
+
+        [Required]
+        public string UserRole { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demonstrativo.Controllers
 {
@@ -15,14 +16,21 @@ namespace Demonstrativo.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<UsuarioController> _logger;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ContextIdentity _contextIdentity;
+
         public UsuarioController(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<UsuarioController> logger)
+            ILogger<UsuarioController> logger,
+            RoleManager<IdentityRole> roleManager,
+            ContextIdentity contextIdentity)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _roleManager = roleManager;
+            _contextIdentity = contextIdentity;
         }
 
         public IActionResult Index()
@@ -30,14 +38,20 @@ namespace Demonstrativo.Controllers
             return View(CarregarUsuario());
         }
 
+        [Authorize(Policy = "roleAdministrador")]
         public IActionResult Register()
         {
-            return View(new RegistrarViewModel());
+            return View(new RegistrarViewModel()
+            {
+                UserRoles = _roleManager.Roles.ToList()
+            });
         }
 
         [HttpPost]
+        [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Register(RegistrarViewModel viewModel)
         {
+            var role = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -46,9 +60,8 @@ namespace Demonstrativo.Controllers
                 var result = await _userManager.CreateAsync(user, viewModel.Password);                
 
                 if (result.Succeeded)
-                {                  
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
+                {
+                    await _userManager.AddToRoleAsync(user, role.Name);
                     return LocalRedirect(viewModel.ReturnUrl);
                 }
                 foreach (var error in result.Errors)
@@ -56,6 +69,9 @@ namespace Demonstrativo.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            viewModel.UserRoles = _roleManager.Roles.ToList();
+
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
@@ -63,17 +79,25 @@ namespace Demonstrativo.Controllers
         public async Task<IActionResult> Editar(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+            var roles = await _userManager.GetRolesAsync(user);
+            var nameRole = roles.FirstOrDefault();
 
+            var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
+            
             return View(new EditarViewModel()
             {
                 Id = id,
                 Email = user.Email,
+                UserRoles = _roleManager.Roles.ToList(),
+                UserRole = role?.Id,
             });
         }
 
         [HttpPost]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
+
+            var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -84,6 +108,14 @@ namespace Demonstrativo.Controllers
 
                 var result = await _userManager.UpdateAsync(user);
 
+                var roles = await _userManager.GetRolesAsync(user);
+
+                if(roles.Any(roleName => roleName != userRole.Name))
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roles.FirstOrDefault());
+                    await _userManager.AddToRoleAsync(user, userRole.Name);
+                }         
+
                 if (result.Succeeded)
                 {
                     return LocalRedirect(viewModel.ReturnUrl);
@@ -93,18 +125,28 @@ namespace Demonstrativo.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
-            return View(viewModel);
 
+            }
+            var editarViewModel = new EditarViewModel();
+
+            editarViewModel.UserRole = userRole.Id;
+
+            return View(viewModel);
         }
 
         public IActionResult CarregarUsuario()
         {
             var users = _userManager.Users;
+
             var usuarioViewModel = new List<UsuarioViewModel>();
             foreach (var user in users)
             {
-                usuarioViewModel.Add(new UsuarioViewModel() {Id = user.Id,Email = user.Email, Usuario = user.UserName });
+                usuarioViewModel.Add(new UsuarioViewModel() {
+                    Id = user.Id,
+                    Email = user.Email, 
+                    Usuario = user.UserName,
+                    UserRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault()
+                });
             }
             return View("Usuarios",usuarioViewModel);
         }
@@ -139,5 +181,14 @@ namespace Demonstrativo.Controllers
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+
+            return View("Login");
+        }
+
     }
 }
