@@ -76,6 +76,7 @@ namespace Demonstrativo.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -94,6 +95,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
 
@@ -133,7 +135,7 @@ namespace Demonstrativo.Controllers
 
             return View(viewModel);
         }
-
+        [Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
         {
             var users = _userManager.Users;
@@ -150,7 +152,6 @@ namespace Demonstrativo.Controllers
             }
             return View("Usuarios",usuarioViewModel);
         }
-
         public IActionResult Login()
         {
             return View(new LoginViewModel());
@@ -181,7 +182,7 @@ namespace Demonstrativo.Controllers
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
-
+        [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

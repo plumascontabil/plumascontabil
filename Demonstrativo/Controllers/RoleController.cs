@@ -25,19 +25,20 @@ namespace Demonstrativo.Controllers
             CarregarRoles();
             return View(roles);
         }
-
+        [Authorize(Policy = "roleAdministrador")]
         public IActionResult Create()
         {
             return View(new IdentityRole());
         }
 
         [HttpPost]
+        [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Create(IdentityRole role)
         {
             await _roleManager.CreateAsync(role);
             return RedirectToAction("Index");
         }
-
+        [Authorize(Policy = "roleAdministrador")]
         public void CarregarRoles()
         {
             List<IdentityRole> roles = new();

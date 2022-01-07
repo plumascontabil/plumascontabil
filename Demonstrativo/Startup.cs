@@ -64,8 +64,7 @@ namespace Demonstrativo
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("roleAdministrador", policy =>
-                policy.RequireRole("Administrador")
-                );
+                policy.RequireRole("Administrador","Intermediario"));
             });
 
         }
