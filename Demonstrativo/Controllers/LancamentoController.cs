@@ -80,15 +80,6 @@ namespace Demonstrativo.Controllers
             {
                 var contasViewModel = new List<ContaViewModel>();
 
-                if (categoria.Id == 19 || categoria.Id == 25)
-                {
-                    contas.Add(new Conta() { CategoriaId = categoria.Id });
-                    contas.Add(new Conta() { CategoriaId = categoria.Id });
-                    contas.Add(new Conta() { CategoriaId = categoria.Id });
-                    contas.Add(new Conta() { CategoriaId = categoria.Id });
-                    contas.Add(new Conta() { CategoriaId = categoria.Id });
-                }
-
                 foreach (var conta in contas.Where(c => c.CategoriaId == categoria.Id))
                 {
                     var lancamentosViewModel = new List<LancamentoViewModel>();
@@ -102,12 +93,12 @@ namespace Demonstrativo.Controllers
                             Empresa = lancamento.EmpresaId,
                             Conta = lancamento.ContaId,
                             Descricao = lancamento.Descricao,
-                            PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36,
+                            //PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201,
                             Valor = lancamento.Valor
                         });
 
                     }
-                    if (conta.Codigo == 38 || conta.Codigo == 36)
+                    if (conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201)
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo});
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
@@ -115,8 +106,6 @@ namespace Demonstrativo.Controllers
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                     }
-                    
-                    
 
                     else if (!lancamentosViewModel.Any())
                     {
@@ -311,7 +300,7 @@ namespace Demonstrativo.Controllers
                 if (lancamento.Id == 0)
                 {
                     var insertLancamento = new Lancamento();
-                    if(lancamento.Descricao == null)
+                    if(lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
                     {
                         insertLancamento.ContaId = lancamento.ContaId;
                     }

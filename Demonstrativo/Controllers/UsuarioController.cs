@@ -191,5 +191,10 @@ namespace Demonstrativo.Controllers
             return View("Login");
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
+
     }
 }
