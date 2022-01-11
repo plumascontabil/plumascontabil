@@ -133,7 +133,7 @@ namespace Demonstrativo.Controllers
 
             editarViewModel.UserRole = userRole.Id;
 
-            return View(viewModel);
+            return View("Usuarios",viewModel);
         }
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
