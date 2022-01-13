@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-
+using System.Net.Http.Headers;
+using System.Text;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Demonstrativo.Controllers
@@ -531,5 +532,49 @@ namespace Demonstrativo.Controllers
 
             return trimestreViewModel;
         } 
+        
+        public IActionResult GerarArquivo(int? empresaId = null, DateTime? competenciasId = null)
+        {
+            var contas = _context.Contas.ToList();
+            var lancamentos = _context.Lancamentos.Where(l => l.DataCompetencia == competenciasId &&
+                                                                 l.EmpresaId == empresaId).ToList();
+            var lancamentosContabeis = new List<TextoModel>();
+
+            foreach(var conta in contas)
+            {
+                foreach(var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
+                {
+                    lancamentosContabeis.Add(new TextoModel()
+                    {
+                        Data = competenciasId,
+                        CodigoContaDebito = conta.LancamentoDebito,
+                        CodigoContaCredito = conta.LancamentoCredito,
+                        Valor = lancamento.Valor,
+                        CodigoHistorico = 10,
+                        ComplementoHistorico = string.Empty,
+                        IniciaLote = 1,
+                        CodigoMatrizFilial = empresaId,
+                        CentroCustoDebito = 1,
+                        CentroCustoCredito = 1,
+                    });
+                }
+            }
+
+            var conteudoArquivo = string.Empty;
+
+            foreach (var lancamento in lancamentosContabeis)
+            {
+                conteudoArquivo += $"{lancamento.Data.Value.ToShortDateString()};{lancamento.CodigoContaDebito};{lancamento.CodigoContaCredito};" +
+                    $"{lancamento.Valor};{lancamento.CodigoHistorico};{lancamento.ComplementoHistorico};" +
+                    $"{lancamento.IniciaLote};{lancamento.CodigoMatrizFilial};{lancamento.CentroCustoDebito};" +
+                    $"{lancamento.CentroCustoCredito};{Environment.NewLine}";
+            }
+
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(conteudoArquivo));
+            return new FileStreamResult(stream, "text/plain")
+            {
+                FileDownloadName = "test.txt"
+            };
+        }
     }
 }

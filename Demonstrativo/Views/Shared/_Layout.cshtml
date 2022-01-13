@@ -17,7 +17,7 @@
     <header class=" bg-light">
         <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
                     <img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -41,7 +41,7 @@
 
                         @Html.DropDownList("EmpresaId", null, "Empresa", new { @class = "form-control my-2 mr-sm-2" })
                         @Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "form-control my-2 mr-sm-2" })
-
+                        
                         <button class="btn btn-plumas my-2 my-sm-0 m-auto" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
@@ -49,7 +49,6 @@
                         </button>
                     }
                 </div>
-
             </div>
         </nav>
     </header>
@@ -70,7 +69,7 @@
     <script src="~/lib/jquery/dist/jquery.mask.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.mask-valor').mask('###.##0,00', { reverse: true });
+            $('.mask-valor').mask('#.###.##0,00', { reverse: true });
             $('.mask-valorDecimal').mask('00,00', { reverse: false });
         });
     </script>
