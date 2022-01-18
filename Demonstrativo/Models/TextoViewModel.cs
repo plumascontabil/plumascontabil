@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Demonstrativo.Models
 {
-    public class TextoModel
+    public class TextoViewModel
     {
         public DateTime? Data { get; set; }
         public int? CodigoContaDebito { get; set; }

@@ -14,14 +14,17 @@ namespace Demonstrativo.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Codigo { get; set; }
         [Required]
-        [Column(TypeName = "varchar(100)")]
+        [Column(TypeName = "varchar(150)")]
         public string RazaoSocial { get; set; }
         [Required]
         [Column(TypeName = "varchar(100)")]
         public string Apelido { get; set; }
         [Required]
-        [Column(TypeName = "varchar(14)")]
+        [Column(TypeName = "varchar(18)")]
         public string Cnpj { get; set; }
+
+        [Column(TypeName = "varchar(2)")]
+        public string Situacao { get; set; }
         public List<Lancamento> Lancamentos { get; set; }
         public List<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
 

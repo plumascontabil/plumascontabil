@@ -538,13 +538,13 @@ namespace Demonstrativo.Controllers
             var contas = _context.Contas.ToList();
             var lancamentos = _context.Lancamentos.Where(l => l.DataCompetencia == competenciasId &&
                                                                  l.EmpresaId == empresaId).ToList();
-            var lancamentosContabeis = new List<TextoModel>();
+            var lancamentosContabeis = new List<TextoViewModel>();
 
             foreach(var conta in contas)
             {
                 foreach(var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
                 {
-                    lancamentosContabeis.Add(new TextoModel()
+                    lancamentosContabeis.Add(new TextoViewModel()
                     {
                         Data = competenciasId,
                         CodigoContaDebito = conta.LancamentoDebito,

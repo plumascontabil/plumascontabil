@@ -1,0 +1,41 @@
+﻿@model List<ImportacaoOfxViewModel>
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "ImportaçãoOfx";
+}
+
+<div class="row form-lancamento">
+    <section class="col-md-8 table-bordered mx-auto rounded-lg bg-light">
+        <div class="text-plumas">
+            <br/>
+            @ViewData["Title"]
+            <br/>
+        </div>
+        <hr />
+        <table class="inptable mx-auto">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>CheckSum</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var ofx in Model)
+            {
+                <tr>
+                    <td>@ofx.Id</td>
+                    <td>@ofx.Date</td>
+                    <td>@ofx.Type</td>
+                    <td>@ofx.Description</td>
+                    <td>@ofx.TransationValue</td>
+                    <td>@ofx.CheckSum</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+</div>

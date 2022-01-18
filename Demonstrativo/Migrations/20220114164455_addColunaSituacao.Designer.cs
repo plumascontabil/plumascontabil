@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220114164455_addColunaSituacao")]
+    partial class addColunaSituacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,11 +98,11 @@ namespace Demonstrativo.Migrations
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasColumnType("varchar(18)");
+                        .HasColumnType("varchar(14)");
 
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Situacao")
                         .HasColumnType("varchar(2)");
