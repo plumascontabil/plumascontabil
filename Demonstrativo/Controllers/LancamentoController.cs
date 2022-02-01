@@ -66,7 +66,7 @@ namespace Demonstrativo.Controllers
         {
             var trimestreViewModel = new TrimestreViewModel();
 
-            List<Conta> contas = _context.Contas.ToList();
+            List<LancamentoPadrao> contas = _context.Contas.ToList();
             List<Categoria> categorias = _context.Categorias.ToList();
 
             var lancamentos = new List<Lancamento>();
@@ -370,7 +370,7 @@ namespace Demonstrativo.Controllers
 
             List<Lancamento> lancamentos = _context.Lancamentos.Include(x => x.Conta).ToList();
 
-            List<Conta> contas = _context.Contas.ToList();
+            List<LancamentoPadrao> contas = _context.Contas.ToList();
             List<ProvisoesDepreciacao> provisoes = _context.ProvisoesDepreciacoes.ToList();
 
             trimestreViewModel.Trimestre = trimestre;

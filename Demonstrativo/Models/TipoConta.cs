@@ -13,6 +13,6 @@ namespace Demonstrativo.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         public string Descricao { get; set; }
-        public List<Conta> Contas { get; set; }
+        public List<LancamentoPadrao> Contas { get; set; }
     }
 }

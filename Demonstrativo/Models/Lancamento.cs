@@ -21,7 +21,7 @@ namespace Demonstrativo.Models
         public int? ContaId { get; set; }
 
         [ForeignKey("ContaId")]
-        public Conta Conta { get; set; }
+        public LancamentoPadrao Conta { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

@@ -53,7 +53,7 @@ namespace Demonstrativo
                 options.Cookie.HttpOnly = true;
                 //options.Cookie.Expiration 
 
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(240);
                 options.LoginPath = "/Usuario/Login";
                 options.LogoutPath = "/Usuario/Logout";
                 options.AccessDeniedPath = "/Usuario/AccessDenied";

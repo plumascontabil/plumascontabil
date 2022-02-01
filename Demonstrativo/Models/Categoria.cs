@@ -17,6 +17,6 @@ namespace Demonstrativo.Models
         [Column(TypeName = "varchar(40)")]
         public string Descricao { get; set; }
 
-        public List<Conta> Conta { get; set; }
+        public List<LancamentoPadrao> Conta { get; set; }
     }
 }

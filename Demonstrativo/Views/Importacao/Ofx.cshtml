@@ -1,4 +1,5 @@
-﻿@model List<ImportacaoOfxViewModel>
+﻿@using Demonstrativo.Models
+@model List<ImportacaoOfxViewModel>
 @{
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "ImportaçãoOfx";
@@ -12,30 +13,46 @@
             <br/>
         </div>
         <hr />
-        <table class="inptable mx-auto">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Data</th>
-                    <th>Tipo</th>
-                    <th>Descrição</th>
-                    <th>Valor</th>
-                    <th>CheckSum</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var ofx in Model)
-            {
-                <tr>
-                    <td>@ofx.Id</td>
-                    <td>@ofx.Date</td>
-                    <td>@ofx.Type</td>
-                    <td>@ofx.Description</td>
-                    <td>@ofx.TransationValue</td>
-                    <td>@ofx.CheckSum</td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        <form asp-controller="Importacao" asp-action="Create">
+            <table class="inptable mx-auto">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>CheckSum</th>
+                        <th>Conta Creditar</th>
+                        <th>Conta Debitar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var ofx in Model)
+                {
+                    <tr>
+                        <td>@ofx.Id</td>
+                        <td>@ofx.Date</td>
+                        <td>@ofx.Type</td>
+                        <td>@ofx.Description</td>
+                        <td>@ofx.TransationValue</td>
+                        <td>@ofx.CheckSum</td>
+                        <td> 
+                            <select asp-for="@ofx.ContasCreditoSelecionada" asp-items="@ofx.ContasCreditoContabeis" >
+                                <option value="">Selecione</option>
+                             </select>
+                        </td>
+                        <td> 
+                            <select asp-for="@ofx.ContasDebitoSelecionada" asp-items="@ofx.ContasDebitoContabeis">
+                                <option value="">Selecione</option>
+                             </select>
+                             <input type="hidden" asp-for="@ofx.HistoricoId">
+                        </td>
+                    </tr>   
+                }
+                </tbody>
+            </table>
+            <input type="submit"/>
+        </form>
     </section>
 </div>

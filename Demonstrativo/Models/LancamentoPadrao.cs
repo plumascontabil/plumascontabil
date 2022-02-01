@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Models
 {
-    public class Conta
+    public class LancamentoPadrao
     {
         [Key]
         public int Id { get; set; }
@@ -18,18 +18,13 @@ namespace Demonstrativo.Models
         [Column(TypeName = "varchar(70)")]
         public string Descricao { get; set; }
         
-        
         [MaxLength(5)]
         public int? LancamentoDebito { get; set; }
-        
         
         [MaxLength(5)]
         public int? LancamentoCredito { get; set; }
         
         public int? LancamentoHistorico { get; set; }
-        //public bool LancamentoSomar { get; set; }
-        //public bool LancamentoExportaNo { get; set; }
-        //public bool LancamentoExportaYes { get; set; }
         public List<Lancamento> Lancamentos { get; set; }
         [Required]
         public int CategoriaId { get; set; }
