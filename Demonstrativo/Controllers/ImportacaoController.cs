@@ -37,7 +37,7 @@ namespace Demonstrativo.Controllers
             using (var reader = new StreamReader(stream))
             using (var csv = new CsvReader(reader, new CultureInfo("pt-BR")))
             {
-                var records = csv.GetRecords<ImportacaoViewModel>().ToList();
+                var records = csv.GetRecords<ImportacaoCsvViewModel>().ToList();
                 
                 foreach (var record in records)
                 {
@@ -59,6 +59,8 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportarOfx(IFormFile fileOfx)
         {
+            List<Empresa> empresas = _context.Empresas.ToList();
+
             var historicos = _context.HistoricosOfx.ToList();
             string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ fileOfx.FileName}";
             using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
@@ -67,22 +69,22 @@ namespace Demonstrativo.Controllers
             }
             Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDestinoArquivo);
 
-            var importacaoOfxViewModel = new List<ImportacaoOfxViewModel>();
+            var importacaoOfxViewModel = new ImportacaoOfxViewModel();
+            var dadosViewModel = new List<DadosViewModel>();
             var historicoOfxViewModel = new List<HistoricoOfxViewModel>();
 
             var contasContabeis = _context.ContasContabeis.ToList();
 
             foreach (var record in extratoBancario.Transactions)
             {
-                
                 var historico = historicos.FirstOrDefault(h => h.Descricao == record.Description);
 
                 if (historico == null)
                 {
-
+                    var empresasSelectList = ConstruirEmpresas(empresas);
                     var contasContabeisSelectList = ConstruirContasContabeisSelectList(contasContabeis);
 
-                    importacaoOfxViewModel.Add(new ImportacaoOfxViewModel()
+                    dadosViewModel.Add(new DadosViewModel()
                     {
                         Id = record.Id,
                         TransationValue = record.TransactionValue,
@@ -91,13 +93,13 @@ namespace Demonstrativo.Controllers
                         CheckSum = record.Checksum,
                         Type = record.Type,
                         ContasCreditoContabeis = contasContabeisSelectList,
-                        ContasDebitoContabeis = contasContabeisSelectList
+                        ContasDebitoContabeis = contasContabeisSelectList,
                     }) ;
+                    importacaoOfxViewModel.Dados = dadosViewModel; //Add(new ImportacaoOfxViewModel() { Dados = dadosViewModel });
                 }
                 else
                 {
-
-                    importacaoOfxViewModel.Add(new ImportacaoOfxViewModel()
+                    dadosViewModel.Add(new DadosViewModel()
                     {
                         Id = record.Id,
                         TransationValue = record.TransactionValue,
@@ -110,8 +112,10 @@ namespace Demonstrativo.Controllers
                         HistoricoId = historico.Id,
                         ContasCreditoContabeis = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaCreditoId)),                        
                         ContasDebitoContabeis = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaDebitoId)),
-                    }) ;
+                    });
+                    importacaoOfxViewModel.Dados = dadosViewModel ;
                 }
+                importacaoOfxViewModel.Empresas = ConstruirEmpresas(empresas);
             }
             System.IO.File.Delete(caminhoDestinoArquivo);
             System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
@@ -125,11 +129,17 @@ namespace Demonstrativo.Controllers
         }
         
         [HttpPost]
-        public IActionResult GravarOfx(List<ImportacaoOfxViewModel> ofxs)
+        public IActionResult GravarOfx(ImportacaoOfxViewModel ofxs)
         {
-            foreach (var ofx in ofxs)
+            foreach (var ofx in ofxs.Dados)
             {
-                if(ofx.HistoricoId == null)
+                //if(_context.Ofxs.Any(o => o.Id == ofx.Id))
+                //{
+                //    continue;
+                //}
+                var desc = _context.HistoricosOfx.Any(h => h.Descricao == ofx.Description);
+                
+                if(desc == false)
                 {
                     //Todo: adicionar histórico
                     _context.HistoricosOfx.Add(new HistoricoOfx()
@@ -139,13 +149,17 @@ namespace Demonstrativo.Controllers
                         ContaDebitoId = ofx.ContasDebitoSelecionada
                     });
                     _context.SaveChanges();
-
-                    ofx.HistoricoId = 3434;
                 }
-
+                var historico = _context.HistoricosOfx.FirstOrDefault(h => h.Descricao == ofx.Description);
                 _context.Ofxs.Add(new ImportacaoOfx()
                 {
-                    Data = ofx.Date
+                    Documento = ofx.Id,
+                    TipoLancamento = ofx.Type,
+                    Descricao = ofx.Description,
+                    ValorOfx = ofx.TransationValue,
+                    Data = ofx.Date,
+                    HistoricoOfxId = historico.Id,
+                    EmpresaId = ofxs.EmpresaSelecionada,
                 });
             }
 
@@ -172,6 +186,9 @@ namespace Demonstrativo.Controllers
 
         private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)        
             => new(contasContabeis.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Historico}" }), "Codigo", "Descricao");
-         
+
+        private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
+            => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
+
     }
 }

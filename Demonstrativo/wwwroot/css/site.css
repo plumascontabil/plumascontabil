@@ -192,3 +192,10 @@ input{
     font-size: 40px;
 }
 
+#selectEmp{
+    width: auto;
+}
+
+#conta-ofx{
+    width: 50px;
+}

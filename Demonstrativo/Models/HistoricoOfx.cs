@@ -14,6 +14,5 @@ namespace Demonstrativo.Models
         public int ContaCreditoId { get; set; }
         public ContaContabil ContaCredito{ get; set; }
         public List<ImportacaoOfx> ImportacoesOfx { get; set; }
-
     }
 }

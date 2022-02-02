@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220201185652_RemoveTabelaOfxs")]
+    partial class RemoveTabelaOfxs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,43 +111,6 @@ namespace Demonstrativo.Migrations
                     b.HasIndex("ContaDebitoId");
 
                     b.ToTable("HistoricosOfx");
-                });
-
-            modelBuilder.Entity("Demonstrativo.Models.ImportacaoOfx", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Documento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmpresaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HistoricoOfxId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoLancamento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("ValorOfx")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmpresaId");
-
-                    b.HasIndex("HistoricoOfxId");
-
-                    b.ToTable("Ofxs");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.ItemVenda", b =>
@@ -360,25 +325,6 @@ namespace Demonstrativo.Migrations
                     b.Navigation("ContaDebito");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.ImportacaoOfx", b =>
-                {
-                    b.HasOne("Demonstrativo.Models.Empresa", "Empresa")
-                        .WithMany("ImportacoesOfxs")
-                        .HasForeignKey("EmpresaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Demonstrativo.Models.HistoricoOfx", "HistoricoOfx")
-                        .WithMany("ImportacoesOfx")
-                        .HasForeignKey("HistoricoOfxId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Empresa");
-
-                    b.Navigation("HistoricoOfx");
-                });
-
             modelBuilder.Entity("Demonstrativo.Models.ItemVenda", b =>
                 {
                     b.HasOne("Demonstrativo.Models.Produto", "Produto")
@@ -501,18 +447,11 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.Empresa", b =>
                 {
-                    b.Navigation("ImportacoesOfxs");
-
                     b.Navigation("Lancamentos");
 
                     b.Navigation("ProvisoesDepreciacoes");
 
                     b.Navigation("Vendas");
-                });
-
-            modelBuilder.Entity("Demonstrativo.Models.HistoricoOfx", b =>
-                {
-                    b.Navigation("ImportacoesOfx");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.LancamentoPadrao", b =>

@@ -1,6 +1,6 @@
 ﻿namespace Demonstrativo.Models
 {
-    public class ImportacaoViewModel
+    public class ImportacaoCsvViewModel
     {
         public int Codigo { get; set; }
         public string Razao { get; set; }

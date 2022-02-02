@@ -1,5 +1,5 @@
 ﻿@using Demonstrativo.Models
-@model List<ImportacaoOfxViewModel>
+@model ImportacaoOfxViewModel
 @{
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "ImportaçãoOfx";
@@ -13,8 +13,12 @@
             <br/>
         </div>
         <hr />
-        <form asp-controller="Importacao" asp-action="Create">
-            <table class="inptable mx-auto">
+        <form asp-controller="Importacao" asp-action="GravarOfx">
+            <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control" id="selectEmp">
+                <option value="">Selecione</option>
+            </select>
+            <hr/>
+            <table class=" mx-auto">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -28,25 +32,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach (var ofx in Model)
+                @for(int i = 0; i < Model.Dados.Count; i++)
                 {
+                    var ofxs = Model.Dados[i];
                     <tr>
-                        <td>@ofx.Id</td>
-                        <td>@ofx.Date</td>
-                        <td>@ofx.Type</td>
-                        <td>@ofx.Description</td>
-                        <td>@ofx.TransationValue</td>
-                        <td>@ofx.CheckSum</td>
+                        <td>
+                            @ofxs.Id
+                            <input type="hidden" asp-for="@Model.Dados[i].Id"/>
+                        </td>
+                        <td>
+                            @ofxs.Date
+                            <input type="hidden" asp-for="@Model.Dados[i].Date"/>
+                        
+                        </td>
+                        <td>
+                            @ofxs.Type
+                            <input type="hidden" asp-for="@Model.Dados[i].Type"/>
+                        
+                        </td>
+                        <td>
+                            @ofxs.Description
+                            <input type="hidden" asp-for="@Model.Dados[i].Description"/>
+                        
+                        </td>
+                        <td>
+                            @ofxs.TransationValue
+                            <input type="hidden" asp-for="@Model.Dados[i].TransationValue"/>
+                        
+                        </td>
+                        <td>
+                            @ofxs.CheckSum
+                            <input type="hidden" asp-for="@Model.Dados[i].CheckSum"/>
+                        
+                        </td>
                         <td> 
-                            <select asp-for="@ofx.ContasCreditoSelecionada" asp-items="@ofx.ContasCreditoContabeis" >
+                            <select asp-for="@Model.Dados[i].ContasCreditoSelecionada" asp-items="@ofxs.ContasCreditoContabeis" class="form-control" id="selectEmp">
                                 <option value="">Selecione</option>
                              </select>
                         </td>
                         <td> 
-                            <select asp-for="@ofx.ContasDebitoSelecionada" asp-items="@ofx.ContasDebitoContabeis">
+                            <select asp-for="@Model.Dados[i].ContasDebitoSelecionada" asp-items="@ofxs.ContasDebitoContabeis" class="form-control" id="selectEmp">
                                 <option value="">Selecione</option>
                              </select>
-                             <input type="hidden" asp-for="@ofx.HistoricoId">
+                             <input type="hidden" asp-for="@Model.Dados[i]..HistoricoId">
                         </td>
                     </tr>   
                 }

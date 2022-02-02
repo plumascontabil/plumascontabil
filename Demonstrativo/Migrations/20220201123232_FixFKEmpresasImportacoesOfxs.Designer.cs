@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220201123232_FixFKEmpresasImportacoesOfxs")]
+    partial class FixFKEmpresasImportacoesOfxs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,12 +123,6 @@ namespace Demonstrativo.Migrations
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descricao")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Documento")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
@@ -136,8 +132,8 @@ namespace Demonstrativo.Migrations
                     b.Property<string>("TipoLancamento")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("ValorOfx")
-                        .HasColumnType("float");
+                    b.Property<decimal>("ValorOfx")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
