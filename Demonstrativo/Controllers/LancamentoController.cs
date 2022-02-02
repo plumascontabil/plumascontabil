@@ -41,7 +41,7 @@ namespace Demonstrativo.Controllers
                 return;
             }
 
-            Competencia competencia = new Competencia()
+            var competencia = new Competencia()
             {
                 Data = competenciaAtual
             };
@@ -56,11 +56,13 @@ namespace Demonstrativo.Controllers
             List<Competencia> competencias = _context.Competencias.ToList();
 
             ViewBag.CompetenciasId = new SelectList(
-               competencias.Select(c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-               , "Value", "Text", competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
+                    competencias.Select(
+                    c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
+                    , "Value", "Text",
+                    competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
-            ViewBag.EmpresaId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
-        }
+            ViewBag.EmpresasId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
+         }
 
         private TrimestreViewModel CarregarCategorias(int? empresaId=null, DateTime? competenciasId=null)
         {
@@ -158,19 +160,18 @@ namespace Demonstrativo.Controllers
 
             if (estoqueVendas.Id == 0 )
             {
-                var insertEstoqueVendas = new Venda();
-
-                insertEstoqueVendas.DataCompetencia = (DateTime)estoqueVendas.Data;
-                insertEstoqueVendas.EmpresaId = (int)estoqueVendas.Empresa;
-                insertEstoqueVendas.Observacao = estoqueVendas.Observacao;
+                var insertEstoqueVendas = new Venda()
+                {
+                    DataCompetencia = (DateTime)estoqueVendas.Data,
+                    EmpresaId = (int)estoqueVendas.Empresa,
+                    Observacao = estoqueVendas.Observacao
+                };
 
                 _context.Vendas.Add(insertEstoqueVendas);
                 _context.SaveChanges();
                 
                 foreach (var itemVenda in estoqueVendas.ItensVendas)
                 {
-                    var insertItemVenda = new ItemVenda();
-
                     if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
                     {
                         continue;
@@ -178,11 +179,14 @@ namespace Demonstrativo.Controllers
 
                     if (itemVenda.Id == 0)
                     {
-                        insertItemVenda.VendaId = insertEstoqueVendas.Id;
-                        insertItemVenda.ProdutoId = itemVenda.ProdutoId;
-                        insertItemVenda.Quantidade = itemVenda.Quantidade;
-                        insertItemVenda.Preco = itemVenda.Preco;
-
+                        var insertItemVenda = new ItemVenda()
+                        {
+                            VendaId = insertEstoqueVendas.Id,
+                            ProdutoId = itemVenda.ProdutoId,
+                            Quantidade = itemVenda.Quantidade,
+                            Preco = itemVenda.Preco
+                        };
+                        
                         _context.ItensVendas.Add(insertItemVenda);
                         _context.SaveChanges();
                     }
@@ -213,13 +217,15 @@ namespace Demonstrativo.Controllers
                         continue;
                     }
 
-                    var insertItemVenda = new ItemVenda();
                     if (itemVenda.Id == 0)
                     {
-                        insertItemVenda.VendaId = updateEstoqueVendas.Id;
-                        insertItemVenda.ProdutoId = itemVenda.ProdutoId;
-                        insertItemVenda.Quantidade = itemVenda.Quantidade;
-                        insertItemVenda.Preco = itemVenda.Preco;
+                        var insertItemVenda = new ItemVenda()
+                        {
+                            VendaId = updateEstoqueVendas.Id,
+                            ProdutoId = itemVenda.ProdutoId,
+                            Quantidade = itemVenda.Quantidade,
+                            Preco = itemVenda.Preco 
+                        };
 
                         _context.ItensVendas.Add(insertItemVenda);
                         _context.SaveChanges();
@@ -241,16 +247,17 @@ namespace Demonstrativo.Controllers
             
             if (provisoesDepreciacoes.Id == 0 )
             {
-                var insertProvisoes = new ProvisoesDepreciacao();
-
-                insertProvisoes.DataCompetencia = provisoesDepreciacoes.Data;
-                insertProvisoes.EmpresaId = provisoesDepreciacoes.Empresa;
-                insertProvisoes.DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro;
-                insertProvisoes.Ferias = provisoesDepreciacoes.Ferias;
-                insertProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
-                insertProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
-                insertProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
-                insertProvisoes.Apurar = provisoesDepreciacoes.Apurar;
+                var insertProvisoes = new ProvisoesDepreciacao()
+                {
+                    DataCompetencia = provisoesDepreciacoes.Data,
+                    EmpresaId = provisoesDepreciacoes.Empresa,
+                    DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro,
+                    Ferias = provisoesDepreciacoes.Ferias,
+                    Depreciacao = provisoesDepreciacoes.Depreciacao,
+                    SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo,
+                    CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao,
+                    Apurar = provisoesDepreciacoes.Apurar
+                };
 
                 _context.ProvisoesDepreciacoes.Add(insertProvisoes);
                 _context.SaveChanges();
@@ -369,7 +376,6 @@ namespace Demonstrativo.Controllers
             var trimestreViewModel = new TrimestreViewModel();
 
             List<Lancamento> lancamentos = _context.Lancamentos.Include(x => x.Conta).ToList();
-
             List<LancamentoPadrao> contas = _context.Contas.ToList();
             List<ProvisoesDepreciacao> provisoes = _context.ProvisoesDepreciacoes.ToList();
 

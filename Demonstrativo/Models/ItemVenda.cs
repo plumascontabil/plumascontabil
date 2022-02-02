@@ -20,7 +20,11 @@ namespace Demonstrativo.Models
         public Produto Produto { get; set; }
         public int ProdutoId { get; set; }
 
+        [Required]
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Quantidade { get; set; }
+        [Required]
+        [Column(TypeName = "decimal(11,2)")]
         public decimal Preco { get; set; }
     }
 }

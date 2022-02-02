@@ -41,13 +41,14 @@ namespace Demonstrativo.Controllers
                 
                 foreach (var record in records)
                 {
-                    var insertEmpresa = new Empresa();
-
-                    insertEmpresa.Codigo = record.Codigo;
-                    insertEmpresa.RazaoSocial = record.Razao;
-                    insertEmpresa.Apelido = record.Apelido;
-                    insertEmpresa.Cnpj = record.Cnpj ?? "00.000.000/0001-00";
-                    insertEmpresa.Situacao = record.Situacao;
+                    var insertEmpresa = new Empresa()
+                    {
+                        Codigo = record.Codigo,
+                        RazaoSocial = record.Razao,
+                        Apelido = record.Apelido,
+                        Cnpj = record.Cnpj ?? "00.000.000/0001-00",
+                        Situacao = record.Situacao,
+                    };                    
 
                     _context.Empresas.Add(insertEmpresa);
                     _context.SaveChanges();
@@ -133,10 +134,6 @@ namespace Demonstrativo.Controllers
         {
             foreach (var ofx in ofxs.Dados)
             {
-                //if(_context.Ofxs.Any(o => o.Id == ofx.Id))
-                //{
-                //    continue;
-                //}
                 var desc = _context.HistoricosOfx.Any(h => h.Descricao == ofx.Description);
                 
                 if(desc == false)
@@ -171,18 +168,18 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult GravarHistoricoOfx(HistoricoOfxViewModel historicoOfx)
         {
-            var historico = new HistoricoOfx();
-
-            historico.Descricao = historicoOfx.Descricao;
-            historico.ContaDebitoId = historicoOfx.CodigoContaDebitoSelecionada;
-            historico.ContaCreditoId = historicoOfx.CodigoContaCreditoSelecionada;
+            var historico = new HistoricoOfx()
+            {
+                Descricao = historicoOfx.Descricao,
+                ContaDebitoId = historicoOfx.CodigoContaDebitoSelecionada,
+                ContaCreditoId = historicoOfx.CodigoContaCreditoSelecionada,
+            };
 
             _context.HistoricosOfx.Add(historico);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
-
 
         private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)        
             => new(contasContabeis.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Historico}" }), "Codigo", "Descricao");

@@ -41,7 +41,7 @@
                     </ul>
                         @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50"}))
                         {
-                            @Html.DropDownList("EmpresaId", null, "Empresa", new { @class = "form-control my-2 mr-sm-2 w-50" })
+                            @Html.DropDownList("EmpresasId", null, "Empresa", new { @class = "form-control my-2 mr-sm-2 w-50" })
                             @Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "form-control my-2 mr-sm-2" })
                             <button class="btn btn-plumas my-2 my-sm-0 m-1" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">

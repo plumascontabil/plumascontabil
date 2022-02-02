@@ -12,6 +12,7 @@ namespace Demonstrativo.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
+        [Column(TypeName = "varchar(1000)")]
         public string Observacao { get; set; }
         public Venda Venda { get; set; }
     }
