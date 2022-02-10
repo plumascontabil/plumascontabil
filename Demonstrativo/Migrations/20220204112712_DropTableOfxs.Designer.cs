@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220204112712_DropTableOfxs")]
+    partial class DropTableOfxs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +37,7 @@ namespace Demonstrativo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BancoOfxs");
+                    b.ToTable("BancoOfx");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.Categoria", b =>
@@ -93,8 +95,8 @@ namespace Demonstrativo.Migrations
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("NumeroConta")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NumeroConta")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -102,7 +104,7 @@ namespace Demonstrativo.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("ConstasCorrentes");
+                    b.ToTable("ContaCorrente");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.Empresa", b =>
@@ -215,43 +217,6 @@ namespace Demonstrativo.Migrations
                     b.HasIndex("EmpresaId");
 
                     b.ToTable("Lancamentos");
-                });
-
-            modelBuilder.Entity("Demonstrativo.Models.LancamentoOfx", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ContaCorrenteId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<string>("Documento")
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<int>("HistoricoOfxId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoLancamento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("ValorOfx")
-                        .HasColumnType("decimal(11,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContaCorrenteId");
-
-                    b.HasIndex("HistoricoOfxId");
-
-                    b.ToTable("Ofxs");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.LancamentoPadrao", b =>
@@ -466,25 +431,6 @@ namespace Demonstrativo.Migrations
                     b.Navigation("Conta");
 
                     b.Navigation("Empresa");
-                });
-
-            modelBuilder.Entity("Demonstrativo.Models.LancamentoOfx", b =>
-                {
-                    b.HasOne("Demonstrativo.Models.ContaCorrente", "ContaCorrente")
-                        .WithMany()
-                        .HasForeignKey("ContaCorrenteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Demonstrativo.Models.HistoricoOfx", "HistoricoOfx")
-                        .WithMany()
-                        .HasForeignKey("HistoricoOfxId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ContaCorrente");
-
-                    b.Navigation("HistoricoOfx");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.LancamentoPadrao", b =>

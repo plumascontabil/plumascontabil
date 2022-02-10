@@ -27,7 +27,7 @@ namespace Demonstrativo.Models
         public string Situacao { get; set; }
         public List<Lancamento> Lancamentos { get; set; }
         public List<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
-        public List<ImportacaoOfx> ImportacoesOfxs{ get; set; }
+        public List<ContaCorrente> ContasCorrentes{ get; set; }
         public List<Venda> Vendas { get; set; }
     }
 }

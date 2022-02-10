@@ -19,4 +19,11 @@
           <input type="submit" value="Upload Ofx" name="submit" class="btn btn-plumas">
         </form>
     </div>
+    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
+        <h1>Importação Contas Contabeis</h1>
+        <form asp-action="ImportarContasContabeis" method="post" enctype="multipart/form-data" class="mt-5">
+          <input type="file" name="fileContasContabeis" class="btn form-control-file">
+          <input type="submit" value="Upload Contas" name="submit" class="btn btn-plumas">
+        </form>
+    </div>
 </div>

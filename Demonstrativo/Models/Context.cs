@@ -18,9 +18,11 @@ namespace Demonstrativo.Models
         public DbSet<Venda> Vendas { get; set; }
         public DbSet<ItemVenda> ItensVendas { get; set; }
         public DbSet<Produto> Produtos { get; set; }
-        public DbSet<ImportacaoOfx> Ofxs { get; set; }
+        public DbSet<LancamentoOfx> Ofxs { get; set; }
         public DbSet<ContaContabil> ContasContabeis { get; set; }
         public DbSet<HistoricoOfx> HistoricosOfx { get; set; }
+        public DbSet<BancoOfx> BancoOfxs { get; set; }
+        public DbSet<ContaCorrente> ConstasCorrentes { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

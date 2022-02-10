@@ -18,7 +18,6 @@ namespace Demonstrativo.Controllers
     {
         Context _context;
         IHostingEnvironment _appEnvironment;
-
         public ImportacaoController(Context context, IHostingEnvironment env)
         {
             _context = context;
@@ -56,7 +55,33 @@ namespace Demonstrativo.Controllers
             }
             return View("Index");
         }
-        
+
+        [HttpPost]
+        public IActionResult ImportarContasContabeis(IFormFile fileContasContabeis)
+        {
+            var stream = fileContasContabeis.OpenReadStream();
+
+            using (var reader = new StreamReader(stream))
+            using (var csvContas = new CsvReader(reader, new CultureInfo("pt-BR")))
+            {
+                var records = csvContas.GetRecords<ImportacaoContaContabilViewModel>().ToList();
+
+                foreach (var record in records)
+                {
+                    var insertContaContabil = new ContaContabil()
+                    {
+                        Codigo = record.Codigo,
+                        Historico = record.Descricao,
+                    };
+
+                    _context.ContasContabeis.Add(insertContaContabil);
+                }
+                _context.SaveChanges();
+            }
+            return View("Index");
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> ImportarOfx(IFormFile fileOfx)
         {
@@ -70,58 +95,75 @@ namespace Demonstrativo.Controllers
             }
             Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDestinoArquivo);
 
-            var importacaoOfxViewModel = new ImportacaoOfxViewModel();
-            var dadosViewModel = new List<DadosViewModel>();
+            var lancamentoOfxViewModel = new List<LancamentoOfxViewModel>();
+            var contaCorrenteViewModel = new ContaCorrenteViewModel();
             var historicoOfxViewModel = new List<HistoricoOfxViewModel>();
+            var extratoBancarioViewModel = new ExtratoBancarioViewModel();
 
             var contasContabeis = _context.ContasContabeis.ToList();
-
-            foreach (var record in extratoBancario.Transactions)
+            foreach (var dados in extratoBancario.Transactions)
             {
-                var historico = historicos.FirstOrDefault(h => h.Descricao == record.Description);
+                var historico = historicos.FirstOrDefault(h => h.Descricao == dados.Description);
 
                 if (historico == null)
                 {
                     var empresasSelectList = ConstruirEmpresas(empresas);
                     var contasContabeisSelectList = ConstruirContasContabeisSelectList(contasContabeis);
 
-                    dadosViewModel.Add(new DadosViewModel()
+                    lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
                     {
-                        Id = record.Id,
-                        TransationValue = record.TransactionValue,
-                        Description = record.Description,
-                        Date = record.Date,
-                        CheckSum = record.Checksum,
-                        Type = record.Type,
-                        ContasCreditoContabeis = contasContabeisSelectList,
-                        ContasDebitoContabeis = contasContabeisSelectList,
-                    }) ;
-                    importacaoOfxViewModel.Dados = dadosViewModel; //Add(new ImportacaoOfxViewModel() { Dados = dadosViewModel });
+                        Id = dados.Id,
+                        TransationValue = dados.TransactionValue,
+                        Description = dados.Description,
+                        Date = dados.Date,
+                        CheckSum = dados.Checksum,
+                        Type = dados.Type
+                    });
                 }
                 else
                 {
-                    dadosViewModel.Add(new DadosViewModel()
-                    {
-                        Id = record.Id,
-                        TransationValue = record.TransactionValue,
-                        Description = record.Description,
-                        Date = record.Date,
-                        CheckSum = record.Checksum,
-                        Type = record.Type,
-                        ContasCreditoSelecionada = historico.ContaCreditoId,
-                        ContasDebitoSelecionada = historico.ContaDebitoId,
-                        HistoricoId = historico.Id,
-                        ContasCreditoContabeis = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaCreditoId)),                        
-                        ContasDebitoContabeis = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaDebitoId)),
-                    });
-                    importacaoOfxViewModel.Dados = dadosViewModel ;
+                        lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
+                        {
+                            Id = dados.Id,
+                            TransationValue = dados.TransactionValue,
+                            Description = dados.Description,
+                            Date = dados.Date,
+                            CheckSum = dados.Checksum,
+                            Type = dados.Type,
+                            ContaCreditoSelecionada = historico.ContaCreditoId,
+                            ContaDebitoSelecionada = historico.ContaDebitoId,
+                            HistoricoId = historico.Id,
+                            ContasCredito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaCreditoId)),                        
+                            ContasDebito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaDebitoId)),
+                        });
                 }
-                importacaoOfxViewModel.Empresas = ConstruirEmpresas(empresas);
+
+                var banco = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == extratoBancario.BankAccount.Bank.Code);
+
+                var bancoViewModel = new BancoViewModel()
+                {
+                    Id = banco.Id,
+                    Codigo = banco.Codigo,
+                    Nome = banco.Nome
+                };
+
+                contaCorrenteViewModel = new ContaCorrenteViewModel()
+                {
+                    LancamentosOfxs = lancamentoOfxViewModel,
+                    NumeroConta = extratoBancario.BankAccount.AccountCode
+                };
+                extratoBancarioViewModel = new ExtratoBancarioViewModel()
+                { 
+                    Empresas = ConstruirEmpresas(empresas), 
+                    ContasCorrentes = contaCorrenteViewModel,
+                    Banco = bancoViewModel
+                };
             }
+
             System.IO.File.Delete(caminhoDestinoArquivo);
             System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
 
-            return View("Ofx", importacaoOfxViewModel);
+            return View("Ofx", extratoBancarioViewModel);
         }
 
         public IActionResult ViewHistorico()
@@ -130,33 +172,51 @@ namespace Demonstrativo.Controllers
         }
         
         [HttpPost]
-        public IActionResult GravarOfx(ImportacaoOfxViewModel ofxs)
+        public IActionResult GravarOfx(ExtratoBancarioViewModel ofxs)
         {
-            foreach (var ofx in ofxs.Dados)
+            foreach (var ofx in ofxs.ContasCorrentes.LancamentosOfxs)
             {
-                var desc = _context.HistoricosOfx.Any(h => h.Descricao == ofx.Description);
-                
-                if(desc == false)
+                var descric = _context.HistoricosOfx.Any(h => h.Descricao == ofx.Description);
+                var cc = _context.ConstasCorrentes.Any(c => c.NumeroConta == ofxs.ContasCorrentes.NumeroConta);
+                var banco = _context.BancoOfxs.Any(b => b.Codigo == ofxs.Banco.Codigo);
+
+                if (banco == false)
+                {
+                    //banco não cadastrado
+                }
+
+                if (cc == false)
+                {
+                    //Todo: adicionar Conta corrente
+                    _context.ConstasCorrentes.Add(new ContaCorrente()
+                    {
+                        NumeroConta = ofxs.ContasCorrentes.NumeroConta,
+                        EmpresaId = _context.Empresas.FirstOrDefault(e=> e.Codigo == ofxs.EmpresaSelecionada).Codigo,
+                        BancoOfxId = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == ofxs.Banco.Codigo).Id,
+                    });
+                    _context.SaveChanges();
+                }
+                if (descric == false)
                 {
                     //Todo: adicionar histórico
                     _context.HistoricosOfx.Add(new HistoricoOfx()
                     {
                         Descricao = ofx.Description,
-                        ContaCreditoId = ofx.ContasCreditoSelecionada,
-                        ContaDebitoId = ofx.ContasDebitoSelecionada
+                        ContaCreditoId = ofx.ContaCreditoSelecionada,
+                        ContaDebitoId = ofx.ContaDebitoSelecionada
                     });
                     _context.SaveChanges();
                 }
-                var historico = _context.HistoricosOfx.FirstOrDefault(h => h.Descricao == ofx.Description);
-                _context.Ofxs.Add(new ImportacaoOfx()
+
+                _context.Ofxs.Add(new LancamentoOfx()
                 {
                     Documento = ofx.Id,
                     TipoLancamento = ofx.Type,
                     Descricao = ofx.Description,
                     ValorOfx = ofx.TransationValue,
                     Data = ofx.Date,
-                    HistoricoOfxId = historico.Id,
-                    EmpresaId = ofxs.EmpresaSelecionada,
+                    HistoricoOfxId = _context.HistoricosOfx.FirstOrDefault(h => h.Descricao == ofx.Description).Id,
+                    ContaCorrenteId = _context.ConstasCorrentes.FirstOrDefault(c => c.NumeroConta == ofxs.ContasCorrentes.NumeroConta).Id
                 });
             }
 

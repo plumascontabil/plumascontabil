@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class ImportacaoOfx
+    public class LancamentoOfx
     {
         [Key]
         [Required]
@@ -16,6 +16,7 @@ namespace Demonstrativo.Models
         public string TipoLancamento { get; set; }
         [Column(TypeName = "varchar(150)")]
         public string Descricao { get; set; }
+
         [Required]
         [Column(TypeName = "decimal(11,2)")]
         public double ValorOfx { get; set; }
@@ -25,9 +26,8 @@ namespace Demonstrativo.Models
         public int HistoricoOfxId { get; set; }
         public HistoricoOfx HistoricoOfx { get; set; }
         
-        [Required]
-        [ForeignKey("EmpresaId")]
-        public int EmpresaId { get; set; }
-        public Empresa Empresa { get; set; }
+        [ForeignKey("ContaCorrenteId")]
+        public int ContaCorrenteId { get; set; }
+        public ContaCorrente ContaCorrente { get; set; }
     }
 }
