@@ -23,6 +23,7 @@ namespace Demonstrativo.Models
         public DbSet<HistoricoOfx> HistoricosOfx { get; set; }
         public DbSet<BancoOfx> BancoOfxs { get; set; }
         public DbSet<ContaCorrente> ConstasCorrentes { get; set; }
+        public DbSet<LoteLancamentosOfx> Lotes { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

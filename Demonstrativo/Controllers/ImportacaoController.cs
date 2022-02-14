@@ -117,7 +117,9 @@ namespace Demonstrativo.Controllers
                         Description = dados.Description,
                         Date = dados.Date,
                         CheckSum = dados.Checksum,
-                        Type = dados.Type
+                        Type = dados.Type,
+                        ContasCredito = contasContabeisSelectList,
+                        ContasDebito = contasContabeisSelectList,
                     });
                 }
                 else
