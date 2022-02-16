@@ -1,5 +1,5 @@
 ﻿@using Demonstrativo.Models
-@model List<HistoricoOfxViewModel>
+@model ContaCorrenteViewModel
 @{
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "Create";
@@ -17,18 +17,18 @@
             <h4>Criar HistoricoOfx</h4>
             <hr />
             <div class="form-group">
-                <label>Descrição</label>
-                <input asp-for="@Model.FirstOrDefault().Descricao" class="form-control" />
+                <label>Numero</label>
+                <input asp-for="@Model.NumeroConta" class="form-control" />
             </div>
             <div class="form-group">
                 <label>Conta Debitar</label>
-                <select asp-for="@Model.FirstOrDefault().CodigoContaDebitoSelecionada" asp-items="@Model.FirstOrDefault().ContaDebitoId" class="form-control">
+                <select asp-for="@Model.Banco" asp-items="@Model.Bancos" class="form-control">
                 <option value="">Selecione</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Conta Creditar</label>
-                <select asp-for="@Model.FirstOrDefault().CodigoContaCreditoSelecionada" asp-items="@Model.FirstOrDefault().ContaDebitoId" class="form-control">
+                <select asp-for="@Model.Empresa"  asp-items="@Model.Empresas" class="form-control">
                 <option value="">Selecione</option>
                 </select>
             </div>

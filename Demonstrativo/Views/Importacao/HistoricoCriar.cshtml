@@ -1,0 +1,39 @@
+﻿@using Demonstrativo.Models
+@model HistoricoOfxViewModel
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="row form-lancamento mx-2">
+    <div class="col-md-4 table-bordered mx-auto rounded-lg bg-light">
+        <form asp-action="GravarHistoricoOfx" method="post">
+            <div class="text-plumas">
+                <br/>
+                @ViewData["Title"]
+                <br/>
+            </div>
+            <h4>Criar HistoricoOfx</h4>
+            <hr />
+            <div class="form-group">
+                <label>Descrição</label>
+                <input asp-for="@Model.Descricao" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Conta Debitar</label>
+                <select asp-for="@Model.CodigoContaDebitoSelecionada" asp-items="@Model.ContaDebitoId" class="form-control">
+                <option value="">Selecione</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Conta Creditar</label>
+                <select asp-for="@Model.CodigoContaCreditoSelecionada" asp-items="@Model.ContaDebitoId" class="form-control">
+                <option value="">Selecione</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-plumas">Gravar</button>
+        </form>
+        <br/>
+    </div>
+</div>

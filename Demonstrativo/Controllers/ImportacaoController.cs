@@ -168,11 +168,38 @@ namespace Demonstrativo.Controllers
             return View("Ofx", extratoBancarioViewModel);
         }
 
-        public IActionResult ViewHistorico()
+        public IActionResult ContaCorrente()
         {
-            return View("Historico");
+            var empresas = _context.Empresas.ToList();
+            var bancos = _context.BancoOfxs.ToList();
+
+            var contaCorrente = new ContaCorrenteViewModel()
+            {
+                Empresas = ConstruirEmpresas(empresas),
+                Bancos = ContruirBancos(bancos)
+            };
+
+            return View("ContaCorrente", contaCorrente);
         }
-        
+
+        public IActionResult Banco()
+        {
+            return View("Banco");
+        }
+
+        public IActionResult Historico()
+        {
+            var contasContabeis = _context.ContasContabeis.ToList();
+
+            var historico = new HistoricoOfxViewModel()
+            {
+                ContaCreditoId = ConstruirContasContabeisSelectList(contasContabeis),
+                ContaDebitoId = ConstruirContasContabeisSelectList(contasContabeis)
+            };
+
+            return View("Historico", historico);
+        }
+
         [HttpPost]
         public IActionResult GravarOfx(ExtratoBancarioViewModel ofxs)
         {
@@ -248,6 +275,9 @@ namespace Demonstrativo.Controllers
 
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
             => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
+
+        private static SelectList ContruirBancos(IEnumerable<BancoOfx> bancos)
+            => new(bancos.Select(c => new { c.Codigo, Nome = $"{c.Codigo} - {c.Nome}" }), "Codigo", "Nome");
 
     }
 }

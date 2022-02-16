@@ -1,0 +1,27 @@
+﻿
+@model BancoViewModel
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Editar";
+}
+ 
+<div class="row">
+    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
+        <h1>@ViewData["Title"]</h1>
+        <form asp-action="EditarBanco" method="post">
+            <input type="hidden" asp-for="Id"/>
+            <h4>Editar um usuário.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label>Codigo</label>
+                <input asp-for="@Model.Codigo" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Nome</label>
+                <input asp-for="@Model.Nome" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Editar</button>
+        </form>
+    </div>
+</div>
