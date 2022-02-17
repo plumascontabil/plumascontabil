@@ -81,7 +81,6 @@ namespace Demonstrativo.Controllers
             return View("Index");
         }
 
-
         [HttpPost]
         public async Task<IActionResult> ImportarOfx(IFormFile fileOfx)
         {
@@ -187,7 +186,24 @@ namespace Demonstrativo.Controllers
             return View("Banco");
         }
 
-        public IActionResult Historico()
+        public IActionResult HistoricoListar()
+        {
+            var listaHistorico = _context.HistoricosOfx.ToList();
+            var historicoViewModel = new List<HistoricoOfxViewModel>();
+            foreach (var historico in listaHistorico)
+            {
+                historicoViewModel.Add(new HistoricoOfxViewModel() 
+                { 
+                    Id = historico.Id,
+                    Descricao = historico.Descricao,
+                    CodigoContaDebitoSelecionada = historico.ContaDebitoId,
+                    CodigoContaCreditoSelecionada = historico.ContaCreditoId
+                });
+            }
+            return View("HistoricoListar", historicoViewModel);
+        }
+
+        public IActionResult HistoricoCriar()
         {
             var contasContabeis = _context.ContasContabeis.ToList();
 
@@ -197,7 +213,38 @@ namespace Demonstrativo.Controllers
                 ContaDebitoId = ConstruirContasContabeisSelectList(contasContabeis)
             };
 
-            return View("Historico", historico);
+            return View("HistoricoCriar", historico);
+        }
+        public IActionResult HistoricoEditar(int id)
+        {
+            var historico = _context.HistoricosOfx.FirstOrDefault(x => x.Id == id);
+            var contasContabeis = _context.ContasContabeis.ToList();
+
+            return View("HistoricoEditar",new HistoricoOfxViewModel()
+            {
+                Id = historico.Id,
+                Descricao = historico.Descricao,
+                CodigoContaCreditoSelecionada = historico.ContaCreditoId,
+                CodigoContaDebitoSelecionada = historico.ContaDebitoId,
+                ContaCreditoId = ConstruirContasContabeisSelectList(contasContabeis),
+                ContaDebitoId = ConstruirContasContabeisSelectList(contasContabeis)
+            });
+        }
+
+        [HttpPost]
+        public IActionResult HistoricoEditar(HistoricoOfxViewModel historico)
+        {
+            historico.ReturnUrl ??= Url.Content("~/");
+            var updateHistorico = _context.HistoricosOfx.Find(Convert.ToInt32(historico.Id));
+
+            updateHistorico.Descricao = historico.Descricao;
+            updateHistorico.ContaDebitoId = historico.CodigoContaDebitoSelecionada;
+            updateHistorico.ContaCreditoId = historico.CodigoContaCreditoSelecionada;
+
+            _context.HistoricosOfx.Update(updateHistorico);
+            _context.SaveChanges();
+
+            return HistoricoListar();
         }
 
         [HttpPost]

@@ -5,6 +5,7 @@ namespace Demonstrativo.Models
 {
     public class HistoricoOfxViewModel
     {
+        public string ReturnUrl { get; set; }
         public int Id { get; set; }
         public string Descricao { get; set; }
         public SelectList ContaDebitoId { get; set; }
