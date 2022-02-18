@@ -1,21 +1,19 @@
-﻿
-@using Demonstrativo.Models
-@model BancoViewModel
+﻿@model BancoViewModel
 @{
     Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Banco";
 }
 
 
 <div class="row form-lancamento mx-2">
     <div class="col-md-4 table-bordered mx-auto rounded-lg bg-light">
-        <form asp-action="GravarHistoricoOfx" method="post">
+        <form asp-action="BancoGravar" method="post">
             <div class="text-plumas">
                 <br/>
                 @ViewData["Title"]
                 <br/>
             </div>
-            <h4>Criar HistoricoOfx</h4>
+            <h4>Criar Banco</h4>
             <hr />
             <div class="form-group">
                 <label>Codigo</label>

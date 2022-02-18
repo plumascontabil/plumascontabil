@@ -180,10 +180,85 @@ namespace Demonstrativo.Controllers
 
             return View("ContaCorrente", contaCorrente);
         }
-
-        public IActionResult Banco()
+        public IActionResult ContaCorrenteListar()
         {
-            return View("Banco");
+            var empresas = _context.Empresas.ToList();
+            var bancos = _context.BancoOfxs.ToList();
+            var listaContsCorretes = _context.ConstasCorrentes.ToList();
+            var contasCorrentes = new List<ContaCorrenteViewModel>();
+            foreach (var contaCorrente in listaContsCorretes)
+            {
+                contasCorrentes.Add(new ContaCorrenteViewModel()
+                {
+                    NumeroConta = contaCorrente.NumeroConta,
+                    Empresa = contaCorrente.EmpresaId,
+                    Banco = bancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Codigo,
+                    Id = contaCorrente.Id
+                });
+            }
+            return View("ContaCorrenteListar", contasCorrentes);
+        }
+
+        public IActionResult ContacorrenteCriar()
+        {
+            var bancos = _context.BancoOfxs.ToList();
+            var empresas = _context.Empresas.ToList();
+
+            var contasCorrentes = new ContaCorrenteViewModel()
+            {
+                Bancos = ContruirBancos(bancos),
+                Empresas = ConstruirEmpresas(empresas),
+            };
+
+            return View("ContaCorrenteCriar", contasCorrentes);
+        }
+        [HttpPost]
+        public IActionResult ContaCorrenteGravar(ContaCorrenteViewModel contaCorrente)
+        {
+            var banco = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == contaCorrente.Banco);
+            var conta = new ContaCorrente()
+            {
+                BancoOfxId = banco.Id,
+                NumeroConta = contaCorrente.NumeroConta,
+                EmpresaId = contaCorrente.Empresa
+            };
+
+            _context.ConstasCorrentes.Add(conta);
+            _context.SaveChanges();
+
+            return ContaCorrenteListar();
+        }
+        public IActionResult ContacorrenteEditar(int id)
+        {
+            var contaCorrente = _context.ConstasCorrentes.FirstOrDefault(x => x.Id == id);
+            var empresas = _context.Empresas.ToList();
+            var bancos = _context.BancoOfxs.ToList();
+
+            return View("ContaCorrenteEditar", new ContaCorrenteViewModel()
+            {
+                NumeroConta = contaCorrente.NumeroConta,
+                Empresa = contaCorrente.EmpresaId,
+                Banco = contaCorrente.BancoOfxId,
+                Empresas = ConstruirEmpresas(empresas),
+                Bancos = ContruirBancos(bancos)
+            }) ;
+        }
+
+        [HttpPost]
+        public IActionResult ContacorrenteEditar(ContaCorrenteViewModel contaCorrenteViewModel)
+        {
+            contaCorrenteViewModel.ReturnUrl ??= Url.Content("~/");
+            var UpdateContaCorrente = _context.ConstasCorrentes.Find(Convert.ToInt32(contaCorrenteViewModel.Id));
+            var banco = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == contaCorrenteViewModel.Banco);
+
+            UpdateContaCorrente.NumeroConta = contaCorrenteViewModel.NumeroConta;
+            UpdateContaCorrente.EmpresaId = contaCorrenteViewModel.Empresa;
+            UpdateContaCorrente.BancoOfxId = banco.Id;
+
+            _context.ConstasCorrentes.Update(UpdateContaCorrente);
+            _context.SaveChanges();
+
+            return ContaCorrenteListar();
         }
 
         public IActionResult HistoricoListar()
@@ -192,8 +267,8 @@ namespace Demonstrativo.Controllers
             var historicoViewModel = new List<HistoricoOfxViewModel>();
             foreach (var historico in listaHistorico)
             {
-                historicoViewModel.Add(new HistoricoOfxViewModel() 
-                { 
+                historicoViewModel.Add(new HistoricoOfxViewModel()
+                {
                     Id = historico.Id,
                     Descricao = historico.Descricao,
                     CodigoContaDebitoSelecionada = historico.ContaDebitoId,
@@ -220,7 +295,7 @@ namespace Demonstrativo.Controllers
             var historico = _context.HistoricosOfx.FirstOrDefault(x => x.Id == id);
             var contasContabeis = _context.ContasContabeis.ToList();
 
-            return View("HistoricoEditar",new HistoricoOfxViewModel()
+            return View("HistoricoEditar", new HistoricoOfxViewModel()
             {
                 Id = historico.Id,
                 Descricao = historico.Descricao,
@@ -245,6 +320,85 @@ namespace Demonstrativo.Controllers
             _context.SaveChanges();
 
             return HistoricoListar();
+        }
+
+        [HttpPost]
+        public IActionResult GravarHistoricoOfx(HistoricoOfxViewModel historicoOfx)
+        {
+            var historico = new HistoricoOfx()
+            {
+                Descricao = historicoOfx.Descricao,
+                ContaDebitoId = historicoOfx.CodigoContaDebitoSelecionada,
+                ContaCreditoId = historicoOfx.CodigoContaCreditoSelecionada,
+            };
+
+            _context.HistoricosOfx.Add(historico);
+            _context.SaveChanges();
+
+            return HistoricoListar();
+        }
+
+
+        public IActionResult BancoListar()
+        {
+            var listaBancos = _context.BancoOfxs.ToList();
+            var bancoViewModel = new List<BancoViewModel>();
+            foreach (var banco in listaBancos)
+            {
+                bancoViewModel.Add(new BancoViewModel() 
+                { 
+                    Id = banco.Id,
+                    Codigo = banco.Codigo,
+                    Nome = banco.Nome
+                });
+            }
+            return View("BancoListar", bancoViewModel);
+        }
+
+        public IActionResult BancoCriar()
+        {
+            return View("BancoCriar");
+        }
+        public IActionResult BancoEditar(int id)
+        {
+            var banco = _context.BancoOfxs.FirstOrDefault(x => x.Id == id);
+
+            return View("BancoEditar",new BancoViewModel()
+            {
+                Id = banco.Id,
+                Codigo = banco.Codigo,
+                Nome = banco.Nome
+            });
+        }
+
+        [HttpPost]
+        public IActionResult BancoEditar(BancoViewModel banco)
+        {
+            banco.ReturnUrl ??= Url.Content("~/");
+            var updateBanco = _context.BancoOfxs.Find(Convert.ToInt32(banco.Id));
+
+            updateBanco.Codigo = banco.Codigo;
+            updateBanco.Nome = banco.Nome;
+
+            _context.BancoOfxs.Update(updateBanco);
+            _context.SaveChanges();
+
+            return BancoListar();
+        }
+
+        [HttpPost]
+        public IActionResult BancoGravar(BancoViewModel bancoViewModel)
+        {
+            var banco = new BancoOfx()
+            {
+                Codigo = bancoViewModel.Codigo,
+                Nome = bancoViewModel.Nome
+            };
+
+            _context.BancoOfxs.Add(banco);
+            _context.SaveChanges();
+
+            return BancoListar();
         }
 
         [HttpPost]
@@ -301,20 +455,9 @@ namespace Demonstrativo.Controllers
             return View("Index");
         }
 
-        [HttpPost]
-        public IActionResult GravarHistoricoOfx(HistoricoOfxViewModel historicoOfx)
+        public IActionResult RelatorioOfx()
         {
-            var historico = new HistoricoOfx()
-            {
-                Descricao = historicoOfx.Descricao,
-                ContaDebitoId = historicoOfx.CodigoContaDebitoSelecionada,
-                ContaCreditoId = historicoOfx.CodigoContaCreditoSelecionada,
-            };
-
-            _context.HistoricosOfx.Add(historico);
-            _context.SaveChanges();
-
-            return RedirectToAction("Index");
+            return View("RelatorioOfx");
         }
 
         private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)        
