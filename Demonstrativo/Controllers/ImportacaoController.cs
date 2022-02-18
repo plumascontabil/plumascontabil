@@ -457,7 +457,50 @@ namespace Demonstrativo.Controllers
 
         public IActionResult RelatorioOfx()
         {
-            return View("RelatorioOfx");
+            var empresas = _context.Empresas.ToList();
+            var contasContabeis = _context.ContasContabeis.ToList();
+            var relatorioViewModel = new RelatorioViewModel() 
+            {
+                Empresas = ConstruirEmpresas(empresas),
+                ContasContabeis = ConstruirContasContabeisSelectList(contasContabeis),
+            };
+
+            return View("RelatorioOfx", relatorioViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Filtrar(RelatorioViewModel relatorioViewModel)
+        {
+            var contaContabil = _context.ContasContabeis.FirstOrDefault(c => c.Codigo == relatorioViewModel.ContaContabil);
+            var historicos = _context.HistoricosOfx.Where(h => h.ContaDebitoId == contaContabil.Codigo
+                                                || h.ContaCreditoId == contaContabil.Codigo);
+            var dadosOfx = _context.Ofxs.Where(o => (o.Data >= relatorioViewModel.DataInicial
+                                                || o.Data <= relatorioViewModel.DataFinal));
+            var contasCorrentes = _context.ConstasCorrentes.Where(c => c.EmpresaId == relatorioViewModel.Empresa);
+            var relatorioDadosViewModel = new List<RelatorioViewModel>();
+
+            foreach (var historico in historicos)
+            {
+                foreach (var contaCorrente in contasCorrentes)
+                {
+                    foreach(var dado in dadosOfx.Where(d => d.HistoricoOfxId == historico.Id 
+                                                        && d.ContaCorrenteId == contaCorrente.Id))
+                    {
+                        relatorioDadosViewModel.Add(new RelatorioViewModel 
+                        {
+                            RazaoEmpresa = contaCorrente.EmpresaId,
+                            Date = dado.Data,
+                            Type = dado.TipoLancamento,
+                            Description = dado.Descricao,
+                            TransationValue = dado.ValorOfx,
+                            ContaDebitar = historico.ContaDebitoId,
+                            ContaCreditar = historico.ContaCreditoId
+                        });
+                    }
+                }
+            }
+            
+            return View("RelatorioExibir", relatorioDadosViewModel);
         }
 
         private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)        

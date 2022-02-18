@@ -1,4 +1,36 @@
-﻿@{
-    Layout = "_LayoutFiltroOfx";
+﻿@model RelatorioViewModel
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "Relatorio";
 }
+
+<div class="row">
+    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
+        <h1>@ViewData["Title"]</h1>
+        <form asp-action="Filtrar" method="post">
+            <h4>Relatório Empresa/Conta</h4>
+            <hr />
+            <div class="form-group">
+                <label>Empresas</label>
+                <select asp-for="@Model.Empresa" asp-items="@Model.Empresas" class="form-control">
+                <option value="">Selecione</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Contas</label>
+                <select asp-for="@Model.ContaContabil" asp-items="@Model.ContasContabeis" class="form-control">
+                <option value="">Selecione</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Data Inicial</label>
+                <input asp-for="@Model.DataInicial" class="form-control" type="date"/>
+            </div>
+            <div class="form-group">
+                <label>Data Final</label>
+                <input asp-for="@Model.DataFinal" class="form-control" type="date"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Gerar</button>
+        </form>
+    </div>
+</div>
