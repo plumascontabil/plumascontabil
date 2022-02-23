@@ -28,6 +28,7 @@ namespace Demonstrativo.Controllers
             return View();
         }
 
+
         [HttpPost]
         public IActionResult Importar(IFormFile file)
         {
@@ -55,7 +56,6 @@ namespace Demonstrativo.Controllers
             }
             return View("Index");
         }
-
         [HttpPost]
         public IActionResult ImportarContasContabeis(IFormFile fileContasContabeis)
         {
@@ -80,19 +80,12 @@ namespace Demonstrativo.Controllers
             }
             return View("Index");
         }
-
         [HttpPost]
-        public async Task<IActionResult> ImportarOfx(IFormFile fileOfx)
+        public async Task<IActionResult> ImportarOfx(IFormFile? fileOfx = null, ExtratoBancarioViewModel? extratoView = null)
         {
             List<Empresa> empresas = _context.Empresas.ToList();
 
             var historicos = _context.HistoricosOfx.ToList();
-            string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ fileOfx.FileName}";
-            using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
-            {
-                await fileOfx.CopyToAsync(stream);
-            }
-            Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDestinoArquivo);
 
             var lancamentoOfxViewModel = new List<LancamentoOfxViewModel>();
             var contaCorrenteViewModel = new ContaCorrenteViewModel();
@@ -100,29 +93,39 @@ namespace Demonstrativo.Controllers
             var extratoBancarioViewModel = new ExtratoBancarioViewModel();
 
             var contasContabeis = _context.ContasContabeis.ToList();
-            foreach (var dados in extratoBancario.Transactions)
+
+            if(fileOfx != null)
             {
-                var historico = historicos.FirstOrDefault(h => h.Descricao == dados.Description);
-
-                if (historico == null)
+                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ fileOfx.FileName}";
+                using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
                 {
-                    var empresasSelectList = ConstruirEmpresas(empresas);
-                    var contasContabeisSelectList = ConstruirContasContabeisSelectList(contasContabeis);
-
-                    lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
-                    {
-                        Id = dados.Id,
-                        TransationValue = dados.TransactionValue,
-                        Description = dados.Description,
-                        Date = dados.Date,
-                        CheckSum = dados.Checksum,
-                        Type = dados.Type,
-                        ContasCredito = contasContabeisSelectList,
-                        ContasDebito = contasContabeisSelectList,
-                    });
+                    await fileOfx.CopyToAsync(stream);
                 }
-                else
+                Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDestinoArquivo);
+
+                foreach (var dados in extratoBancario.Transactions)
                 {
+                    var historico = historicos.FirstOrDefault(h => h.Descricao == dados.Description);
+
+                    if (historico == null)
+                    {
+                        var empresasSelectList = ConstruirEmpresas(empresas);
+                        var contasContabeisSelectList = ConstruirContasContabeisSelectList(contasContabeis);
+
+                        lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
+                        {
+                            Id = dados.Id,
+                            TransationValue = dados.TransactionValue,
+                            Description = dados.Description,
+                            Date = dados.Date,
+                            CheckSum = dados.Checksum,
+                            Type = dados.Type,
+                            ContasCredito = contasContabeisSelectList,
+                            ContasDebito = contasContabeisSelectList,
+                        });
+                    }
+                    else
+                    {
                         lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
                         {
                             Id = dados.Id,
@@ -134,39 +137,115 @@ namespace Demonstrativo.Controllers
                             ContaCreditoSelecionada = historico.ContaCreditoId,
                             ContaDebitoSelecionada = historico.ContaDebitoId,
                             HistoricoId = historico.Id,
-                            ContasCredito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaCreditoId)),                        
+                            ContasCredito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaCreditoId)),
                             ContasDebito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaDebitoId)),
                         });
+                    }
+
+                    var banco = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == extratoBancario.BankAccount.Bank.Code);
+
+                    var bancoViewModel = new BancoViewModel()
+                    {
+                        Id = banco.Id,
+                        Codigo = banco.Codigo,
+                        Nome = banco.Nome
+                    };
+
+                    contaCorrenteViewModel = new ContaCorrenteViewModel()
+                    {
+                        LancamentosOfxs = lancamentoOfxViewModel,
+                        NumeroConta = extratoBancario.BankAccount.AccountCode
+                    };
+                    extratoBancarioViewModel = new ExtratoBancarioViewModel()
+                    {
+                        Empresas = ConstruirEmpresas(empresas),
+                        ContasCorrentes = contaCorrenteViewModel,
+                        Banco = bancoViewModel
+                    };
                 }
 
-                var banco = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == extratoBancario.BankAccount.Bank.Code);
-
-                var bancoViewModel = new BancoViewModel()
-                {
-                    Id = banco.Id,
-                    Codigo = banco.Codigo,
-                    Nome = banco.Nome
-                };
-
-                contaCorrenteViewModel = new ContaCorrenteViewModel()
-                {
-                    LancamentosOfxs = lancamentoOfxViewModel,
-                    NumeroConta = extratoBancario.BankAccount.AccountCode
-                };
-                extratoBancarioViewModel = new ExtratoBancarioViewModel()
-                { 
-                    Empresas = ConstruirEmpresas(empresas), 
-                    ContasCorrentes = contaCorrenteViewModel,
-                    Banco = bancoViewModel
-                };
+                System.IO.File.Delete(caminhoDestinoArquivo);
+                System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
             }
+            else
+            {
+                var empresasSelectList = ConstruirEmpresas(empresas);
+                var contasContabeisSelectList = ConstruirContasContabeisSelectList(contasContabeis);
+                foreach (var dados in extratoView.ContasCorrentes.LancamentosOfxs)
+                {
+                    var historico = historicos.FirstOrDefault(h => h.Descricao == extratoView.LancamentoManual.Descricao);
 
-            System.IO.File.Delete(caminhoDestinoArquivo);
-            System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
+                    if (historico == null)
+                    {
+
+                        lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
+                        {
+                            Id = dados.Id,
+                            TransationValue = dados.TransationValue,
+                            Description = dados.Description,
+                            Date = dados.Date,
+                            CheckSum = dados.CheckSum,
+                            Type = dados.Type,
+                            ContasCredito = contasContabeisSelectList,
+                            ContasDebito = contasContabeisSelectList,
+                        });
+                    }
+                    else
+                    {
+                        lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
+                        {
+                            TransationValue = extratoView.LancamentoManual.Valor,
+                            Description = extratoView.LancamentoManual.Descricao,
+                            Date = extratoView.LancamentoManual.Data,
+                            CheckSum = 1,
+                            Type = extratoView.LancamentoManual.TipoSelecionado,
+                            ContaCreditoSelecionada = historico.ContaCreditoId,
+                            ContaDebitoSelecionada = historico.ContaDebitoId,
+                            HistoricoId = historico.Id,
+                            ContasCredito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaCreditoId)),
+                            ContasDebito = ConstruirContasContabeisSelectList(contasContabeis.Where(x => x.Codigo == historico.ContaDebitoId)),
+                        });
+                    }
+
+                    var banco = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == extratoView.Banco.Codigo);
+
+                    var bancoViewModel = new BancoViewModel()
+                    {
+                        Id = banco.Id,
+                        Codigo = banco.Codigo,
+                        Nome = banco.Nome
+                    };
+
+                    contaCorrenteViewModel = new ContaCorrenteViewModel()
+                    {
+                        LancamentosOfxs = lancamentoOfxViewModel,
+                        NumeroConta = extratoView.ContasCorrentes.NumeroConta
+                    };
+                    extratoBancarioViewModel = new ExtratoBancarioViewModel()
+                    {
+                        Empresas = ConstruirEmpresas(empresas),
+                        ContasCorrentes = contaCorrenteViewModel,
+                        Banco = bancoViewModel
+                    };
+                }
+
+                if (extratoView.LancamentoManual != null)
+                {
+                    lancamentoOfxViewModel.Add(new LancamentoOfxViewModel()
+                    {
+                        TransationValue = extratoView.LancamentoManual.Valor,
+                        Description = extratoView.LancamentoManual.Descricao,
+                        Date = extratoView.LancamentoManual.Data,
+                        CheckSum = 1,
+                        Type = extratoView.LancamentoManual.TipoSelecionado,
+                        ContasCredito = contasContabeisSelectList,
+                        ContasDebito = contasContabeisSelectList,
+                    });
+                }
+            }
 
             return View("Ofx", extratoBancarioViewModel);
         }
-
         public IActionResult ContaCorrente()
         {
             var empresas = _context.Empresas.ToList();
@@ -198,7 +277,6 @@ namespace Demonstrativo.Controllers
             }
             return View("ContaCorrenteListar", contasCorrentes);
         }
-
         public IActionResult ContacorrenteCriar()
         {
             var bancos = _context.BancoOfxs.ToList();
@@ -243,7 +321,6 @@ namespace Demonstrativo.Controllers
                 Bancos = ContruirBancos(bancos)
             }) ;
         }
-
         [HttpPost]
         public IActionResult ContacorrenteEditar(ContaCorrenteViewModel contaCorrenteViewModel)
         {
@@ -260,7 +337,6 @@ namespace Demonstrativo.Controllers
 
             return ContaCorrenteListar();
         }
-
         public IActionResult HistoricoListar()
         {
             var listaHistorico = _context.HistoricosOfx.ToList();
@@ -277,7 +353,6 @@ namespace Demonstrativo.Controllers
             }
             return View("HistoricoListar", historicoViewModel);
         }
-
         public IActionResult HistoricoCriar()
         {
             var contasContabeis = _context.ContasContabeis.ToList();
@@ -305,7 +380,6 @@ namespace Demonstrativo.Controllers
                 ContaDebitoId = ConstruirContasContabeisSelectList(contasContabeis)
             });
         }
-
         [HttpPost]
         public IActionResult HistoricoEditar(HistoricoOfxViewModel historico)
         {
@@ -321,7 +395,6 @@ namespace Demonstrativo.Controllers
 
             return HistoricoListar();
         }
-
         [HttpPost]
         public IActionResult GravarHistoricoOfx(HistoricoOfxViewModel historicoOfx)
         {
@@ -337,8 +410,6 @@ namespace Demonstrativo.Controllers
 
             return HistoricoListar();
         }
-
-
         public IActionResult BancoListar()
         {
             var listaBancos = _context.BancoOfxs.ToList();
@@ -354,7 +425,6 @@ namespace Demonstrativo.Controllers
             }
             return View("BancoListar", bancoViewModel);
         }
-
         public IActionResult BancoCriar()
         {
             return View("BancoCriar");
@@ -370,7 +440,6 @@ namespace Demonstrativo.Controllers
                 Nome = banco.Nome
             });
         }
-
         [HttpPost]
         public IActionResult BancoEditar(BancoViewModel banco)
         {
@@ -385,7 +454,6 @@ namespace Demonstrativo.Controllers
 
             return BancoListar();
         }
-
         [HttpPost]
         public IActionResult BancoGravar(BancoViewModel bancoViewModel)
         {
@@ -400,61 +468,6 @@ namespace Demonstrativo.Controllers
 
             return BancoListar();
         }
-
-        [HttpPost]
-        public IActionResult GravarOfx(ExtratoBancarioViewModel ofxs)
-        {
-            foreach (var ofx in ofxs.ContasCorrentes.LancamentosOfxs)
-            {
-                var descric = _context.HistoricosOfx.Any(h => h.Descricao == ofx.Description);
-                var cc = _context.ConstasCorrentes.Any(c => c.NumeroConta == ofxs.ContasCorrentes.NumeroConta);
-                var banco = _context.BancoOfxs.Any(b => b.Codigo == ofxs.Banco.Codigo);
-
-                if (banco == false)
-                {
-                    //banco não cadastrado
-                }
-
-                if (cc == false)
-                {
-                    //Todo: adicionar Conta corrente
-                    _context.ConstasCorrentes.Add(new ContaCorrente()
-                    {
-                        NumeroConta = ofxs.ContasCorrentes.NumeroConta,
-                        EmpresaId = _context.Empresas.FirstOrDefault(e=> e.Codigo == ofxs.EmpresaSelecionada).Codigo,
-                        BancoOfxId = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == ofxs.Banco.Codigo).Id,
-                    });
-                    _context.SaveChanges();
-                }
-                if (descric == false)
-                {
-                    //Todo: adicionar histórico
-                    _context.HistoricosOfx.Add(new HistoricoOfx()
-                    {
-                        Descricao = ofx.Description,
-                        ContaCreditoId = ofx.ContaCreditoSelecionada,
-                        ContaDebitoId = ofx.ContaDebitoSelecionada
-                    });
-                    _context.SaveChanges();
-                }
-
-                _context.Ofxs.Add(new LancamentoOfx()
-                {
-                    Documento = ofx.Id,
-                    TipoLancamento = ofx.Type,
-                    Descricao = ofx.Description,
-                    ValorOfx = ofx.TransationValue,
-                    Data = ofx.Date,
-                    HistoricoOfxId = _context.HistoricosOfx.FirstOrDefault(h => h.Descricao == ofx.Description).Id,
-                    ContaCorrenteId = _context.ConstasCorrentes.FirstOrDefault(c => c.NumeroConta == ofxs.ContasCorrentes.NumeroConta).Id
-                });
-            }
-
-            _context.SaveChanges();
-
-            return View("Index");
-        }
-
         public IActionResult RelatorioOfx()
         {
             var empresas = _context.Empresas.ToList();
@@ -467,7 +480,6 @@ namespace Demonstrativo.Controllers
 
             return View("RelatorioOfx", relatorioViewModel);
         }
-
         [HttpPost]
         public IActionResult Filtrar(RelatorioViewModel relatorioViewModel)
         {
@@ -502,13 +514,63 @@ namespace Demonstrativo.Controllers
             
             return View("RelatorioExibir", relatorioDadosViewModel);
         }
+        [HttpPost]
+        public IActionResult GravarOfx(ExtratoBancarioViewModel ofxs)
+        {
+            foreach (var ofx in ofxs.ContasCorrentes.LancamentosOfxs)
+            {
+                var descric = _context.HistoricosOfx.Any(h => h.Descricao == ofx.Description);
+                var cc = _context.ConstasCorrentes.Any(c => c.NumeroConta == ofxs.ContasCorrentes.NumeroConta);
+                var banco = _context.BancoOfxs.Any(b => b.Codigo == ofxs.Banco.Codigo);
 
+                if (banco == false)
+                {
+                    //banco não cadastrado
+                }
+
+                if (cc == false)
+                {
+                    //Todo: adicionar Conta corrente
+                    _context.ConstasCorrentes.Add(new ContaCorrente()
+                    {
+                        NumeroConta = ofxs.ContasCorrentes.NumeroConta,
+                        EmpresaId = _context.Empresas.FirstOrDefault(e => e.Codigo == ofxs.EmpresaSelecionada).Codigo,
+                        BancoOfxId = _context.BancoOfxs.FirstOrDefault(b => b.Codigo == ofxs.Banco.Codigo).Id,
+                    });
+                    _context.SaveChanges();
+                }
+                if (descric == false)
+                {
+                    //Todo: adicionar histórico
+                    _context.HistoricosOfx.Add(new HistoricoOfx()
+                    {
+                        Descricao = ofx.Description,
+                        ContaCreditoId = ofx.ContaCreditoSelecionada,
+                        ContaDebitoId = ofx.ContaDebitoSelecionada
+                    });
+                    _context.SaveChanges();
+                }
+
+                _context.Ofxs.Add(new LancamentoOfx()
+                {
+                    Documento = ofx.Id,
+                    TipoLancamento = ofx.Type,
+                    Descricao = ofx.Description,
+                    ValorOfx = ofx.TransationValue,
+                    Data = ofx.Date,
+                    HistoricoOfxId = _context.HistoricosOfx.FirstOrDefault(h => h.Descricao == ofx.Description).Id,
+                    ContaCorrenteId = _context.ConstasCorrentes.FirstOrDefault(c => c.NumeroConta == ofxs.ContasCorrentes.NumeroConta).Id
+                });
+            }
+
+            _context.SaveChanges();
+
+            return View("Index");
+        }
         private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)        
             => new(contasContabeis.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Historico}" }), "Codigo", "Descricao");
-
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
             => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
-
         private static SelectList ContruirBancos(IEnumerable<BancoOfx> bancos)
             => new(bancos.Select(c => new { c.Codigo, Nome = $"{c.Codigo} - {c.Nome}" }), "Codigo", "Nome");
 
