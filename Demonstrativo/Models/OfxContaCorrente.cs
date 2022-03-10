@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class ContaCorrente
+    public class OfxContaCorrente
     {
         [Key]
         [Required]
@@ -18,7 +18,7 @@ namespace Demonstrativo.Models
         [Required]
         [ForeignKey("BancoOfxId ")]
         public int BancoOfxId { get; set; }
-        public BancoOfx BancoOfx { get; set; }
+        public OfxBanco BancoOfx { get; set; }
 
     }
 }

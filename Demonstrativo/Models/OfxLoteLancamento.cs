@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class LoteLancamentosOfx
+    public class OfxLoteLancamento
     {
         [Key]
         public int Id { get; set; }
@@ -14,6 +14,6 @@ namespace Demonstrativo.Models
 
         [ForeignKey("LancamentoOfxId")]
         public int LancamentoOfxId { get; set; }
-        public LancamentoOfx LancamentoOfx { get; set; }
+        public OfxLancamento LancamentoOfx { get; set; }
     }
 }

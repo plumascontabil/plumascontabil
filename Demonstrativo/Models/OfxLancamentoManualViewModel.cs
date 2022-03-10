@@ -3,7 +3,7 @@ using System;
 
 namespace Demonstrativo.Models
 {
-    public class LancamentoManualViewModel
+    public class OfxLancamentoManualViewModel
     {
         public DateTime Data { get; set; }
         public SelectList Tipos { get; set; }

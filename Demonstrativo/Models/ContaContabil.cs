@@ -11,7 +11,8 @@ namespace Demonstrativo.Models
         public int Codigo { get; set; }
         public int Classificacao { get; set; }
         public string Historico { get; set; }        
-        public List<HistoricoOfx> HistoricosCreditosOfx { get; set; }
-        public List<HistoricoOfx> HistoricosDebitosOfx { get; set; }
+        public List<OfxDescricao> HistoricosCreditosOfx { get; set; }
+        public List<OfxDescricao> HistoricosDebitosOfx { get; set; }
+        public List<OfxSaldoConta> SaldosContas { get; set; }
     }
 }

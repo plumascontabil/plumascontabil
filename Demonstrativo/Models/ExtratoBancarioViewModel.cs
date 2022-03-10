@@ -5,10 +5,11 @@ namespace Demonstrativo.Models
 {
     public class ExtratoBancarioViewModel
     {
-        public ContaCorrenteViewModel ContasCorrentes { get; set; }
-        public BancoViewModel Banco { get; set; }
+        public OfxComplementoViewModel ComplementoOfxViewModel { get; set; }
+        public OfxContaCorrenteViewModel ContasCorrentes { get; set; }
+        public OfxBancoViewModel Banco { get; set; }
         public SelectList Empresas { get; set; }
         public int EmpresaSelecionada { get; set; }
-        public LancamentoManualViewModel LancamentoManual { get; set; }
+        public OfxLancamentoManualViewModel LancamentoManual { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220309122024_AlterandoNomesTabelasOfx2")]
+    partial class AlterandoNomesTabelasOfx2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +258,7 @@ namespace Demonstrativo.Migrations
                     b.ToTable("ConstasCorrentes");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.OfxDescricao", b =>
+            modelBuilder.Entity("Demonstrativo.Models.OfxHistorico", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -271,7 +273,7 @@ namespace Demonstrativo.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(40)");
 
                     b.HasKey("Id");
 
@@ -524,7 +526,7 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.OfxComplemento", b =>
                 {
-                    b.HasOne("Demonstrativo.Models.OfxDescricao", "HistoricoOfx")
+                    b.HasOne("Demonstrativo.Models.OfxHistorico", "HistoricoOfx")
                         .WithMany("ComplementosOfxs")
                         .HasForeignKey("HistoricoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -560,7 +562,7 @@ namespace Demonstrativo.Migrations
                     b.Navigation("Empresa");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.OfxDescricao", b =>
+            modelBuilder.Entity("Demonstrativo.Models.OfxHistorico", b =>
                 {
                     b.HasOne("Demonstrativo.Models.ContaContabil", "ContaCredito")
                         .WithMany("HistoricosCreditosOfx")
@@ -704,7 +706,7 @@ namespace Demonstrativo.Migrations
                     b.Navigation("ContasCorrentes");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.OfxDescricao", b =>
+            modelBuilder.Entity("Demonstrativo.Models.OfxHistorico", b =>
                 {
                     b.Navigation("ComplementosOfxs");
                 });

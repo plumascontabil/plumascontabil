@@ -2,7 +2,7 @@
 
 namespace Demonstrativo.Models
 {
-    public class BancoViewModel
+    public class OfxBancoViewModel
     {
         public string ReturnUrl { get; set; }
         public int Id { get; set; }

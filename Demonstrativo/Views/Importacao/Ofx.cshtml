@@ -70,7 +70,8 @@
             </select>
             <hr/>
             <output>@Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
-                                <input type="hidden" asp-for="@Model.Banco.Codigo"/></output>
+                                <input type="hidden" asp-for="@Model.Banco.Codigo"/>
+                                <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta"/></output>
             <hr/>
             
             <table class="table table-bordered d-lg-table">
@@ -80,6 +81,7 @@
                         <th>Data</th>
                         <th>Tipo</th>
                         <th>Descrição</th>
+                        <th>Complemento</th>
                         <th>Valor</th>
                         <th>CheckSum</th>
                         <th>Conta Creditar</th>
@@ -106,6 +108,9 @@
                         <td>
                             @ofxs.Description
                             <input type="hidden" asp-for="@Model.ContasCorrentes.LancamentosOfxs[i].Description"/>
+                        </td>
+                        <td>
+                            <input type="text" asp-for="@Model.ContasCorrentes.LancamentosOfxs[i].Complemento"/>
                         </td>
                         <td>
                             @ofxs.TransationValue

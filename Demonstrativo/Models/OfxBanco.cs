@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class BancoOfx
+    public class OfxBanco
     {
         [Key]
         [Required]
@@ -14,6 +14,6 @@ namespace Demonstrativo.Models
 
         [Column(TypeName = "varchar(70)")]
         public string Nome { get; set; }
-        public List<ContaCorrente> ContasCorrentes { get; set; }
+        public List<OfxContaCorrente> ContasCorrentes { get; set; }
     }
 }

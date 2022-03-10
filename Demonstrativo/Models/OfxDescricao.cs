@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class HistoricoOfx
+    public class OfxDescricao
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        [Column(TypeName = "varchar(40)")]
+        [Column(TypeName = "varchar(100)")]
         public  string Descricao { get; set; }
         [ForeignKey("ContaDebitoId")]
         public int ContaDebitoId { get; set; }
@@ -18,6 +18,6 @@ namespace Demonstrativo.Models
         [ForeignKey("ContaCreditoId")]
         public int ContaCreditoId { get; set; }
         public ContaContabil ContaCredito{ get; set; }
-        public List<LancamentoOfx> ImportacoesOfx { get; set; }
+        public List<OfxComplemento> ComplementosOfxs { get; set; }
     }
 }

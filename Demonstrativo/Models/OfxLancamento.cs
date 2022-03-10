@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class LancamentoOfx
+    public class OfxLancamento
     {
         [Key]
         [Required]
@@ -22,15 +22,12 @@ namespace Demonstrativo.Models
         [Column(TypeName = "decimal(11,2)")]
         public double ValorOfx { get; set; }
         
-        [ForeignKey("HistoricoOfxId")]
-        public int HistoricoOfxId { get; set; }
-        public HistoricoOfx HistoricoOfx { get; set; }
-        
         [ForeignKey("ContaCorrenteId")]
         public int ContaCorrenteId { get; set; }
-        public ContaCorrente ContaCorrente { get; set; }
+        public OfxContaCorrente ContaCorrente { get; set; }
         public string TipoLancamento { get; set; }
         [Column(TypeName = "varchar(150)")]
-        public List<LoteLancamentosOfx> LoteLancamentos { get; set; }
+        public List<OfxLoteLancamento> LoteLancamentos { get; set; }
+        public List<OfxComplemento> ComplementosOfxs { get; set; }
     }
 }
