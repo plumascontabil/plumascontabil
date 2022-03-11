@@ -82,6 +82,10 @@ namespace Demonstrativo.Controllers
             }
             return View("Index");
         }
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> ImportarOfx(IFormFile fileOfx = null, ExtratoBancarioViewModel extratoView = null)
         {
@@ -233,240 +237,6 @@ namespace Demonstrativo.Controllers
 
             return View("Ofx", extratoBancarioViewModel);
         }
-        public IActionResult ContaCorrente()
-        {
-            var empresas = _context.Empresas.ToList();
-            var bancos = _context.OfxBancos.ToList();
-
-            var contaCorrente = new OfxContaCorrenteViewModel()
-            {
-                Empresas = ConstruirEmpresas(empresas),
-                Bancos = ContruirBancos(bancos)
-            };
-
-            return View("ContaCorrente", contaCorrente);
-        }
-        public IActionResult ContaCorrenteListar()
-        {
-            var empresas = _context.Empresas.ToList();
-            var bancos = _context.OfxBancos.ToList();
-            var listaContsCorretes = _context.ConstasCorrentes.ToList();
-            var contasCorrentes = new List<OfxContaCorrenteViewModel>();
-            foreach (var contaCorrente in listaContsCorretes)
-            {
-                contasCorrentes.Add(new OfxContaCorrenteViewModel()
-                {
-                    NumeroConta = contaCorrente.NumeroConta,
-                    Empresa = contaCorrente.EmpresaId,
-                    Banco = bancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Codigo,
-                    Id = contaCorrente.Id
-                });
-            }
-            return View("ContaCorrenteListar", contasCorrentes);
-        }
-        public IActionResult ContacorrenteCriar()
-        {
-            var bancos = _context.OfxBancos.ToList();
-            var empresas = _context.Empresas.ToList();
-
-            var contasCorrentes = new OfxContaCorrenteViewModel()
-            {
-                Bancos = ContruirBancos(bancos),
-                Empresas = ConstruirEmpresas(empresas),
-            };
-
-            return View("ContaCorrenteCriar", contasCorrentes);
-        }
-        [HttpPost]
-        public IActionResult ContaCorrenteGravar(OfxContaCorrenteViewModel contaCorrente)
-        {
-            var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == contaCorrente.Banco);
-            var conta = new OfxContaCorrente()
-            {
-                BancoOfxId = banco.Id,
-                NumeroConta = contaCorrente.NumeroConta,
-                EmpresaId = contaCorrente.Empresa
-            };
-
-            _context.ConstasCorrentes.Add(conta);
-            _context.SaveChanges();
-
-            return ContaCorrenteListar();
-        }
-        public IActionResult ContacorrenteEditar(int id)
-        {
-            var contaCorrente = _context.ConstasCorrentes.FirstOrDefault(x => x.Id == id);
-            var empresas = _context.Empresas.ToList();
-            var bancos = _context.OfxBancos.ToList();
-
-            return View("ContaCorrenteEditar", new OfxContaCorrenteViewModel()
-            {
-                NumeroConta = contaCorrente.NumeroConta,
-                Empresa = contaCorrente.EmpresaId,
-                Banco = contaCorrente.BancoOfxId,
-                Empresas = ConstruirEmpresas(empresas),
-                Bancos = ContruirBancos(bancos)
-            }) ;
-        }
-        [HttpPost]
-        public IActionResult ContacorrenteEditar(OfxContaCorrenteViewModel contaCorrenteViewModel)
-        {
-            contaCorrenteViewModel.ReturnUrl ??= Url.Content("~/");
-            var UpdateContaCorrente = _context.ConstasCorrentes.Find(Convert.ToInt32(contaCorrenteViewModel.Id));
-            var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == contaCorrenteViewModel.Banco);
-
-            UpdateContaCorrente.NumeroConta = contaCorrenteViewModel.NumeroConta;
-            UpdateContaCorrente.EmpresaId = contaCorrenteViewModel.Empresa;
-            UpdateContaCorrente.BancoOfxId = banco.Id;
-
-            _context.ConstasCorrentes.Update(UpdateContaCorrente);
-            _context.SaveChanges();
-
-            return ContaCorrenteListar();
-        }
-        public IActionResult HistoricoListar()
-        {
-            var listaHistorico = _context.OfxDescricoes.ToList();
-            var historicoViewModel = new List<OfxDescricaoViewModel>();
-            foreach (var historico in listaHistorico)
-            {
-                historicoViewModel.Add(new OfxDescricaoViewModel()
-                {
-                    Id = historico.Id,
-                    Descricao = historico.Descricao,
-                    CodigoContaDebitoSelecionada = historico.ContaDebitoId,
-                    CodigoContaCreditoSelecionada = historico.ContaCreditoId
-                });
-            }
-            return View("HistoricoListar", historicoViewModel);
-        }
-        public IActionResult HistoricoCriar()
-        {
-            var contasContabeis = _context.ContasContabeis.ToList();
-
-            var historico = new OfxDescricaoViewModel()
-            {
-                ContaCreditoId = ConstruirContasContabeisSelectList(contasContabeis),
-                ContaDebitoId = ConstruirContasContabeisSelectList(contasContabeis)
-            };
-
-            return View("HistoricoCriar", historico);
-        }
-        public IActionResult HistoricoEditar(int id)
-        {
-            var historico = _context.OfxDescricoes.FirstOrDefault(x => x.Id == id);
-            var contasContabeis = _context.ContasContabeis.ToList();
-
-            return View("HistoricoEditar", new OfxDescricaoViewModel()
-            {
-                Id = historico.Id,
-                Descricao = historico.Descricao,
-                CodigoContaCreditoSelecionada = historico.ContaCreditoId,
-                CodigoContaDebitoSelecionada = historico.ContaDebitoId,
-                ContaCreditoId = ConstruirContasContabeisSelectList(contasContabeis),
-                ContaDebitoId = ConstruirContasContabeisSelectList(contasContabeis)
-            });
-        }
-        [HttpPost]
-        public IActionResult HistoricoEditar(OfxDescricaoViewModel historico)
-        {
-            historico.ReturnUrl ??= Url.Content("~/");
-            var updateHistorico = _context.OfxDescricoes.Find(Convert.ToInt32(historico.Id));
-
-            updateHistorico.Descricao = historico.Descricao;
-            updateHistorico.ContaDebitoId = historico.CodigoContaDebitoSelecionada;
-            updateHistorico.ContaCreditoId = historico.CodigoContaCreditoSelecionada;
-
-            _context.OfxDescricoes.Update(updateHistorico);
-            _context.SaveChanges();
-
-            return HistoricoListar();
-        }
-        [HttpPost]
-        public IActionResult GravarHistoricoOfx(OfxDescricaoViewModel historicoOfx)
-        {
-            var historico = new OfxDescricao()
-            {
-                Descricao = historicoOfx.Descricao,
-                ContaDebitoId = historicoOfx.CodigoContaDebitoSelecionada,
-                ContaCreditoId = historicoOfx.CodigoContaCreditoSelecionada,
-            };
-
-            _context.OfxDescricoes.Add(historico);
-            _context.SaveChanges();
-
-            return HistoricoListar();
-        }
-        public IActionResult BancoListar()
-        {
-            var listaBancos = _context.OfxBancos.ToList();
-            var bancoViewModel = new List<OfxBancoViewModel>();
-            foreach (var banco in listaBancos)
-            {
-                bancoViewModel.Add(new OfxBancoViewModel() 
-                { 
-                    Id = banco.Id,
-                    Codigo = banco.Codigo,
-                    Nome = banco.Nome
-                });
-            }
-            return View("BancoListar", bancoViewModel);
-        }
-        public IActionResult BancoCriar()
-        {
-            return View("BancoCriar");
-        }
-        public IActionResult BancoEditar(int id)
-        {
-            var banco = _context.OfxBancos.FirstOrDefault(x => x.Id == id);
-
-            return View("BancoEditar",new OfxBancoViewModel()
-            {
-                Id = banco.Id,
-                Codigo = banco.Codigo,
-                Nome = banco.Nome
-            });
-        }
-        [HttpPost]
-        public IActionResult BancoEditar(OfxBancoViewModel banco)
-        {
-            banco.ReturnUrl ??= Url.Content("~/");
-            var updateBanco = _context.OfxBancos.Find(Convert.ToInt32(banco.Id));
-
-            updateBanco.Codigo = banco.Codigo;
-            updateBanco.Nome = banco.Nome;
-
-            _context.OfxBancos.Update(updateBanco);
-            _context.SaveChanges();
-
-            return BancoListar();
-        }
-        [HttpPost]
-        public IActionResult BancoGravar(OfxBancoViewModel bancoViewModel)
-        {
-            var banco = new OfxBanco()
-            {
-                Codigo = bancoViewModel.Codigo,
-                Nome = bancoViewModel.Nome
-            };
-
-            _context.OfxBancos.Add(banco);
-            _context.SaveChanges();
-
-            return BancoListar();
-        }
-        public IActionResult RelatorioOfx()
-        {
-            var empresas = _context.Empresas.ToList();
-            var contasContabeis = _context.ContasContabeis.ToList();
-            var relatorioViewModel = new RelatorioViewModel() 
-            {
-                Empresas = ConstruirEmpresas(empresas),
-                ContasContabeis = ConstruirContasContabeisSelectList(contasContabeis),
-            };
-
-            return View("RelatorioOfx", relatorioViewModel);
-        }
         [HttpPost]
         public IActionResult Filtrar(RelatorioViewModel relatorioViewModel)
         {
@@ -565,6 +335,18 @@ namespace Demonstrativo.Controllers
             => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
         private static SelectList ContruirBancos(IEnumerable<OfxBanco> bancos)
             => new(bancos.Select(c => new { c.Codigo, Nome = $"{c.Codigo} - {c.Nome}" }), "Codigo", "Nome");
+        public IActionResult RelatorioOfx()
+        {
+            var empresas = _context.Empresas.ToList();
+            var contasContabeis = _context.ContasContabeis.ToList();
+            var relatorioViewModel = new RelatorioViewModel()
+            {
+                Empresas = ConstruirEmpresas(empresas),
+                ContasContabeis = ConstruirContasContabeisSelectList(contasContabeis),
+            };
+
+            return View("RelatorioOfx", relatorioViewModel);
+        }
         public void GerarRelatorioRazao(RelatorioViewModel relatorioViewModel)
         {
             var contasContabeis = _context.ContasContabeis.ToList();
@@ -704,21 +486,5 @@ namespace Demonstrativo.Controllers
             celula.FixedHeight = alturaCelula;
             tabela.AddCell(celula);
         }
-        public IActionResult ExibirSaldoConta()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult GravarSaldoConta()
-        {
-            return View();
-        }
-
-        private void GerarSaldo(RelatorioViewModel relatorioViewModel)
-        {
-            var dadosOfx = _context.OfxLancamentos.ToList();
-        }
     }
-
 }

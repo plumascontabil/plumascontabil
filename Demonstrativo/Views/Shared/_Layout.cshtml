@@ -37,6 +37,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Importacao" asp-action="Index">Importacao</a>
                         </li>
+                        <li class="nav-item">
+                                <div class="dropdown show">
+                                    <a class="nav-link text-dark dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" 
+                                    aria-haspopup="true" aria-expanded="false"
+                                    asp-area="" asp-controller="Importacao" asp-action="Index">
+                                        Importacao
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item"  asp-area="" asp-controller="OfxDescricoes" asp-action="Index">Históticos</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="OfxContasCorrentes" asp-action="Index">Contas Correntes</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="OfxBancos" asp-action="Index">Bancos</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="Importacao" asp-action="ContasContabeis">Contas Contabeis</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="Importacao" asp-action="RelatorioOfx">Relatorio</a>
+                                    </div>
+                                </div>
+                            </li>
                         }
                     </ul>
                         @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50"}))

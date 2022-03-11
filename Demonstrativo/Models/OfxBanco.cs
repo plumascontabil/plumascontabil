@@ -9,7 +9,6 @@ namespace Demonstrativo.Models
         [Key]
         [Required]
         public int Id { get; set; }
-        [MaxLength(4)]
         public int Codigo { get; set; }
 
         [Column(TypeName = "varchar(70)")]

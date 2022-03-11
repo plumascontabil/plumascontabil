@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Demonstrativo.Models;
 
 namespace Demonstrativo.Models
 {
@@ -47,5 +48,7 @@ namespace Demonstrativo.Models
                            .HasForeignKey(x => x.ContaDebitoId)
                            .OnDelete(DeleteBehavior.Restrict);
         }
+
+        public DbSet<Demonstrativo.Models.Descricao> Descricao { get; set; }
     }
 }
