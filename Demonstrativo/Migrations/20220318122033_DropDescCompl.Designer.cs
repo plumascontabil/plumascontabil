@@ -4,40 +4,22 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220318122033_DropDescCompl")]
+    partial class DropDescCompl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Demonstrativo.Models.AutoDescricao", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<int>("LancamentoPadraoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LancamentoPadraoId");
-
-                    b.ToTable("AutoDescricoes");
-                });
 
             modelBuilder.Entity("Demonstrativo.Models.Categoria", b =>
                 {
@@ -79,6 +61,24 @@ namespace Demonstrativo.Migrations
                     b.HasKey("Codigo");
 
                     b.ToTable("ContasContabeis");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.Descricao", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<int?>("VendaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VendaId");
+
+                    b.ToTable("Descricao");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.Empresa", b =>
@@ -249,7 +249,7 @@ namespace Demonstrativo.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("ContasCorrentes");
+                    b.ToTable("ConstasCorrentes");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxLancamento", b =>
@@ -436,15 +436,13 @@ namespace Demonstrativo.Migrations
                     b.ToTable("Vendas");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.AutoDescricao", b =>
+            modelBuilder.Entity("Demonstrativo.Models.Descricao", b =>
                 {
-                    b.HasOne("Demonstrativo.Models.LancamentoPadrao", "LancamentoPadrao")
-                        .WithMany("AutoDescricoes")
-                        .HasForeignKey("LancamentoPadraoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Demonstrativo.Models.Venda", "Venda")
+                        .WithMany()
+                        .HasForeignKey("VendaId");
 
-                    b.Navigation("LancamentoPadrao");
+                    b.Navigation("Venda");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.ItemVenda", b =>
@@ -664,8 +662,6 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.LancamentoPadrao", b =>
                 {
-                    b.Navigation("AutoDescricoes");
-
                     b.Navigation("Lancamentos");
 
                     b.Navigation("OfxLancamentos");

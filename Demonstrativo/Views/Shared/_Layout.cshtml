@@ -35,7 +35,16 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="CarregarUsuario">Usuários</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Importacao" asp-action="Index">Importacao</a>
+                            <div class="dropdown show">
+                                <a class="nav-link text-dark dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" 
+                                aria-haspopup="true" aria-expanded="false"
+                                asp-area="" asp-controller="Importacao" asp-action="Index">
+                                    Importações
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item"  asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
+                                </div>
+                            </div>
                         </li>
                         <li class="nav-item">
                                 <div class="dropdown show">
@@ -45,10 +54,10 @@
                                         Importacao
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item"  asp-area="" asp-controller="OfxDescricoes" asp-action="Index">Históticos</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="OfxContasCorrentes" asp-action="Index">Contas Correntes</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="OfxBancos" asp-action="Index">Bancos</a>
-                                        <a class="dropdown-item"  asp-area="" asp-controller="Importacao" asp-action="ContasContabeis">Contas Contabeis</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="ContasContabeis" asp-action="Index">Contas Contabeis</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="LancamentosPadroes" asp-action="Index">Lancamentos Padrões</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="Importacao" asp-action="RelatorioOfx">Relatorio</a>
                                     </div>
                                 </div>
@@ -57,7 +66,7 @@
                     </ul>
                         @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50"}))
                         {
-                            @Html.DropDownList("EmpresasId", null, "Empresa", new { @class = "form-control my-2 mr-sm-2 w-50" })
+                            @Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "form-control my-2 mr-sm-2 w-50" })
                             @Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "form-control my-2 mr-sm-2" })
                             <button class="btn btn-plumas my-2 my-sm-0 m-1" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -86,7 +95,7 @@
     <script src="~/lib/jquery/dist/jquery.mask.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.mask-valor').mask('#.###.##0,00', { reverse: true });
+            $('.mask-valor').mask('0.000.000,00', { reverse: true });
             $('.mask-valorDecimal').mask('00,00', { reverse: false });
         });
     </script>

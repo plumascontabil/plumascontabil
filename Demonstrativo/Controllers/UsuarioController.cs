@@ -129,16 +129,17 @@ namespace Demonstrativo.Controllers
                 }
 
             }
-            var editarViewModel = new EditarViewModel();
-
-            editarViewModel.UserRole = userRole.Id;
+            var editarViewModel = new EditarViewModel
+            {
+                UserRole = userRole.Id
+            };
 
             return View("Usuarios",viewModel);
         }
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
         {
-            var users = _userManager.Users;
+            var users = _userManager.Users.ToList();
 
             var usuarioViewModel = new List<UsuarioViewModel>();
             foreach (var user in users)
@@ -150,7 +151,7 @@ namespace Demonstrativo.Controllers
                     UserRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault()
                 });
             }
-            return View("Usuarios",usuarioViewModel);
+            return View("Usuarios", usuarioViewModel);
         }
         public IActionResult Login()
         {

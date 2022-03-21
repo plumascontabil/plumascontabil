@@ -26,8 +26,9 @@ namespace Demonstrativo.Models
         public int ContaCorrenteId { get; set; }
         public OfxContaCorrente ContaCorrente { get; set; }
         public string TipoLancamento { get; set; }
-        [Column(TypeName = "varchar(150)")]
         public List<OfxLoteLancamento> LoteLancamentos { get; set; }
-        public List<OfxComplemento> ComplementosOfxs { get; set; }
+        [ForeignKey("LancamentoPadraoId")]
+        public int? LancamentoPadraoId { get; set; }
+        public LancamentoPadrao LancamentoPadrao { get; set; }
     }
 }

@@ -16,11 +16,8 @@ namespace Demonstrativo.Models
         public DateTime Date { get; set; }
         public long CheckSum { get; set; }
         public string Type { get; set; }
-        public SelectList ContasDebito { get; set; }
-        public SelectList ContasCredito { get; set; }
-        public int ContaDebitoSelecionada { get; set; }
-        public int ContaCreditoSelecionada { get; set; }
-        public List<OfxDescricaoViewModel> Historicos { get; set; }
+        public SelectList LancamentosPadroes { get; set; }
+        public int LancamentoPadraoSelecionado { get; set; }
 
     }
 }

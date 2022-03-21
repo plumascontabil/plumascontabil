@@ -4,40 +4,22 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220315155714_DropContas")]
+    partial class DropContas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Demonstrativo.Models.AutoDescricao", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<int>("LancamentoPadraoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LancamentoPadraoId");
-
-                    b.ToTable("AutoDescricoes");
-                });
 
             modelBuilder.Entity("Demonstrativo.Models.Categoria", b =>
                 {
@@ -79,6 +61,24 @@ namespace Demonstrativo.Migrations
                     b.HasKey("Codigo");
 
                     b.ToTable("ContasContabeis");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.Descricao", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<int?>("VendaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VendaId");
+
+                    b.ToTable("Descricao");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.Empresa", b =>
@@ -180,10 +180,10 @@ namespace Demonstrativo.Migrations
                     b.Property<int?>("Codigo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ContaCreditoId")
+                    b.Property<int?>("ContaContabilCodigo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ContaDebitoId")
+                    b.Property<int?>("ContaContabilCodigo1")
                         .HasColumnType("int");
 
                     b.Property<string>("Descricao")
@@ -200,13 +200,13 @@ namespace Demonstrativo.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.HasIndex("ContaCreditoId");
+                    b.HasIndex("ContaContabilCodigo");
 
-                    b.HasIndex("ContaDebitoId");
+                    b.HasIndex("ContaContabilCodigo1");
 
                     b.HasIndex("TipoContaId");
 
-                    b.ToTable("LancamentosPadroes");
+                    b.ToTable("LancamentoPadrao");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxBanco", b =>
@@ -225,6 +225,31 @@ namespace Demonstrativo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OfxBancos");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.OfxComplemento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DescricaoComplemento")
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<int>("HistoricoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OfxId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HistoricoId");
+
+                    b.HasIndex("OfxId");
+
+                    b.ToTable("OfxComplementos");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxContaCorrente", b =>
@@ -249,7 +274,33 @@ namespace Demonstrativo.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("ContasCorrentes");
+                    b.ToTable("ConstasCorrentes");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.OfxDescricao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ContaCreditoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ContaDebitoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContaCreditoId");
+
+                    b.HasIndex("ContaDebitoId");
+
+                    b.ToTable("OfxDescricoes");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxLancamento", b =>
@@ -313,7 +364,7 @@ namespace Demonstrativo.Migrations
 
                     b.HasIndex("LancamentoOfxId");
 
-                    b.ToTable("OfxLoteLancamento");
+                    b.ToTable("OfxLotes");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxSaldoConta", b =>
@@ -341,7 +392,7 @@ namespace Demonstrativo.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("OfxSaldoConta");
+                    b.ToTable("OfxSaldoContas");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.Produto", b =>
@@ -436,15 +487,13 @@ namespace Demonstrativo.Migrations
                     b.ToTable("Vendas");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.AutoDescricao", b =>
+            modelBuilder.Entity("Demonstrativo.Models.Descricao", b =>
                 {
-                    b.HasOne("Demonstrativo.Models.LancamentoPadrao", "LancamentoPadrao")
-                        .WithMany("AutoDescricoes")
-                        .HasForeignKey("LancamentoPadraoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Demonstrativo.Models.Venda", "Venda")
+                        .WithMany()
+                        .HasForeignKey("VendaId");
 
-                    b.Navigation("LancamentoPadrao");
+                    b.Navigation("Venda");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.ItemVenda", b =>
@@ -499,15 +548,13 @@ namespace Demonstrativo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Demonstrativo.Models.ContaContabil", "ContaCredito")
+                    b.HasOne("Demonstrativo.Models.ContaContabil", null)
                         .WithMany("LancamentoPadraoCreditar")
-                        .HasForeignKey("ContaCreditoId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ContaContabilCodigo");
 
-                    b.HasOne("Demonstrativo.Models.ContaContabil", "ContaDebito")
+                    b.HasOne("Demonstrativo.Models.ContaContabil", null)
                         .WithMany("LancamentoPadraoDebitar")
-                        .HasForeignKey("ContaDebitoId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ContaContabilCodigo1");
 
                     b.HasOne("Demonstrativo.Models.TipoConta", "Tipo")
                         .WithMany("Contas")
@@ -515,11 +562,26 @@ namespace Demonstrativo.Migrations
 
                     b.Navigation("Categoria");
 
-                    b.Navigation("ContaCredito");
-
-                    b.Navigation("ContaDebito");
-
                     b.Navigation("Tipo");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.OfxComplemento", b =>
+                {
+                    b.HasOne("Demonstrativo.Models.OfxDescricao", "HistoricoOfx")
+                        .WithMany("ComplementosOfxs")
+                        .HasForeignKey("HistoricoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Demonstrativo.Models.OfxLancamento", "LancamentoOfx")
+                        .WithMany("ComplementosOfxs")
+                        .HasForeignKey("OfxId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HistoricoOfx");
+
+                    b.Navigation("LancamentoOfx");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxContaCorrente", b =>
@@ -539,6 +601,25 @@ namespace Demonstrativo.Migrations
                     b.Navigation("BancoOfx");
 
                     b.Navigation("Empresa");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.OfxDescricao", b =>
+                {
+                    b.HasOne("Demonstrativo.Models.ContaContabil", "ContaCredito")
+                        .WithMany("HistoricosCreditosOfx")
+                        .HasForeignKey("ContaCreditoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Demonstrativo.Models.ContaContabil", "ContaDebito")
+                        .WithMany("HistoricosDebitosOfx")
+                        .HasForeignKey("ContaDebitoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ContaCredito");
+
+                    b.Navigation("ContaDebito");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxLancamento", b =>
@@ -642,6 +723,10 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.ContaContabil", b =>
                 {
+                    b.Navigation("HistoricosCreditosOfx");
+
+                    b.Navigation("HistoricosDebitosOfx");
+
                     b.Navigation("LancamentoPadraoCreditar");
 
                     b.Navigation("LancamentoPadraoDebitar");
@@ -664,8 +749,6 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.LancamentoPadrao", b =>
                 {
-                    b.Navigation("AutoDescricoes");
-
                     b.Navigation("Lancamentos");
 
                     b.Navigation("OfxLancamentos");
@@ -676,8 +759,15 @@ namespace Demonstrativo.Migrations
                     b.Navigation("ContasCorrentes");
                 });
 
+            modelBuilder.Entity("Demonstrativo.Models.OfxDescricao", b =>
+                {
+                    b.Navigation("ComplementosOfxs");
+                });
+
             modelBuilder.Entity("Demonstrativo.Models.OfxLancamento", b =>
                 {
+                    b.Navigation("ComplementosOfxs");
+
                     b.Navigation("LoteLancamentos");
                 });
 

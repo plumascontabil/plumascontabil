@@ -1,0 +1,14 @@
+﻿@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Importar";
+}
+
+<div class="row">
+    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
+        <h1>Importar OFX</h1>
+        <form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
+          <input type="file" name="ofxArquivo" class="btn form-control-file">
+          <input type="submit" value="Upload Ofx" name="submit" class="btn btn-plumas">
+        </form>
+    </div>
+</div>

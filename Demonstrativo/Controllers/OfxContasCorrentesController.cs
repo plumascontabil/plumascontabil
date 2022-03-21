@@ -21,7 +21,7 @@ namespace Demonstrativo.Controllers
         // GET: OfxContasCorrentes
         public async Task<IActionResult> Index()
         {
-            var context = _context.ConstasCorrentes.Include(o => o.BancoOfx).Include(o => o.Empresa);
+            var context = _context.ContasCorrentes.Include(o => o.BancoOfx).Include(o => o.Empresa);
             return View(await context.ToListAsync());
         }
 
@@ -33,7 +33,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
-            var ofxContaCorrente = await _context.ConstasCorrentes
+            var ofxContaCorrente = await _context.ContasCorrentes
                 .Include(o => o.BancoOfx)
                 .Include(o => o.Empresa)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -79,7 +79,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
-            var ofxContaCorrente = await _context.ConstasCorrentes.FindAsync(id);
+            var ofxContaCorrente = await _context.ContasCorrentes.FindAsync(id);
             if (ofxContaCorrente == null)
             {
                 return NotFound();
@@ -134,7 +134,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
-            var ofxContaCorrente = await _context.ConstasCorrentes
+            var ofxContaCorrente = await _context.ContasCorrentes
                 .Include(o => o.BancoOfx)
                 .Include(o => o.Empresa)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -151,15 +151,15 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ofxContaCorrente = await _context.ConstasCorrentes.FindAsync(id);
-            _context.ConstasCorrentes.Remove(ofxContaCorrente);
+            var ofxContaCorrente = await _context.ContasCorrentes.FindAsync(id);
+            _context.ContasCorrentes.Remove(ofxContaCorrente);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OfxContaCorrenteExists(int id)
         {
-            return _context.ConstasCorrentes.Any(e => e.Id == id);
+            return _context.ContasCorrentes.Any(e => e.Id == id);
         }
     }
 }

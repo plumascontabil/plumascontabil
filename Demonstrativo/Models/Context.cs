@@ -10,7 +10,7 @@ namespace Demonstrativo.Models
     public class Context : DbContext
     {
         public DbSet<Empresa> Empresas { get; set; }
-        public DbSet<LancamentoPadrao> Contas { get; set; }
+        public DbSet<LancamentoPadrao> LancamentosPadroes { get; set; }
         public DbSet<Competencia> Competencias { get; set; }
         public DbSet<Lancamento> Lancamentos { get; set; }
         public DbSet<ProvisoesDepreciacao> ProvisoesDepreciacoes { get; set; }
@@ -21,12 +21,9 @@ namespace Demonstrativo.Models
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<OfxLancamento> OfxLancamentos { get; set; }
         public DbSet<ContaContabil> ContasContabeis { get; set; }
-        public DbSet<OfxDescricao> OfxDescricoes { get; set; }
         public DbSet<OfxBanco> OfxBancos { get; set; }
-        public DbSet<OfxContaCorrente> ConstasCorrentes { get; set; }
-        public DbSet<OfxLoteLancamento> OfxLotes { get; set; }
-        public DbSet<OfxSaldoConta> OfxSaldoContas { get; set; }
-        public DbSet<OfxComplemento> OfxComplementos { get; set; }
+        public DbSet<OfxContaCorrente> ContasCorrentes { get; set; }
+        public DbSet<AutoDescricao> AutoDescricoes { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
@@ -35,20 +32,18 @@ namespace Demonstrativo.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Entity<OfxDescricao>()
+            modelBuilder.Entity<LancamentoPadrao>()
                            .HasOne(h => h.ContaCredito)
-                           .WithMany(c => c.HistoricosCreditosOfx)
+                           .WithMany(c => c.LancamentoPadraoCreditar)
                            .HasForeignKey(x => x.ContaCreditoId)
                            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<OfxDescricao>()
+            modelBuilder.Entity<LancamentoPadrao>()
                            .HasOne(h => h.ContaDebito)
-                           .WithMany(c => c.HistoricosDebitosOfx)
+                           .WithMany(c => c.LancamentoPadraoDebitar)
                            .HasForeignKey(x => x.ContaDebitoId)
                            .OnDelete(DeleteBehavior.Restrict);
         }
 
-        public DbSet<Demonstrativo.Models.Descricao> Descricao { get; set; }
     }
 }

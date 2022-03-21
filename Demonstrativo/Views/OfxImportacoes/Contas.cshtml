@@ -13,7 +13,7 @@
     </div>
     <hr />
     <div class="m-auto" >
-    <form asp-controller="Importacao" asp-action="ImportarOfx">
+    <form asp-controller="Importacao" asp-action="OfxImportar">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Adicionar Lancamento Manual
@@ -58,7 +58,7 @@
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" asp-action="ImportarOfx">Save changes</button>
+                <button type="submit" class="btn btn-primary" asp-action="OfxImportar">Save changes</button>
                 </div>
             </div>
             </div>
@@ -81,10 +81,8 @@
                         <th>Data</th>
                         <th>Tipo</th>
                         <th>Descrição</th>
-                        <th>Complemento</th>
                         <th>Valor</th>
-                        <th>CheckSum</th>
-                        <th>Lancamento Padrão</th>
+                        <th>Lançamento Padrão</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,26 +107,19 @@
                             <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description"/>
                         </td>
                         <td>
-                            <input type="text" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Complemento"/>
-                        </td>
-                        <td>
                             @ofxs.TransationValue
                             <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue"/>
-                        </td>
-                        <td>
-                            @ofxs.CheckSum
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].CheckSum"/>
                         </td>
                         <td> 
                             <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control">
                                 <option value="">Selecione</option>
                             </select>
                         </td>
-                    </tr>
+                    </tr>   
                 }
                 </tbody>
             </table>
-            <input type="submit" asp-action="GravarOfx"/>
+            <input type="submit" asp-action="OfxSalvar"/>
         </form>
     </form>
     </div>
