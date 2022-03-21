@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OFXParser.Entities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,7 +57,7 @@ namespace Demonstrativo.Controllers
                 //varrendo arquivo e adicionado as ViewsModel
                 foreach (var dados in extratoBancario.Transactions)
                 {
-                    if(autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description) == null)
+                    if (autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description) == null)
                     {
                         lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                         {
@@ -145,7 +143,7 @@ namespace Demonstrativo.Controllers
                             CheckSum = dados.CheckSum,
                             Type = dados.Type,
                             LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                            LancamentoPadraoSelecionado = 
+                            LancamentoPadraoSelecionado =
                                 Convert.ToInt32(_context.LancamentosPadroes
                                                 .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
                                                     .Codigo)
@@ -189,7 +187,7 @@ namespace Demonstrativo.Controllers
             }
             return View("Contas", extratoBancarioViewModel);
         }
-                
+
         [HttpPost]
         public IActionResult OfxSalvar(ExtratoBancarioViewModel dados)
         {
@@ -236,7 +234,7 @@ namespace Demonstrativo.Controllers
                     });
                     _context.SaveChanges();
                 }
-                else if(descricao.LancamentoPadraoId == dado.LancamentoPadraoSelecionado 
+                else if (descricao.LancamentoPadraoId == dado.LancamentoPadraoSelecionado
                     && descricao.Descricao != dado.Description)
                 {
                     _context.AutoDescricoes.Add(new AutoDescricao()

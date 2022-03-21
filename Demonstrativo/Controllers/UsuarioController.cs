@@ -1,13 +1,11 @@
 ﻿using Demonstrativo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace Demonstrativo.Controllers
 {
@@ -57,7 +55,7 @@ namespace Demonstrativo.Controllers
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = viewModel.Email, Email = viewModel.Email };
-                var result = await _userManager.CreateAsync(user, viewModel.Password);                
+                var result = await _userManager.CreateAsync(user, viewModel.Password);
 
                 if (result.Succeeded)
                 {
@@ -84,7 +82,7 @@ namespace Demonstrativo.Controllers
             var nameRole = roles.FirstOrDefault();
 
             var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
-            
+
             return View(new EditarViewModel()
             {
                 Id = id,
@@ -112,11 +110,11 @@ namespace Demonstrativo.Controllers
 
                 var roles = await _userManager.GetRolesAsync(user);
 
-                if(roles.Any(roleName => roleName != userRole.Name))
+                if (roles.Any(roleName => roleName != userRole.Name))
                 {
                     await _userManager.RemoveFromRoleAsync(user, roles.FirstOrDefault());
                     await _userManager.AddToRoleAsync(user, userRole.Name);
-                }         
+                }
 
                 if (result.Succeeded)
                 {
@@ -134,7 +132,7 @@ namespace Demonstrativo.Controllers
                 UserRole = userRole.Id
             };
 
-            return View("Usuarios",viewModel);
+            return View("Usuarios", viewModel);
         }
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
@@ -144,9 +142,10 @@ namespace Demonstrativo.Controllers
             var usuarioViewModel = new List<UsuarioViewModel>();
             foreach (var user in users)
             {
-                usuarioViewModel.Add(new UsuarioViewModel() {
+                usuarioViewModel.Add(new UsuarioViewModel()
+                {
                     Id = user.Id,
-                    Email = user.Email, 
+                    Email = user.Email,
                     Usuario = user.UserName,
                     UserRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault()
                 });

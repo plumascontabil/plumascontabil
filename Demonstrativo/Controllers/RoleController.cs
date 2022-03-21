@@ -1,9 +1,7 @@
 ﻿using Demonstrativo.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,7 +40,7 @@ namespace Demonstrativo.Controllers
         public void CarregarRoles()
         {
             List<IdentityRole> roles = new();
-            
+
             var registrarViewModel = new RegistrarViewModel();
             foreach (var role in roles)
             {

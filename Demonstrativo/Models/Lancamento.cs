@@ -26,7 +26,7 @@ namespace Demonstrativo.Models
 
         [ForeignKey("DataCompetencia")]
         public Competencia Competencia { get; set; }
-        [Required] 
+        [Required]
         public int EmpresaId { get; set; }
 
         [ForeignKey("EmpresaId")]

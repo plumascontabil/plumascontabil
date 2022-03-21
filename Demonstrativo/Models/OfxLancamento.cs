@@ -21,7 +21,7 @@ namespace Demonstrativo.Models
         [Required]
         [Column(TypeName = "decimal(11,2)")]
         public double ValorOfx { get; set; }
-        
+
         [ForeignKey("ContaCorrenteId")]
         public int ContaCorrenteId { get; set; }
         public OfxContaCorrente ContaCorrente { get; set; }

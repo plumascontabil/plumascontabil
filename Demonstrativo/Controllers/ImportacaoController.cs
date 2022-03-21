@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OFXParser.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
@@ -40,7 +38,7 @@ namespace Demonstrativo.Controllers
             using (var csv = new CsvReader(reader, new CultureInfo("pt-BR")))
             {
                 var records = csv.GetRecords<ImportacaoCsvViewModel>().ToList();
-                
+
                 foreach (var record in records)
                 {
                     var insertEmpresa = new Empresa()
@@ -50,7 +48,7 @@ namespace Demonstrativo.Controllers
                         Apelido = record.Apelido,
                         Cnpj = record.Cnpj ?? "00.000.000/0001-00",
                         Situacao = record.Situacao,
-                    };                    
+                    };
 
                     _context.Empresas.Add(insertEmpresa);
                     _context.SaveChanges();
@@ -84,9 +82,9 @@ namespace Demonstrativo.Controllers
             return View("Index");
         }
 
-        
-        
-        
+
+
+
         [HttpPost]
         public IActionResult Filtrar(RelatorioViewModel relatorioViewModel)
         {
@@ -100,9 +98,9 @@ namespace Demonstrativo.Controllers
 
             foreach (var contaCorrente in contasCorrentes)
             {
-                foreach(var dado in dadosOfx)
+                foreach (var dado in dadosOfx)
                 {
-                    relatorioDadosViewModel.Add(new RelatorioViewModel 
+                    relatorioDadosViewModel.Add(new RelatorioViewModel
                     {
                         RazaoEmpresa = contaCorrente.EmpresaId,
                         Date = dado.Data,
@@ -114,23 +112,23 @@ namespace Demonstrativo.Controllers
             }
 
             GerarRelatorioRazao(relatorioViewModel);
-            
+
             return View("RelatorioExibir", relatorioDadosViewModel);
         }
-        
-        
-        
-        
-        
-        private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)        
+
+
+
+
+
+        private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)
             => new(contasContabeis.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Historico}" }), "Codigo", "Descricao");
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
             => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
-        
-        
-        
-        
-        
+
+
+
+
+
         public IActionResult RelatorioOfx()
         {
             var empresas = _context.Empresas.ToList();
@@ -262,7 +260,7 @@ namespace Demonstrativo.Controllers
             int tamanhoFonte = 9, int alturaCelula = 25)
         {
             int estilo = iTextSharp.text.Font.NORMAL;
-            if(negrito && italico)
+            if (negrito && italico)
             {
                 estilo = iTextSharp.text.Font.BOLDITALIC;
             }

@@ -1,18 +1,13 @@
 using Demonstrativo.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Demonstrativo
 {
@@ -32,8 +27,8 @@ namespace Demonstrativo
 
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<ContextIdentity>(options => 
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))                
+            services.AddDbContext<ContextIdentity>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -64,7 +59,7 @@ namespace Demonstrativo
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("roleAdministrador", policy =>
-                policy.RequireRole("Administrador","Intermediario"));
+                policy.RequireRole("Administrador", "Intermediario"));
             });
 
         }

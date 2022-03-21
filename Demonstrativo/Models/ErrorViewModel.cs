@@ -1,5 +1,3 @@
-using System;
-
 namespace Demonstrativo.Models
 {
     public class ErrorViewModel

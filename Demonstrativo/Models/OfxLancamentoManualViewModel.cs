@@ -12,6 +12,6 @@ namespace Demonstrativo.Models
         public double Valor { get; set; }
         public int ContaCreditar { get; set; }
         public int ContaDebitar { get; set; }
-                            
+
     }
 }

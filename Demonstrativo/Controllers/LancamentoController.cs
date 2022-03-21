@@ -7,12 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Demonstrativo.Controllers
-{ 
+{
     [Authorize]
     public class LancamentoController : Controller
     {
@@ -22,7 +21,7 @@ namespace Demonstrativo.Controllers
         {
             _context = context;
         }
-        
+
         public IActionResult Index()
         {
             AdicionarCompetenciaMesAtual();
@@ -36,7 +35,7 @@ namespace Demonstrativo.Controllers
         {
             DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
 
-            if(_context.Competencias.Any(c => c.Data == competenciaAtual))
+            if (_context.Competencias.Any(c => c.Data == competenciaAtual))
             {
                 return;
             }
@@ -62,9 +61,9 @@ namespace Demonstrativo.Controllers
                     competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
             ViewBag.EmpresasId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
-         }
-        
-        private TrimestreViewModel CarregarCategorias(int? empresasId=null, DateTime? competenciasId=null)
+        }
+
+        private TrimestreViewModel CarregarCategorias(int? empresasId = null, DateTime? competenciasId = null)
         {
             var trimestreViewModel = new TrimestreViewModel();
 
@@ -78,7 +77,7 @@ namespace Demonstrativo.Controllers
 
             if (empresasId.HasValue && competenciasId.HasValue)
             {
-                lancamentos =  _context.Lancamentos.Where(x => x.EmpresaId == empresasId && x.DataCompetencia == competenciasId)
+                lancamentos = _context.Lancamentos.Where(x => x.EmpresaId == empresasId && x.DataCompetencia == competenciasId)
                     .ToList();
             }
 
@@ -132,7 +131,7 @@ namespace Demonstrativo.Controllers
                     }
                     if (conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201)
                     {
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo});
+                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
@@ -187,7 +186,7 @@ namespace Demonstrativo.Controllers
         {
             var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
-            if (estoqueVendas.Id == 0 )
+            if (estoqueVendas.Id == 0)
             {
                 var insertEstoqueVendas = new Venda()
                 {
@@ -198,7 +197,7 @@ namespace Demonstrativo.Controllers
 
                 _context.Vendas.Add(insertEstoqueVendas);
                 _context.SaveChanges();
-                
+
                 foreach (var itemVenda in estoqueVendas.ItensVendas)
                 {
                     if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
@@ -215,7 +214,7 @@ namespace Demonstrativo.Controllers
                             Quantidade = itemVenda.Quantidade,
                             Preco = itemVenda.Preco
                         };
-                        
+
                         _context.ItensVendas.Add(insertItemVenda);
                         _context.SaveChanges();
                     }
@@ -238,7 +237,7 @@ namespace Demonstrativo.Controllers
                 updateEstoqueVendas.DataCompetencia = (DateTime)estoqueVendas.Data;
                 updateEstoqueVendas.EmpresaId = (int)estoqueVendas.Empresa;
                 updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
-                
+
                 foreach (var itemVenda in estoqueVendas.ItensVendas)
                 {
                     if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
@@ -253,7 +252,7 @@ namespace Demonstrativo.Controllers
                             VendaId = updateEstoqueVendas.Id,
                             ProdutoId = itemVenda.ProdutoId,
                             Quantidade = itemVenda.Quantidade,
-                            Preco = itemVenda.Preco 
+                            Preco = itemVenda.Preco
                         };
 
                         _context.ItensVendas.Add(insertItemVenda);
@@ -273,8 +272,8 @@ namespace Demonstrativo.Controllers
             }
 
             var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
-            
-            if (provisoesDepreciacoes.Id == 0 )
+
+            if (provisoesDepreciacoes.Id == 0)
             {
                 var insertProvisoes = new ProvisoesDepreciacao()
                 {
@@ -309,7 +308,7 @@ namespace Demonstrativo.Controllers
             }
 
             var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.SelectMany(x => x.Lancamentos));
-           
+
             var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
             {
                 Id = x.Id,
@@ -327,7 +326,7 @@ namespace Demonstrativo.Controllers
                     continue;
                 }
 
-                if(lancamento.Id != 0 && lancamento.Valor == 0)
+                if (lancamento.Id != 0 && lancamento.Valor == 0)
                 {
                     _context.Lancamentos.Remove(lancamento);
                     _context.SaveChanges();
@@ -337,7 +336,7 @@ namespace Demonstrativo.Controllers
                 if (lancamento.Id == 0)
                 {
                     var insertLancamento = new Lancamento();
-                    if(lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
+                    if (lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
                     {
                         insertLancamento.ContaId = lancamento.ContaId;
                     }
@@ -364,11 +363,11 @@ namespace Demonstrativo.Controllers
             var primeiroLancamento = lancamentos.FirstOrDefault();
 
             if (primeiroLancamento != null)
-                return Filtrar(primeiroLancamento.EmpresaId,primeiroLancamento.DataCompetencia);
+                return Filtrar(primeiroLancamento.EmpresaId, primeiroLancamento.DataCompetencia);
             else
                 return RedirectToAction("Index");
         }
-    
+
         public TrimestreViewModel CarregarTrimestre(DateTime? competenciasId = null, int? empresaId = null)
         {
             if (competenciasId == null)
@@ -380,7 +379,7 @@ namespace Demonstrativo.Controllers
 
             if (mes < 4)
             {
-                int[] trimestre = {1,2,3 };
+                int[] trimestre = { 1, 2, 3 };
                 return SomarTrimestre(trimestre, empresaId, competenciasId);
             }
             else if (mes >= 4 && mes < 7)
@@ -399,7 +398,7 @@ namespace Demonstrativo.Controllers
                 return SomarTrimestre(trimestre, empresaId, competenciasId);
             }
         }
-        
+
         public TrimestreViewModel SomarTrimestre(int[] trimestre, int? empresaId, DateTime? competenciasId = null)
         {
             var trimestreViewModel = new TrimestreViewModel();
@@ -412,7 +411,7 @@ namespace Demonstrativo.Controllers
 
             foreach (var competencia in trimestre)
             {
-                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia  && l.Conta?.TipoContaId == (int)ETipoConta.Compras))
+                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.Compras))
                 {
                     trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
                     {
@@ -463,10 +462,10 @@ namespace Demonstrativo.Controllers
                         Valor = lancamento.Valor
                     });
                 }
-                
+
                 foreach (var conta in contas.Where(c => c.TipoContaId == (int)ETipoConta.Despesas))
                 {
-                    if(conta.Lancamentos == null)
+                    if (conta.Lancamentos == null)
                     {
                         continue;
                     }
@@ -487,7 +486,7 @@ namespace Demonstrativo.Controllers
 
                 var provisaoDepreciacao = provisoes.FirstOrDefault(p => p.EmpresaId == empresaId && p.DataCompetencia.Month == competencia);
 
-                if(provisaoDepreciacao != null)
+                if (provisaoDepreciacao != null)
                 {
                     trimestreViewModel.ProvisoesDepreciacoes = new ProvisoesDepreciacoesViewModel()
                     {
@@ -518,16 +517,16 @@ namespace Demonstrativo.Controllers
         public TrimestreViewModel CarregarVenda(DateTime? competenciasId = null, int? empresaId = null)
         {
             var trimestreViewModel = new TrimestreViewModel();
-            
+
             List<Venda> vendas = _context.Vendas.ToList();
             List<ItemVenda> itensVendas = _context.ItensVendas.ToList();
             List<Produto> produtos = _context.Produtos.ToList();
 
             var vendasPorEmpresa = vendas.Where(v => v.DataCompetencia == competenciasId && v.EmpresaId == empresaId);
-                        
+
             foreach (var venda in vendasPorEmpresa)
             {
-                var itensVendasViewModel = new List<ItemVendaViewModel>();                
+                var itensVendasViewModel = new List<ItemVendaViewModel>();
 
                 foreach (var itemVenda in itensVendas.Where(i => i.VendaId == venda.Id))
                 {
@@ -551,11 +550,11 @@ namespace Demonstrativo.Controllers
                     Data = venda.DataCompetencia,
                     Empresa = venda.EmpresaId,
                     ItensVendas = itensVendasViewModel,
-                    Produtos = produtos.Select(p => new ProdutoViewModel() { Id = p.Id,Nome = p.Nome}).ToList()
+                    Produtos = produtos.Select(p => new ProdutoViewModel() { Id = p.Id, Nome = p.Nome }).ToList()
                 };
             }
-            
-            if(trimestreViewModel.EstoqueVendas.Id == 0)
+
+            if (trimestreViewModel.EstoqueVendas.Id == 0)
             {
                 trimestreViewModel.EstoqueVendas = new VendaViewModel()
                 {
@@ -566,8 +565,8 @@ namespace Demonstrativo.Controllers
             }
 
             return trimestreViewModel;
-        } 
-        
+        }
+
         public IActionResult GerarArquivo(int? empresaId = null, DateTime? competenciasId = null)
         {
             var contas = _context.LancamentosPadroes.ToList();
@@ -575,9 +574,9 @@ namespace Demonstrativo.Controllers
                                                                  l.EmpresaId == empresaId).ToList();
             var lancamentosContabeis = new List<TextoViewModel>();
 
-            foreach(var conta in contas)
+            foreach (var conta in contas)
             {
-                foreach(var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
+                foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
                 {
                     lancamentosContabeis.Add(new TextoViewModel()
                     {
