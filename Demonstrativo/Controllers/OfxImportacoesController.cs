@@ -29,8 +29,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null,
-                                                     ExtratoBancarioViewModel extratoViewModel = null)
+        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null)
         {
             //Listas
             var empresas = _context.Empresas.ToList();
@@ -55,135 +54,159 @@ namespace Demonstrativo.Controllers
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDestinoArquivo);
                 //varrendo arquivo e adicionado as ViewsModel
+
                 foreach (var dados in extratoBancario.Transactions)
                 {
-                    if (autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description) == null)
+                    var banco = _context.OfxBancos
+                        .FirstOrDefault(b => b.Codigo == extratoBancario.BankAccount.Bank.Code);
+                    if (banco == null) { ViewBag.AdicionarBanco = "Banco Inexistente";  break; }
+
+                    if (_context.OfxLancamentos.ToList().Any(c => c.Documento == dados.Id) == false)
                     {
-                        lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                        if (autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description) == null)
                         {
-                            Id = dados.Id,
-                            TransationValue = dados.TransactionValue,
-                            Description = dados.Description,
-                            Date = dados.Date,
-                            CheckSum = dados.Checksum,
-                            Type = dados.Type,
-                            LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
-                        });
+                            lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                            {
+                                Id = dados.Id,
+                                TransationValue = dados.TransactionValue,
+                                Description = dados.Description,
+                                Date = dados.Date,
+                                CheckSum = dados.Checksum,
+                                Type = dados.Type,
+                                LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
+                            });
+                        }
+                        else
+                        {
+                            lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                            {
+                                Id = dados.Id,
+                                TransationValue = dados.TransactionValue,
+                                Description = dados.Description,
+                                Date = dados.Date,
+                                CheckSum = dados.Checksum,
+                                Type = dados.Type,
+                                LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                                LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
+                            });
+                        }
+                    
+                        var bancoViewModel = new OfxBancoViewModel()
+                        {
+                            Id = banco.Id,
+                            Codigo = banco.Codigo,
+                            Nome = banco.Nome
+                        };
+
+                        contaCorrenteViewModel = new OfxContaCorrenteViewModel()
+                        {
+                            OfxLancamentos = lancamentoOfxViewModel,
+                            NumeroConta = extratoBancario.BankAccount.AccountCode
+                        };
+
+                        extratoBancarioViewModel = new ExtratoBancarioViewModel()
+                        {
+                            Empresas = ConstruirEmpresas(empresas),
+                            ContasCorrentes = contaCorrenteViewModel,
+                            Banco = bancoViewModel
+                        };
                     }
                     else
                     {
-                        lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
-                        {
-                            Id = dados.Id,
-                            TransationValue = dados.TransactionValue,
-                            Description = dados.Description,
-                            Date = dados.Date,
-                            CheckSum = dados.Checksum,
-                            Type = dados.Type,
-                            LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                            LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
-                        });
+                        break;
                     }
-
-                    var banco = _context.OfxBancos
-                        .FirstOrDefault(b => b.Codigo == extratoBancario.BankAccount.Bank.Code);
-
-                    var bancoViewModel = new OfxBancoViewModel()
-                    {
-                        Id = banco.Id,
-                        Codigo = banco.Codigo,
-                        Nome = banco.Nome
-                    };
-
-                    contaCorrenteViewModel = new OfxContaCorrenteViewModel()
-                    {
-                        OfxLancamentos = lancamentoOfxViewModel,
-                        NumeroConta = extratoBancario.BankAccount.AccountCode
-                    };
-
-                    extratoBancarioViewModel = new ExtratoBancarioViewModel()
-                    {
-                        Empresas = ConstruirEmpresas(empresas),
-                        ContasCorrentes = contaCorrenteViewModel,
-                        Banco = bancoViewModel
-                    };
                 }
                 //Deletando arquivo do servidor
                 System.IO.File.Delete(caminhoDestinoArquivo);
                 System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
             }
-            else
+            if (extratoBancarioViewModel.Banco == null) return View("Index", ViewBag.Message = "Este arquivo já foi importado!");
+            else return View("Contas", extratoBancarioViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult OfxReimportar(ExtratoBancarioViewModel extratoViewModel = null) 
+        {
+            //Listas
+            var empresas = _context.Empresas.ToList();
+            var contasContabeis = _context.ContasContabeis.ToList();
+            var lancamentosPadroes = _context.LancamentosPadroes.ToList();
+            var autoDescricoes = _context.AutoDescricoes;
+
+            //Views Models
+            var lancamentoOfxViewModel = new List<OfxLancamentoViewModel>();
+            var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
+            var extratoBancarioViewModel = new ExtratoBancarioViewModel();
+
+            foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
-                foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
-                {
-                    var lancamentoPadrao = lancamentosPadroes
-                        .FirstOrDefault(h => h.Descricao == extratoViewModel.LancamentoManual.Descricao);
+                var lancamentoPadrao = lancamentosPadroes
+                    .FirstOrDefault(h => h.Descricao == extratoViewModel.LancamentoManual.Descricao);
 
-                    if (lancamentoPadrao == null)
-                    {
-                        lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
-                        {
-                            Id = dados.Id,
-                            TransationValue = dados.TransationValue,
-                            Description = dados.Description,
-                            Date = dados.Date,
-                            CheckSum = dados.CheckSum,
-                            Type = dados.Type,
-                            LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
-                        });
-                    }
-                    else
-                    {
-                        lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
-                        {
-                            Id = dados.Id,
-                            TransationValue = dados.TransationValue,
-                            Description = dados.Description,
-                            Date = dados.Date,
-                            CheckSum = dados.CheckSum,
-                            Type = dados.Type,
-                            LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                            LancamentoPadraoSelecionado =
-                                Convert.ToInt32(_context.LancamentosPadroes
-                                                .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
-                                                    .Codigo)
-                        });
-                    }
-
-                    var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == extratoViewModel.Banco.Codigo);
-
-                    var bancoViewModel = new OfxBancoViewModel()
-                    {
-                        Id = banco.Id,
-                        Codigo = banco.Codigo,
-                        Nome = banco.Nome
-                    };
-
-                    contaCorrenteViewModel = new OfxContaCorrenteViewModel()
-                    {
-                        OfxLancamentos = lancamentoOfxViewModel,
-                        NumeroConta = extratoViewModel.ContasCorrentes.NumeroConta
-                    };
-                    extratoBancarioViewModel = new ExtratoBancarioViewModel()
-                    {
-                        Empresas = ConstruirEmpresas(empresas),
-                        ContasCorrentes = contaCorrenteViewModel,
-                        Banco = bancoViewModel
-                    };
-                }
-
-                if (extratoViewModel.LancamentoManual != null)
+                if (lancamentoPadrao == null)
                 {
                     lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                     {
-                        TransationValue = extratoViewModel.LancamentoManual.Valor,
-                        Description = extratoViewModel.LancamentoManual.Descricao,
-                        Date = extratoViewModel.LancamentoManual.Data,
-                        CheckSum = 1,
-                        Type = extratoViewModel.LancamentoManual.TipoSelecionado,
+                        Id = dados.Id,
+                        TransationValue = dados.TransationValue,
+                        Description = dados.Description,
+                        Date = dados.Date,
+                        CheckSum = dados.CheckSum,
+                        Type = dados.Type,
                         LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
                     });
                 }
+                else
+                {
+                    lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                    {
+                        Id = dados.Id,
+                        TransationValue = dados.TransationValue,
+                        Description = dados.Description,
+                        Date = dados.Date,
+                        CheckSum = dados.CheckSum,
+                        Type = dados.Type,
+                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                        LancamentoPadraoSelecionado =
+                            Convert.ToInt32(_context.LancamentosPadroes
+                                            .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
+                                                .Codigo)
+                    });
+                }
+
+                var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == extratoViewModel.Banco.Codigo);
+
+                var bancoViewModel = new OfxBancoViewModel()
+                {
+                    Id = banco.Id,
+                    Codigo = banco.Codigo,
+                    Nome = banco.Nome
+                };
+
+                contaCorrenteViewModel = new OfxContaCorrenteViewModel()
+                {
+                    OfxLancamentos = lancamentoOfxViewModel,
+                    NumeroConta = extratoViewModel.ContasCorrentes.NumeroConta
+                };
+                extratoBancarioViewModel = new ExtratoBancarioViewModel()
+                {
+                    Empresas = ConstruirEmpresas(empresas),
+                    ContasCorrentes = contaCorrenteViewModel,
+                    Banco = bancoViewModel
+                };
+            }
+
+            if (extratoViewModel.LancamentoManual != null)
+            {
+                lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                {
+                    TransationValue = extratoViewModel.LancamentoManual.Valor,
+                    Description = extratoViewModel.LancamentoManual.Descricao,
+                    Date = extratoViewModel.LancamentoManual.Data,
+                    CheckSum = 1,
+                    Type = extratoViewModel.LancamentoManual.TipoSelecionado,
+                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
+                });
             }
             return View("Contas", extratoBancarioViewModel);
         }
@@ -252,7 +275,7 @@ namespace Demonstrativo.Controllers
 
             _context.SaveChanges();
 
-            return View("Index");
+            return View("Index", ViewBag.Importado= "ArquivoImportado!");
         }
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)
             => new(lancamentoPadroes.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Descricao}" }), "Codigo", "Descricao");

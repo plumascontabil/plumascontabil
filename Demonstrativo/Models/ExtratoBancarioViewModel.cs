@@ -8,6 +8,7 @@ namespace Demonstrativo.Models
         public OfxBancoViewModel Banco { get; set; }
         public SelectList Empresas { get; set; }
         public int EmpresaSelecionada { get; set; }
+        public string Importado { get; set; }
         public OfxLancamentoManualViewModel LancamentoManual { get; set; }
     }
 }

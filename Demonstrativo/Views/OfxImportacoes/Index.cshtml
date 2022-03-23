@@ -1,8 +1,36 @@
-﻿@{
+﻿
+@{
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "Importar";
 }
 
+@if (ViewBag.Message != null)  
+    {  
+        <script type="text/javascript">  
+            window.onload = function()
+            {  
+                alert("@ViewBag.Message");  
+            };  
+        </script>  
+    }
+@if (ViewBag.Importado != null)  
+    {  
+        <script type="text/javascript">  
+            window.onload = function()
+            {  
+                alert("@ViewBag.Importado");  
+            };  
+        </script>  
+    } 
+@if (ViewBag.AdicionarBanco != null)  
+    {  
+        <script type="text/javascript">  
+            window.onload = function()
+            {  
+                alert("@ViewBag.AdicionarBanco");  
+            };  
+        </script>  
+    } 
 <div class="row">
     <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
         <h1>Importar OFX</h1>

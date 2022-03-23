@@ -93,12 +93,35 @@ namespace Demonstrativo.Controllers
                         var ofxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);
                         double valor = 0;
 
+                        if (conta.Codigo == 200)
+                        {
+                            foreach (var saldoContaCorrente in contasCorrentes)
+                            {
+                                var saldoOfxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);
+                                double saldoBanco = 0;
+
+                                foreach (var saldoOfxLancamento in saldoOfxLancamentos
+                                    .Where(l => l.Data.Year == competenciasId.Value.Year
+                                            && l.Data.Month == competenciasId.Value.Month))
+                                {
+                                    saldoBanco += saldoOfxLancamento.ValorOfx;
+                                }
+                                if (saldoBanco != 0)
+                                {
+                                    lancamentosViewModel.Add(new LancamentoViewModel()
+                                    {
+                                        //PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201,
+                                        Valor = Convert.ToDecimal(saldoBanco)
+                                    });
+                                }
+                            }
+                        }
                         foreach (var ofxLancamento in ofxLancamentos
                             .Where(l => l.Data.Year == competenciasId.Value.Year
                                     && l.Data.Month == competenciasId.Value.Month))
                         {
-                            var descricao = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
-                            if (ofxLancamento != null && descricao == conta.Codigo)
+                            var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
+                            if(ofxLancamento != null && contaCodigo == conta.Codigo && contaCodigo != 200)
                             {
                                 valor += ofxLancamento.ValorOfx;
                             }
@@ -107,7 +130,6 @@ namespace Demonstrativo.Controllers
                         {
                             lancamentosViewModel.Add(new LancamentoViewModel()
                             {
-                                //PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201,
                                 Valor = Convert.ToDecimal(valor)
                             });
                         }
@@ -137,11 +159,11 @@ namespace Demonstrativo.Controllers
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                         lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
                     }
-
                     else if (!lancamentosViewModel.Any())
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel());
                     }
+
                     contasViewModel.Add(new ContaViewModel()
                     {
                         Id = conta.Id,
@@ -149,6 +171,7 @@ namespace Demonstrativo.Controllers
                         Descricao = conta.Descricao,
                         Lancamentos = lancamentosViewModel
                     });
+                    
                 }
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
