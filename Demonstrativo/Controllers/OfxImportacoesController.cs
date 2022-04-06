@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OFXParser.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using OFXParser;
+using OFXParser.Entities;
+using OFXSharp;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demonstrativo.Controllers
 {
@@ -41,25 +44,56 @@ namespace Demonstrativo.Controllers
             var lancamentoOfxViewModel = new List<OfxLancamentoViewModel>();
             var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
             var extratoBancarioViewModel = new ExtratoBancarioViewModel();
+            var saldoMensalViewModel = new SaldoMensalViewModel();
 
+            decimal saldo = 0;
             //If Leitura arquivo não nulo
             if (ofxArquivo != null)
             {
+                
                 //Caminho para salvar arquivo no servidor
-                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ ofxArquivo.FileName}";
+                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
+                
                 using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
                 {
                     await ofxArquivo.CopyToAsync(stream);
                 }
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
-                Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDestinoArquivo);
-                //varrendo arquivo e adicionado as ViewsModel
+                Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
+                if(extratoBancario != null)
+                {
+                    var documento = new OFXDocumentParser();
+                    var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
+                    saldo = dadoDocumento.Balance.LedgerBalance;
+                }
 
+                saldoMensalViewModel = new SaldoMensalViewModel()
+                {
+                    SaldoMensal = saldo,
+                    Competencia = extratoBancario.InitialDate,
+                    ContaCorrenteId = _context.ContasCorrentes
+                        .FirstOrDefault(c => c.NumeroConta == extratoBancario.BankAccount.AccountCode).Id,
+                };
+
+                //varrendo arquivo e adicionado as ViewsModel
                 foreach (var dados in extratoBancario.Transactions)
+                //foreach (var dados in extratoBancario.Transactions)
                 {
                     var banco = _context.OfxBancos
-                        .FirstOrDefault(b => b.Codigo == extratoBancario.BankAccount.Bank.Code);
-                    if (banco == null) { ViewBag.AdicionarBanco = "Banco Inexistente";  break; }
+                        .FirstOrDefault(b => b.Codigo == Convert.ToInt32(extratoBancario.BankAccount.Bank.Code));
+
+                    if (banco == null) 
+                    { 
+                        ViewBag.AdicionarBanco = "Banco Inexistente"; 
+                        break;
+                    }
+                    
+                    var bancoViewModel = new OfxBancoViewModel()
+                    {
+                        Id = banco.Id,
+                        Codigo = banco.Codigo,
+                        Nome = banco.Nome
+                    };
 
                     if (_context.OfxLancamentos.ToList().Any(c => c.Documento == dados.Id) == false)
                     {
@@ -73,6 +107,7 @@ namespace Demonstrativo.Controllers
                                 Date = dados.Date,
                                 CheckSum = dados.Checksum,
                                 Type = dados.Type,
+                                SaldoMensal = saldoMensalViewModel,
                                 LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
                             });
                         }
@@ -86,22 +121,16 @@ namespace Demonstrativo.Controllers
                                 Date = dados.Date,
                                 CheckSum = dados.Checksum,
                                 Type = dados.Type,
+                                SaldoMensal = saldoMensalViewModel,
                                 LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                                 LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
                             });
                         }
-                    
-                        var bancoViewModel = new OfxBancoViewModel()
-                        {
-                            Id = banco.Id,
-                            Codigo = banco.Codigo,
-                            Nome = banco.Nome
-                        };
 
                         contaCorrenteViewModel = new OfxContaCorrenteViewModel()
                         {
                             OfxLancamentos = lancamentoOfxViewModel,
-                            NumeroConta = extratoBancario.BankAccount.AccountCode
+                            NumeroConta = extratoBancario.BankAccount.AccountCode,
                         };
 
                         extratoBancarioViewModel = new ExtratoBancarioViewModel()
@@ -214,10 +243,12 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult OfxSalvar(ExtratoBancarioViewModel dados)
         {
-            var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
-            var banco = _context.OfxBancos.Any(b => b.Codigo == dados.Banco.Codigo);
+            decimal saldoMensalTotal = 0;
             foreach (var dado in dados.ContasCorrentes.OfxLancamentos)
             {
+                var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+                var banco = _context.OfxBancos.Any(b => b.Codigo == dados.Banco.Codigo);
+                var lancamentoPadrao = _context.LancamentosPadroes.FirstOrDefault(c => c.Codigo == dado.LancamentoPadraoSelecionado);
                 if (banco == false)
                 {
                     //banco não cadastrado
@@ -235,6 +266,20 @@ namespace Demonstrativo.Controllers
                     _context.SaveChanges();
                 }
 
+                var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+
+                var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == Convert.ToDateTime(dado.Date.ToString("yyyy/MM"))
+                                                                        && s.ContaCorrenteId == contaCorrente.Id);
+                if (saldoMensalId == null)
+                {
+                    _context.SaldoMensal.Add(new SaldoMensal()
+                    {
+                        Competencia = dado.SaldoMensal.Competencia,
+                        Saldo=dado.SaldoMensal.SaldoMensal,
+                        ContaCorrenteId = dado.SaldoMensal.ContaCorrenteId
+                    });
+                }
+
                 _context.OfxLancamentos.Add(new OfxLancamento()
                 {
                     Documento = dado.Id,
@@ -244,6 +289,7 @@ namespace Demonstrativo.Controllers
                     Data = dado.Date,
                     ContaCorrenteId = _context.ContasCorrentes
                         .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id,
+                    LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id
                 });
                 _context.SaveChanges();
                 var descricao = _context.AutoDescricoes
@@ -253,17 +299,17 @@ namespace Demonstrativo.Controllers
                     _context.AutoDescricoes.Add(new AutoDescricao()
                     {
                         Descricao = dado.Description,
-                        LancamentoPadraoId = dado.LancamentoPadraoSelecionado
+                        LancamentoPadraoId = Convert.ToInt32(lancamentoPadrao.Id)
                     });
                     _context.SaveChanges();
                 }
-                else if (descricao.LancamentoPadraoId == dado.LancamentoPadraoSelecionado
+                else if (descricao.LancamentoPadraoId == lancamentoPadrao.Id
                     && descricao.Descricao != dado.Description)
                 {
                     _context.AutoDescricoes.Add(new AutoDescricao()
                     {
                         Descricao = dado.Description,
-                        LancamentoPadraoId = dado.LancamentoPadraoSelecionado
+                        LancamentoPadraoId = lancamentoPadrao.Id
                     });
                     _context.SaveChanges();
                 }
@@ -275,7 +321,7 @@ namespace Demonstrativo.Controllers
 
             _context.SaveChanges();
 
-            return View("Index", ViewBag.Importado= "ArquivoImportado!");
+            return View("Index", ViewBag.Importado = "Arquivo Importado!");
         }
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)
             => new(lancamentoPadroes.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Descricao}" }), "Codigo", "Descricao");

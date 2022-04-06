@@ -14,8 +14,6 @@ namespace Demonstrativo.Models
 
         [Column(TypeName = "varchar(20)")]
         public string Documento { get; set; }
-        [Column(TypeName = "varchar(150)")]
-        public string Complemento { get; set; }
         public string Descricao { get; set; }
 
         [Required]

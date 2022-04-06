@@ -60,6 +60,7 @@
                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                         <a class="dropdown-item"  asp-area="" asp-controller="AutoDescricoes" asp-action="Index">Históricos Banco</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="OfxContasCorrentes" asp-action="Index">Contas Correntes</a>
+                                        <a class="dropdown-item"  asp-area="" asp-controller="SaldoMensals" asp-action="Index">Saldos Contas Correntes</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="OfxBancos" asp-action="Index">Bancos</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="ContasContabeis" asp-action="Index">Contas Contabeis</a>
                                         <a class="dropdown-item"  asp-area="" asp-controller="LancamentosPadroes" asp-action="Index">Lancamentos Padrões</a>
@@ -104,7 +105,7 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 pt-5">
             @RenderBody()
         </main>
     </div>

@@ -4,14 +4,16 @@ using Demonstrativo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Demonstrativo.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220328194937_AddSaldoMensalFKContaCorrente")]
+    partial class AddSaldoMensalFKContaCorrente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,11 +245,19 @@ namespace Demonstrativo.Migrations
                     b.Property<string>("NumeroConta")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SaldoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SaldoMensalCompetencia")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BancoOfxId");
 
                     b.HasIndex("EmpresaId");
+
+                    b.HasIndex("SaldoMensalCompetencia");
 
                     b.ToTable("ContasCorrentes");
                 });
@@ -258,6 +268,9 @@ namespace Demonstrativo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("ContaCorrenteId")
                         .HasColumnType("int");
@@ -397,23 +410,13 @@ namespace Demonstrativo.Migrations
 
             modelBuilder.Entity("Demonstrativo.Models.SaldoMensal", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<DateTime>("Competencia")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ContaCorrenteId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Saldo")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContaCorrenteId");
+                    b.HasKey("Competencia");
 
                     b.ToTable("SaldoMensal");
                 });
@@ -556,9 +559,15 @@ namespace Demonstrativo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Demonstrativo.Models.SaldoMensal", "SaldoMensal")
+                        .WithMany("OfxContaCorrentes")
+                        .HasForeignKey("SaldoMensalCompetencia");
+
                     b.Navigation("BancoOfx");
 
                     b.Navigation("Empresa");
+
+                    b.Navigation("SaldoMensal");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.OfxLancamento", b =>
@@ -625,17 +634,6 @@ namespace Demonstrativo.Migrations
                     b.Navigation("Competencia");
 
                     b.Navigation("Empresa");
-                });
-
-            modelBuilder.Entity("Demonstrativo.Models.SaldoMensal", b =>
-                {
-                    b.HasOne("Demonstrativo.Models.OfxContaCorrente", "ContaCorrente")
-                        .WithMany("Saldos")
-                        .HasForeignKey("ContaCorrenteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ContaCorrente");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.Venda", b =>
@@ -707,11 +705,6 @@ namespace Demonstrativo.Migrations
                     b.Navigation("ContasCorrentes");
                 });
 
-            modelBuilder.Entity("Demonstrativo.Models.OfxContaCorrente", b =>
-                {
-                    b.Navigation("Saldos");
-                });
-
             modelBuilder.Entity("Demonstrativo.Models.OfxLancamento", b =>
                 {
                     b.Navigation("LoteLancamentos");
@@ -720,6 +713,11 @@ namespace Demonstrativo.Migrations
             modelBuilder.Entity("Demonstrativo.Models.Produto", b =>
                 {
                     b.Navigation("ItemVendas");
+                });
+
+            modelBuilder.Entity("Demonstrativo.Models.SaldoMensal", b =>
+                {
+                    b.Navigation("OfxContaCorrentes");
                 });
 
             modelBuilder.Entity("Demonstrativo.Models.TipoConta", b =>

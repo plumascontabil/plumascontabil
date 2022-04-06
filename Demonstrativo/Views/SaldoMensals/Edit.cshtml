@@ -1,0 +1,45 @@
+﻿@model Demonstrativo.Models.SaldoMensal
+
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>SaldoMensal</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Competencia" class="control-label"></label>
+                <input asp-for="Competencia" class="form-control" />
+                <span asp-validation-for="Competencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Saldo" class="control-label"></label>
+                <input asp-for="Saldo" class="form-control" />
+                <span asp-validation-for="Saldo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContaCorrenteId" class="control-label"></label>
+                <select asp-for="ContaCorrenteId" class="form-control" asp-items="ViewBag.ContaCorrenteId"></select>
+                <span asp-validation-for="ContaCorrenteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

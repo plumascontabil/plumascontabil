@@ -13,5 +13,6 @@ namespace Demonstrativo.Models
         [ForeignKey("LancamentoPadraoId")]
         public int LancamentoPadraoId { get; set; }
         public LancamentoPadrao LancamentoPadrao { get; set; }
+        public void Qualquer() { }
     }
 }

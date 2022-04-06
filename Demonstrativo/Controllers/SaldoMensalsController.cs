@@ -9,23 +9,23 @@ using Demonstrativo.Models;
 
 namespace Demonstrativo.Controllers
 {
-    public class AutoDescricoesController : Controller
+    public class SaldoMensalsController : Controller
     {
         private readonly Context _context;
 
-        public AutoDescricoesController(Context context)
+        public SaldoMensalsController(Context context)
         {
             _context = context;
         }
-        
-        // GET: AutoDescricoes
+
+        // GET: SaldoMensals
         public async Task<IActionResult> Index()
         {
-            var context = _context.AutoDescricoes.Include(a => a.LancamentoPadrao);
+            var context = _context.SaldoMensal.Include(s => s.ContaCorrente);
             return View(await context.ToListAsync());
         }
 
-        // GET: AutoDescricoes/Details/5
+        // GET: SaldoMensals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +33,42 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
-            var autoDescricao = await _context.AutoDescricoes
-                .Include(a => a.LancamentoPadrao)
+            var saldoMensal = await _context.SaldoMensal
+                .Include(s => s.ContaCorrente)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (autoDescricao == null)
+            if (saldoMensal == null)
             {
                 return NotFound();
             }
 
-            return View(autoDescricao);
+            return View(saldoMensal);
         }
 
-        // GET: AutoDescricoes/Create
+        // GET: SaldoMensals/Create
         public IActionResult Create()
         {
-            ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao");
+            ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id");
             return View();
         }
 
-        // POST: AutoDescricoes/Create
+        // POST: SaldoMensals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,LancamentoPadraoId")] AutoDescricao autoDescricao)
+        public async Task<IActionResult> Create([Bind("Id,Competencia,Saldo,ContaCorrenteId")] SaldoMensal saldoMensal)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(autoDescricao);
+                _context.Add(saldoMensal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
-            return View(autoDescricao);
+            ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id", saldoMensal.ContaCorrenteId);
+            return View(saldoMensal);
         }
 
-        // GET: AutoDescricoes/Edit/5
+        // GET: SaldoMensals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +76,23 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
-            var autoDescricao = await _context.AutoDescricoes.FindAsync(id);
-            if (autoDescricao == null)
+            var saldoMensal = await _context.SaldoMensal.FindAsync(id);
+            if (saldoMensal == null)
             {
                 return NotFound();
             }
-            ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
-            return View(autoDescricao);
+            ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id", saldoMensal.ContaCorrenteId);
+            return View(saldoMensal);
         }
 
-        // POST: AutoDescricoes/Edit/5
+        // POST: SaldoMensals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,LancamentoPadraoId")] AutoDescricao autoDescricao)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Competencia,Saldo,ContaCorrenteId")] SaldoMensal saldoMensal)
         {
-            if (id != autoDescricao.Id)
+            if (id != saldoMensal.Id)
             {
                 return NotFound();
             }
@@ -101,12 +101,12 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
-                    _context.Update(autoDescricao);
+                    _context.Update(saldoMensal);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AutoDescricaoExists(autoDescricao.Id))
+                    if (!SaldoMensalExists(saldoMensal.Id))
                     {
                         return NotFound();
                     }
@@ -117,11 +117,11 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
-            return View(autoDescricao);
+            ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id", saldoMensal.ContaCorrenteId);
+            return View(saldoMensal);
         }
 
-        // GET: AutoDescricoes/Delete/5
+        // GET: SaldoMensals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +129,31 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
-            var autoDescricao = await _context.AutoDescricoes
-                .Include(a => a.LancamentoPadrao)
+            var saldoMensal = await _context.SaldoMensal
+                .Include(s => s.ContaCorrente)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (autoDescricao == null)
+            if (saldoMensal == null)
             {
                 return NotFound();
             }
 
-            return View(autoDescricao);
+            return View(saldoMensal);
         }
 
-        // POST: AutoDescricoes/Delete/5
+        // POST: SaldoMensals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var autoDescricao = await _context.AutoDescricoes.FindAsync(id);
-            _context.AutoDescricoes.Remove(autoDescricao);
+            var saldoMensal = await _context.SaldoMensal.FindAsync(id);
+            _context.SaldoMensal.Remove(saldoMensal);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AutoDescricaoExists(int id)
+        private bool SaldoMensalExists(int id)
         {
-            return _context.AutoDescricoes.Any(e => e.Id == id);
+            return _context.SaldoMensal.Any(e => e.Id == id);
         }
     }
 }

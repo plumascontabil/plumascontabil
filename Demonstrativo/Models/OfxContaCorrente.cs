@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
@@ -19,6 +20,8 @@ namespace Demonstrativo.Models
         [ForeignKey("BancoOfxId ")]
         public int BancoOfxId { get; set; }
         public OfxBanco BancoOfx { get; set; }
+
+        public List<SaldoMensal> Saldos { get; set; }
 
     }
 }

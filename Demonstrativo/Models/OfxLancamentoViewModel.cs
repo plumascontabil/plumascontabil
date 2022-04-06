@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 
 namespace Demonstrativo.Models
 {
@@ -15,6 +16,7 @@ namespace Demonstrativo.Models
         public string Type { get; set; }
         public SelectList LancamentosPadroes { get; set; }
         public int LancamentoPadraoSelecionado { get; set; }
+        public SaldoMensalViewModel SaldoMensal { get; set; }
 
     }
 }

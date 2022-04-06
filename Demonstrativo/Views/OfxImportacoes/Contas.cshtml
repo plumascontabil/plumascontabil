@@ -64,7 +64,7 @@
             </div>
         </div>
         <hr/>
-        <form asp-controller="Importacao" asp-action="GravarOfx">
+        <form asp-controller="Importacao" asp-action="OfxSalvar">
             <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control" id="selectEmp">
                 <option value="">Selecione</option>
             </select>
@@ -93,6 +93,9 @@
                         <td>
                             @ofxs.Id
                             <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id"/>
+                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId"/>
+                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal"/>
+                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia"/>
                         </td>
                         <td>
                             @ofxs.Date

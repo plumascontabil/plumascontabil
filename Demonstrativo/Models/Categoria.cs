@@ -13,7 +13,7 @@ namespace Demonstrativo.Models
         [Required]
         [Column(TypeName = "varchar(40)")]
         public string Descricao { get; set; }
-
+       
         public List<LancamentoPadrao> Conta { get; set; }
     }
 }

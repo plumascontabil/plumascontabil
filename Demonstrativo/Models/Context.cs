@@ -19,6 +19,7 @@ namespace Demonstrativo.Models
         public DbSet<OfxBanco> OfxBancos { get; set; }
         public DbSet<OfxContaCorrente> ContasCorrentes { get; set; }
         public DbSet<AutoDescricao> AutoDescricoes { get; set; }
+        public DbSet<SaldoMensal> SaldoMensal { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

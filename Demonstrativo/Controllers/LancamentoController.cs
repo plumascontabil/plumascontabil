@@ -24,6 +24,7 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Qualquer = 10;
             AdicionarCompetenciaMesAtual();
 
             CarregarEmpresasCompetencias();
@@ -88,78 +89,42 @@ namespace Demonstrativo.Controllers
                 foreach (var conta in contas.Where(c => c.CategoriaId == categoria.Id))
                 {
                     var lancamentosViewModel = new List<LancamentoViewModel>();
+                    double valor = 0;
                     foreach (var contaCorrente in contasCorrentes)
                     {
                         var ofxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);
-                        double valor = 0;
-
-                        if (conta.Codigo == 200)
+                        
+                        if(conta.Codigo == 200)
                         {
-                            foreach (var saldoContaCorrente in contasCorrentes)
+                            var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId
+                                                                              && c.ContaCorrenteId == contaCorrente.Id).Saldo;
+                            lancamentosViewModel.Add(new LancamentoViewModel()
                             {
-                                var saldoOfxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);
-                                double saldoBanco = 0;
-
-                                foreach (var saldoOfxLancamento in saldoOfxLancamentos
-                                    .Where(l => l.Data.Year == competenciasId.Value.Year
-                                            && l.Data.Month == competenciasId.Value.Month))
-                                {
-                                    saldoBanco += saldoOfxLancamento.ValorOfx;
-                                }
-                                if (saldoBanco != 0)
-                                {
-                                    lancamentosViewModel.Add(new LancamentoViewModel()
-                                    {
-                                        //PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201,
-                                        Valor = Convert.ToDecimal(saldoBanco)
-                                    });
-                                }
-                            }
+                                Valor = saldoBanco,
+                                Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome
+                            });
                         }
                         foreach (var ofxLancamento in ofxLancamentos
-                            .Where(l => l.Data.Year == competenciasId.Value.Year
-                                    && l.Data.Month == competenciasId.Value.Month))
+                           .Where(l => l.Data.Year == competenciasId.Value.Year
+                                   && l.Data.Month == competenciasId.Value.Month))
                         {
                             var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
-                            if(ofxLancamento != null && contaCodigo == conta.Codigo && contaCodigo != 200)
+                            if(ofxLancamento != null && contaCodigo == conta.Id && contaCodigo != 200)
                             {
                                 valor += ofxLancamento.ValorOfx;
                             }
                         }
-                        if (valor != 0)
-                        {
-                            lancamentosViewModel.Add(new LancamentoViewModel()
-                            {
-                                Valor = Convert.ToDecimal(valor)
-                            });
-                        }
-                        else
-                        {
-                            foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
-                            {
-                                lancamentosViewModel.Add(new LancamentoViewModel()
-                                {
-                                    Id = lancamento.Id,
-                                    Data = lancamento.DataCompetencia,
-                                    Empresa = lancamento.EmpresaId,
-                                    Conta = lancamento.ContaId,
-                                    Descricao = lancamento.Descricao,
-                                    //PodeDigitarDescricao = conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201,
-                                    Valor = lancamento.Valor
-                                });
-                            }
-                        }
-
                     }
-                    if (conta.Codigo == 38 || conta.Codigo == 36 || conta.Codigo == 200 || conta.Codigo == 201)
+                    if (valor != 0)
                     {
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
-                        lancamentosViewModel.Add(new LancamentoViewModel() { PodeDigitarDescricao = true, Conta = conta.Codigo });
+                        lancamentosViewModel.Add(new LancamentoViewModel()
+                        {
+                            Valor = Convert.ToDecimal(valor)
+                        });
                     }
-                    else if (!lancamentosViewModel.Any())
+
+
+                    if (!lancamentosViewModel.Any())
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel());
                     }
@@ -207,9 +172,11 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
+            DateTime competencia = ViewBag.CompetenciasSelecionadaId;
+            var lancamentoCompetencia = _context.Lancamentos.Any(l => l.DataCompetencia == competencia);
             var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
-            if (estoqueVendas.Id == 0)
+            if (lancamentoCompetencia == false)
             {
                 var insertEstoqueVendas = new Venda()
                 {
@@ -296,7 +263,7 @@ namespace Demonstrativo.Controllers
 
             var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
 
-            if (provisoesDepreciacoes.Id == 0)
+            if (lancamentoCompetencia == false)
             {
                 var insertProvisoes = new ProvisoesDepreciacao()
                 {
@@ -356,7 +323,7 @@ namespace Demonstrativo.Controllers
                     continue;
                 }
 
-                if (lancamento.Id == 0)
+                if (lancamentoCompetencia)
                 {
                     var insertLancamento = new Lancamento();
                     if (lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
@@ -426,7 +393,8 @@ namespace Demonstrativo.Controllers
         {
             var trimestreViewModel = new TrimestreViewModel();
 
-            List<Lancamento> lancamentos = _context.Lancamentos.Include(x => x.Conta).ToList();
+            var contasCorrentes = _context.ContasCorrentes.Where(c => c.EmpresaId == empresaId).ToList();
+            var OfxLancamentos = _context.OfxLancamentos.Include(x => x.LancamentoPadrao).ToList();
             List<LancamentoPadrao> contas = _context.LancamentosPadroes.ToList();
             List<ProvisoesDepreciacao> provisoes = _context.ProvisoesDepreciacoes.ToList();
 
@@ -434,76 +402,88 @@ namespace Demonstrativo.Controllers
 
             foreach (var competencia in trimestre)
             {
-                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.Compras))
+                foreach(var contaCorrente in contasCorrentes)
                 {
-                    trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
+                    foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia
+                                                            && l.LancamentoPadrao?.TipoContaId == (int)ETipoConta.Compras
+                                                            && l.ContaCorrenteId == contaCorrente.Id))
                     {
-                        Id = lancamento.Id,
-                        Data = lancamento.DataCompetencia,
-                        Empresa = lancamento.EmpresaId,
-                        Conta = lancamento.ContaId,
-                        Descricao = lancamento.Descricao,
-                        Valor = lancamento.Valor
-                    });
-                }
-
-                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.EstoqueInicial))
-                {
-                    trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
-                    {
-                        Id = lancamento.Id,
-                        Data = lancamento.DataCompetencia,
-                        Empresa = lancamento.EmpresaId,
-                        Conta = lancamento.ContaId,
-                        Descricao = lancamento.Descricao,
-                        Valor = lancamento.Valor
-                    });
-                }
-
-                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.EstoqueFinal))
-                {
-                    trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
-                    {
-                        Id = lancamento.Id,
-                        Data = lancamento.DataCompetencia,
-                        Empresa = lancamento.EmpresaId,
-                        Conta = lancamento.ContaId,
-                        Descricao = lancamento.Descricao,
-                        Valor = lancamento.Valor
-                    });
-                }
-
-                foreach (var lancamento in lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia && l.Conta?.TipoContaId == (int)ETipoConta.Receitas))
-                {
-                    trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
-                    {
-                        Id = lancamento.Id,
-                        Data = lancamento.DataCompetencia,
-                        Empresa = lancamento.EmpresaId,
-                        Conta = lancamento.ContaId,
-                        Descricao = lancamento.Descricao,
-                        Valor = lancamento.Valor
-                    });
-                }
-
-                foreach (var conta in contas.Where(c => c.TipoContaId == (int)ETipoConta.Despesas))
-                {
-                    if (conta.Lancamentos == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (var lancamento in conta.Lancamentos.Where(l => l.EmpresaId == empresaId && l.DataCompetencia.Month == competencia))
-                    {
-                        trimestreViewModel.LancamentosDespesa.Add(new LancamentoViewModel()
+                        trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
                         {
                             Id = lancamento.Id,
-                            Data = lancamento.DataCompetencia,
-                            Empresa = lancamento.EmpresaId,
-                            Conta = lancamento.ContaId,
+                            Data = lancamento.Data,
+                            Empresa = contaCorrente.EmpresaId,
+                            Conta = lancamento.LancamentoPadraoId,
                             Descricao = lancamento.Descricao,
-                            Valor = lancamento.Valor
+                            Valor = (decimal)lancamento.ValorOfx
                         });
+                    }
+
+                    foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia
+                                                            && l.LancamentoPadrao?.TipoContaId == (int)ETipoConta.EstoqueInicial
+                                                            && l.ContaCorrenteId == contaCorrente.Id))
+                    {
+                        trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Data = lancamento.Data,
+                            Empresa = contaCorrente.EmpresaId,
+                            Conta = lancamento.LancamentoPadraoId,
+                            Descricao = lancamento.Descricao,
+                            Valor = (decimal)lancamento.ValorOfx
+                        });
+                    }
+
+                    foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia
+                                                            && l.LancamentoPadrao?.TipoContaId == (int)ETipoConta.EstoqueFinal
+                                                            && l.ContaCorrenteId == contaCorrente.Id))
+                    {
+                        trimestreViewModel.LancamentosCompra.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Data = lancamento.Data,
+                            Empresa = contaCorrente.EmpresaId,
+                            Conta = lancamento.LancamentoPadraoId,
+                            Descricao = lancamento.Descricao,
+                            Valor = (decimal)lancamento.ValorOfx
+                        });
+                    }
+
+                    foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia 
+                                                            && l.LancamentoPadrao?.TipoContaId == (int)ETipoConta.Receitas
+                                                            && l.ContaCorrenteId == contaCorrente.Id))
+                    {
+                        trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Data = lancamento.Data,
+                            Empresa = contaCorrente.EmpresaId,
+                            Conta = lancamento.LancamentoPadraoId,
+                            Descricao = lancamento.Descricao,
+                            Valor = (decimal)lancamento.ValorOfx
+                        });
+                    }
+
+                    foreach (var conta in contas.Where(c => c.TipoContaId == (int)ETipoConta.Despesas))
+                    {
+                        if (conta.Lancamentos == null)
+                        {
+                            continue;
+                        }
+
+                        foreach (var lancamento in conta.Lancamentos.Where(l => l.EmpresaId == empresaId
+                                                                        && l.DataCompetencia.Month == competencia))
+                        {
+                            trimestreViewModel.LancamentosDespesa.Add(new LancamentoViewModel()
+                            {
+                                Id = lancamento.Id,
+                                Data = lancamento.DataCompetencia,
+                                Empresa = lancamento.EmpresaId,
+                                Conta = lancamento.ContaId,
+                                Descricao = lancamento.Descricao,
+                                Valor = lancamento.Valor
+                            });
+                        }
                     }
                 }
 
