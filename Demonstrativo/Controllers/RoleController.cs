@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Demonstrativo.Controllers
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+
         public RoleController(RoleManager<IdentityRole> roleManager)
         {
             _roleManager = roleManager;
@@ -50,6 +52,29 @@ namespace Demonstrativo.Controllers
                     Name = role.Name
                 });
             }
+        }
+
+        [HttpDelete]
+        [Authorize(Policy = "roleAdministrador")]
+        public async Task<IActionResult> DeletarRole(string id)
+        {
+            try
+            {
+
+                var role = await _roleManager.FindByIdAsync(id);
+                if (role != null)
+                {
+                    await _roleManager.DeleteAsync(role);
+                    return View();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                throw e.GetBaseException();
+            }
+
         }
 
 
