@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
+using DomainService;
 
 namespace Demonstrativo.Controllers
 {
     public class SaldoMensalsController : Controller
     {
         private readonly Context _context;
+        private readonly SaldoMensalsDomainService _saldoMensalsDomainService;
 
-        public SaldoMensalsController(Context context)
+        public SaldoMensalsController(Context context,
+            SaldoMensalsDomainService saldoMensalsDomainService)
         {
             _context = context;
+            _saldoMensalsDomainService = saldoMensalsDomainService;
         }
 
         // GET: SaldoMensals
@@ -33,6 +37,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
+            //var saldoMensal = await _saldoMensalsDomainService.Details(id);
             var saldoMensal = await _context.SaldoMensal
                 .Include(s => s.ContaCorrente)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -60,6 +65,7 @@ namespace Demonstrativo.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var saldoMensal = await _saldoMensalsDomainService.CreateValidar(saldoMensal);
                 _context.Add(saldoMensal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -101,6 +107,7 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
+                    //var saldoMensal = await _saldoMensalsDomainService.EditValidar(saldoMensal);
                     _context.Update(saldoMensal);
                     await _context.SaveChangesAsync();
                 }
@@ -145,6 +152,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //var saldoMensal = await _saldoMensalsDomainService.DeleteConfirmado(id);
+
             var saldoMensal = await _context.SaldoMensal.FindAsync(id);
             _context.SaldoMensal.Remove(saldoMensal);
             await _context.SaveChangesAsync();
@@ -153,6 +162,8 @@ namespace Demonstrativo.Controllers
 
         private bool SaldoMensalExists(int id)
         {
+            //var saldoMensal = await _saldoMensalsDomainService.SaldoMensalExists(id);
+
             return _context.SaldoMensal.Any(e => e.Id == id);
         }
     }

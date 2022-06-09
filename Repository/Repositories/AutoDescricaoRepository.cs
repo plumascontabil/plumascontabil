@@ -36,6 +36,20 @@ namespace Repository.Repositories
             return autoDescricao;
         }
 
+        public AutoDescricao GetByDescricao(string descricao)
+        {
+            var autoDescricao = _autoDescricao
+                           .FirstOrDefault(c => c.Descricao == descricao);
+            return autoDescricao;
+        }
+
+        public List<AutoDescricao> GetAll()
+        {
+            var autoDescricao = _autoDescricao
+                           .ToList();
+            return autoDescricao;
+        }
+
         public async Task<bool> Adicionar(AutoDescricao autoDescricao)
         {
             _autoDescricao.Add(autoDescricao);

@@ -2,6 +2,8 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -20,6 +22,12 @@ namespace Repository.Repositories
         {
             var empresa = await _empresa
                 .FirstOrDefaultAsync(m => m.Codigo == id);
+            return empresa;
+        }
+
+        public List<Empresa> GetAll()
+        {
+            var empresa = _empresa.ToList();
             return empresa;
         }
 

@@ -2,6 +2,9 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -21,6 +24,37 @@ namespace Repository.Repositories
             var LancamentoPadrao = await _lancamentoPadrao
                 .FirstOrDefaultAsync(m => m.Id == id);
             return LancamentoPadrao;
+        }
+
+        public LancamentoPadrao GetByCodigoId(int? codigoId)
+        {
+            var LancamentoPadrao = _lancamentoPadrao
+                .FirstOrDefault(l => l.Codigo == codigoId);
+            return LancamentoPadrao;
+        }
+
+        public bool GetByIdExists(int? id)
+        {
+            var LancamentoPadrao = _lancamentoPadrao
+                .Any(e => e.Id == id);
+            return LancamentoPadrao;
+        }
+
+        public async Task<LancamentoPadrao> GetByIdRelations(int? id)
+        {
+            var LancamentoPadrao = await _lancamentoPadrao
+                .Include(l => l.Categoria)
+                .Include(l => l.ContaCredito)
+                .Include(l => l.ContaDebito)
+                .Include(l => l.Tipo)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            return LancamentoPadrao;
+        }
+
+        public List<LancamentoPadrao> GetAll()
+        {
+            var categoria = _lancamentoPadrao.ToList();
+            return categoria;
         }
 
         public async Task<bool> Adicionar(LancamentoPadrao lancamentoPadrao)

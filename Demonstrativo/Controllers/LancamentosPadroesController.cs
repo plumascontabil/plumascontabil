@@ -1,4 +1,5 @@
 ﻿using Demonstrativo.Models;
+using DomainService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,12 @@ namespace Demonstrativo.Controllers
     public class LancamentosPadroesController : Controller
     {
         private readonly Context _context;
+        private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
-        public LancamentosPadroesController(Context context)
+        public LancamentosPadroesController(Context context, LancamentoPadroesDomainService lancamentoPadroesDomainService)
         {
             _context = context;
+            _lancamentoPadroesDomainService = lancamentoPadroesDomainService;
         }
 
         // GET: LancamentosPadroes
@@ -31,6 +34,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
+            //var lancamentoPadrao = await _lancamentoPadroesDomainService.Details(id);
             var lancamentoPadrao = await _context.LancamentosPadroes
                 .Include(l => l.Categoria)
                 .Include(l => l.ContaCredito)
@@ -64,6 +68,8 @@ namespace Demonstrativo.Controllers
         {
             if (ModelState.IsValid)
             {
+                //await _lancamentoPadroesDomainService.Adicionar(lancamentoPadrao);
+
                 _context.Add(lancamentoPadrao);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -111,6 +117,8 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
+                    //await _lancamentoPadroesDomainService.EditValidar(lancamentoPadrao);
+
                     _context.Update(lancamentoPadrao);
                     await _context.SaveChangesAsync();
                 }
@@ -161,6 +169,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //await _lancamentoPadroesDomainService.DeleteConfirmado(id);
+
             var lancamentoPadrao = await _context.LancamentosPadroes.FindAsync(id);
             _context.LancamentosPadroes.Remove(lancamentoPadrao);
             await _context.SaveChangesAsync();
@@ -169,6 +179,8 @@ namespace Demonstrativo.Controllers
 
         private bool LancamentoPadraoExists(int id)
         {
+            //var exist = _lancamentoPadroesDomainService.LancamentoPadraoExists(id);
+
             return _context.LancamentosPadroes.Any(e => e.Id == id);
         }
     }

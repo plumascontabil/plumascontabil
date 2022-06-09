@@ -3,6 +3,8 @@ using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -22,6 +24,18 @@ namespace Repository.Repositories
         {
             var categoria = await _competencia
                            .FirstOrDefaultAsync(m => m.Data == data);
+            return categoria;
+        }
+
+        public List<Competencia> GetAll()
+        {
+            var categoria =  _competencia.ToList();
+            return categoria;
+        }
+
+        public bool validateCompetencia(DateTime competenciaAtual)
+        {
+            var categoria = _competencia.Any(c => c.Data == competenciaAtual);
             return categoria;
         }
 

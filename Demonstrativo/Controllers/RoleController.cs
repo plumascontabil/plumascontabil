@@ -1,4 +1,5 @@
 ﻿using Demonstrativo.Models;
+using DomainService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,15 @@ namespace Demonstrativo.Controllers
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleDomainService _roleDomainService;
 
-        public RoleController(RoleManager<IdentityRole> roleManager)
+
+        public RoleController(RoleManager<IdentityRole> roleManager,
+            RoleDomainService roleDomainService
+            )
         {
             _roleManager = roleManager;
+            _roleDomainService = roleDomainService;
         }
 
         public IActionResult Index()

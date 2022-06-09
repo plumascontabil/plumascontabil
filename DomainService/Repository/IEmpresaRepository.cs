@@ -10,6 +10,7 @@ namespace DomainService.Repository
     public interface IEmpresaRepository
     {
         public Task<Empresa> GetById(int? id);
+        public List<Empresa> GetAll();
         public Task<bool> Adicionar(Empresa empresa);
         public Task<bool> Editar(Empresa empresa);
         public Task<bool> Deletar(int id);

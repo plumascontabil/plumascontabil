@@ -2,6 +2,7 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -20,6 +21,25 @@ namespace Repository.Repositories
         {
             var ofxBanco = await _ofxBanco
                 .FirstOrDefaultAsync(m => m.Id == id);
+            return ofxBanco;
+        }
+        public async Task<OfxBanco> GetByCodigoId(int? codigoId)
+        {
+            var ofxBanco = await _ofxBanco
+                .FirstOrDefaultAsync(m => m.Codigo == codigoId);
+            return ofxBanco;
+        }
+
+        public bool GetByCodigoIdExists(int? codigoId)
+        {
+            var ofxBanco = _ofxBanco
+                .Any(m => m.Codigo == codigoId);
+            return ofxBanco;
+        }
+        public bool GetByIdExists(int? id)
+        {
+            var ofxBanco = _ofxBanco
+                .Any(e => e.Id == id);
             return ofxBanco;
         }
 

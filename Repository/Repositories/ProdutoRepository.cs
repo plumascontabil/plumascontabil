@@ -2,6 +2,8 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -22,6 +24,12 @@ namespace Repository.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
             return produto;
         }
+        public List<Produto> GetAll()
+        {
+            var produto = _produto
+                .ToList();
+            return produto;
+        }
 
         public async Task<bool> Adicionar(Produto produto)
         {
@@ -29,6 +37,7 @@ namespace Repository.Repositories
             await Context.SaveChangesAsync();
             return true;
         }
+
 
         public async Task<bool> Editar(Produto produto)
         {

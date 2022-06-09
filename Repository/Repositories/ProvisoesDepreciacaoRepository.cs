@@ -2,6 +2,8 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -20,6 +22,12 @@ namespace Repository.Repositories
         {
             var provisoesDepreciacao = await _provisoesDepreciacao
                 .FirstOrDefaultAsync(m => m.Id == id);
+            return provisoesDepreciacao;
+        }
+
+        public List<ProvisoesDepreciacao> GetAll()
+        {
+            var provisoesDepreciacao = _provisoesDepreciacao.ToList();
             return provisoesDepreciacao;
         }
 

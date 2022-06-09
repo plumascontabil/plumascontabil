@@ -10,6 +10,7 @@ namespace DomainService.Repository
     public interface ICategoriaRepository
     {
         public Task<Categoria> GetById(int? id);
+        public List<Categoria> GetAll();
         public Task<bool> Adicionar(Categoria autoDescricao);
         public Task<bool> Editar(Categoria autoDescricao);
         public Task<bool> Deletar(int id);

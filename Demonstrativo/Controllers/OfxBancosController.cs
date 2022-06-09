@@ -1,4 +1,5 @@
 ﻿using Demonstrativo.Models;
+using DomainService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -9,10 +10,13 @@ namespace Demonstrativo.Controllers
     public class OfxBancosController : Controller
     {
         private readonly Context _context;
+        private readonly OfxBancosDomainService _ofxBancosDomainService;
 
-        public OfxBancosController(Context context)
+
+        public OfxBancosController(Context context, OfxBancosDomainService ofxBancosDomainService)
         {
             _context = context;
+            _ofxBancosDomainService = ofxBancosDomainService;
         }
 
         // GET: OfxBancos
@@ -31,6 +35,8 @@ namespace Demonstrativo.Controllers
 
             var ofxBanco = await _context.OfxBancos
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            //var ofxBanco = await _ofxBancosDomainService.Details(id);
             if (ofxBanco == null)
             {
                 return NotFound();
@@ -54,6 +60,7 @@ namespace Demonstrativo.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var ofxBanco = await _ofxBancosDomainService.CreateValidar(ofxBanco);
                 _context.Add(ofxBanco);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,6 +100,8 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
+                    //var ofxBanco = await _ofxBancosDomainService.EditValidar(ofxBanco);
+
                     _context.Update(ofxBanco);
                     await _context.SaveChangesAsync();
                 }
@@ -135,6 +144,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //var ofxBanco = await _ofxBancosDomainService.DeleteConfirmado(id);
+
             var ofxBanco = await _context.OfxBancos.FindAsync(id);
             _context.OfxBancos.Remove(ofxBanco);
             await _context.SaveChangesAsync();
@@ -143,6 +154,8 @@ namespace Demonstrativo.Controllers
 
         private bool OfxBancoExists(int id)
         {
+            //var ofxBanco = await _ofxBancosDomainService.OfxBancoExists(id);
+
             return _context.OfxBancos.Any(e => e.Id == id);
         }
     }

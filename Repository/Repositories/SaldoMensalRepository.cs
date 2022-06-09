@@ -2,6 +2,8 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -20,6 +22,36 @@ namespace Repository.Repositories
         {
             var saldoMensal = await _saldoMensal
                 .FirstOrDefaultAsync(m => m.Id == id);
+            return saldoMensal;
+        }
+
+        public bool GetByIdExists(int? id)
+        {
+            var saldoMensal = _saldoMensal
+                .Any(m => m.Id == id);
+            return saldoMensal;
+        }
+
+        public async Task<SaldoMensal> GetByRelationsId(int? id)
+        {
+            var saldoMensal = await _saldoMensal
+                .Include(s => s.ContaCorrente)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            return saldoMensal;
+        }
+
+        public SaldoMensal GetByDataContaCorrenteId(DateTime data, int contaCorrenteId)
+        {
+            var saldoMensal = _saldoMensal
+                .FirstOrDefault(s => s.Competencia == data && s.ContaCorrenteId == contaCorrenteId);
+            return saldoMensal;
+        }
+
+        public SaldoMensal GetByCompetenciaIdContaCorrenteId(DateTime? competenciasId, int contaCorrenteId)
+        {
+            var saldoMensal = _saldoMensal
+                .FirstOrDefault(c => c.Competencia == competenciasId
+                                 && c.ContaCorrenteId == contaCorrenteId);
             return saldoMensal;
         }
 

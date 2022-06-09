@@ -27,6 +27,13 @@ namespace Repository.Repositories
             return categoria;
         }
 
+        public List<Categoria> GetAll()
+        {
+            var categoria = _categoria
+                           .ToList();
+            return categoria;
+        }
+
         public async Task<bool> Adicionar(Categoria categoria)
         {
             _categoria.Add(categoria);

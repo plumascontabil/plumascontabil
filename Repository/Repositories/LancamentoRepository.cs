@@ -2,6 +2,9 @@
 using DomainService.Repository;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contexts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repository.Repositories
@@ -23,6 +26,21 @@ namespace Repository.Repositories
             return lancamento;
         }
 
+        public bool GetByDataCompetencia(DateTime competencia)
+        {
+            var lancamento = _lancamento
+                .Any(l => l.DataCompetencia == competencia);
+            return lancamento;
+        }
+
+        public List<Lancamento> GetByEmpresaIdDataCompetencia(int? empresasId, DateTime? competenciasId)
+        {
+            var lancamento = _lancamento
+                .Where(x => x.EmpresaId == empresasId && x.DataCompetencia == competenciasId)
+                    .ToList();
+            return lancamento;
+        }
+        
         public async Task<bool> Adicionar(Lancamento lancamento)
         {
             _lancamento.Add(lancamento);
