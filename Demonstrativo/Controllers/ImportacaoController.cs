@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using Demonstrativo.Models;
+using DomainService;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
@@ -20,20 +22,26 @@ namespace Demonstrativo.Controllers
         readonly static BaseFont fonteBase = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, false);
         readonly Context _context;
         readonly IWebHostEnvironment _appEnvironment;
-        public ImportacaoController(Context context, IWebHostEnvironment env)
+        private readonly ImportacaoDomainService _importacaoDomainService;
+
+        public ImportacaoController(
+            Context context, 
+            IWebHostEnvironment env,
+            ImportacaoDomainService importacaoDomainService
+            )
         {
             _context = context;
             _appEnvironment = env;
+            _importacaoDomainService = importacaoDomainService;
         }
         public IActionResult Index()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Importar(IFormFile file)
+        public async Task<IActionResult> Importar(IFormFile file)
         {
             var stream = file.OpenReadStream();
-
             using (var reader = new StreamReader(stream))
             using (var csv = new CsvReader(reader, new CultureInfo("pt-BR")))
             {
@@ -54,11 +62,14 @@ namespace Demonstrativo.Controllers
                     _context.SaveChanges();
                 }
             }
+
+            //await _importacaoDomainService.Importar(file);
+
             return View("Index");
         }
 
         [HttpPost]
-        public IActionResult ImportarContasContabeis(IFormFile fileContasContabeis)
+        public async Task<IActionResult> ImportarContasContabeis(IFormFile fileContasContabeis)
         {
             var stream = fileContasContabeis.OpenReadStream();
 
@@ -79,6 +90,9 @@ namespace Demonstrativo.Controllers
                 }
                 _context.SaveChanges();
             }
+
+            //await _importacaoDomainService.ImportarContasContabeis(file);
+
             return View("Index");
         }
 
@@ -110,15 +124,12 @@ namespace Demonstrativo.Controllers
                     });
                 }
             }
+            //var relatorioDadosViewModel = await _importacaoDomainService.Filtrar(relatorioViewModel);
 
             GerarRelatorioRazao(relatorioViewModel);
 
             return View("RelatorioExibir", relatorioDadosViewModel);
         }
-
-
-
-
 
         private static SelectList ConstruirContasContabeisSelectList(IEnumerable<ContaContabil> contasContabeis)
             => new(contasContabeis.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Historico}" }), "Codigo", "Descricao");
@@ -126,10 +137,7 @@ namespace Demonstrativo.Controllers
             => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
 
 
-
-
-
-        public IActionResult RelatorioOfx()
+        public async Task<IActionResult> RelatorioOfx()
         {
             var empresas = _context.Empresas.ToList();
             var contasContabeis = _context.ContasContabeis.ToList();
@@ -138,6 +146,7 @@ namespace Demonstrativo.Controllers
                 Empresas = ConstruirEmpresas(empresas),
                 ContasContabeis = ConstruirContasContabeisSelectList(contasContabeis),
             };
+            //var relatorioViewModel = await _importacaoDomainService.RelatorioOfx();
 
             return View("RelatorioOfx", relatorioViewModel);
         }

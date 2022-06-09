@@ -3,21 +3,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using DomainService;
 
 namespace Demonstrativo.Controllers
 {
     public class ContasContabeisController : Controller
     {
         private readonly Context _context;
+        private readonly ContasContabeisDomainService _contaContabilDomainService;
 
-        public ContasContabeisController(Context context)
+
+        public ContasContabeisController(Context context,
+            ContasContabeisDomainService contaContabilDomainService)
         {
             _context = context;
+            _contaContabilDomainService = contaContabilDomainService;
         }
 
         // GET: ContasContabeis
         public async Task<IActionResult> Index()
         {
+            //var contasContabeis = await _contaContabilDomainService.GetContasContabeis();
             return View(await _context.ContasContabeis.ToListAsync());
         }
 
@@ -29,6 +35,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
+            //var contaContabil = _contaContabilDomainService.GetContaContavelById(id);
             var contaContabil = await _context.ContasContabeis
                 .FirstOrDefaultAsync(m => m.Codigo == id);
             if (contaContabil == null)
@@ -54,6 +61,7 @@ namespace Demonstrativo.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var contaContabil = _contaContabilDomainService.CreateValidar(contaContabil);
                 _context.Add(contaContabil);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,6 +101,7 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
+                    //var contaContabil = _contaContabilDomainService.EditValidar(contaContabil);
                     _context.Update(contaContabil);
                     await _context.SaveChangesAsync();
                 }
@@ -119,7 +128,6 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
             var contaContabil = await _context.ContasContabeis
                 .FirstOrDefaultAsync(m => m.Codigo == id);
             if (contaContabil == null)
@@ -135,6 +143,7 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //var contaContabil = _contaContabilDomainService.DeleteConfirmado(id);
             var contaContabil = await _context.ContasContabeis.FindAsync(id);
             _context.ContasContabeis.Remove(contaContabil);
             await _context.SaveChangesAsync();

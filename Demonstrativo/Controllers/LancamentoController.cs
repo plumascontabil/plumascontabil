@@ -1,4 +1,5 @@
 ﻿using Demonstrativo.Models;
+using DomainService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 
 namespace Demonstrativo.Controllers
@@ -16,10 +18,14 @@ namespace Demonstrativo.Controllers
     public class LancamentoController : Controller
     {
         readonly Context _context;
+        //private readonly LancamentoDomainService _lancamentoDomainService;
 
-        public LancamentoController(Context context)
+        public LancamentoController(Context context
+            //LancamentoDomainService LancamentoDomainService
+            )
         {
             _context = context;
+            //_lancamentoDomainService = LancamentoDomainService;
         }
 
         public IActionResult Index()
@@ -48,12 +54,18 @@ namespace Demonstrativo.Controllers
 
             _context.Competencias.Add(competencia);
             _context.SaveChanges();
+
+            //_lancamentoDomainService.AdicionarCompetenciaMesAtual();
         }
 
         private void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
         {
             List<Empresa> empresas = _context.Empresas.ToList();
             List<Competencia> competencias = _context.Competencias.ToList();
+
+            //_lancamentoDomainService.CarregarEmpresas();
+            //_lancamentoDomainService.CarregarCompetencias();
+
 
             ViewBag.CompetenciasId = new SelectList(
                     competencias.Select(
@@ -66,6 +78,8 @@ namespace Demonstrativo.Controllers
 
         private TrimestreViewModel CarregarCategorias(int? empresasId = null, DateTime? competenciasId = null)
         {
+            // var trimestreViewModel = await _lancamentoDomainService.CarregarCategorias(empresasId, competenciasId);
+
             var trimestreViewModel = new TrimestreViewModel();
 
             var contas = _context.LancamentosPadroes.ToList();
@@ -173,6 +187,9 @@ namespace Demonstrativo.Controllers
         public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
             DateTime competencia = ViewBag.CompetenciasSelecionadaId;
+
+            //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
+
             var lancamentoCompetencia = _context.Lancamentos.Any(l => l.DataCompetencia == competencia);
             var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
@@ -606,6 +623,8 @@ namespace Demonstrativo.Controllers
                     $"{lancamento.IniciaLote};{lancamento.CodigoMatrizFilial};{lancamento.CentroCustoDebito};" +
                     $"{lancamento.CentroCustoCredito};{Environment.NewLine}";
             }
+
+            //var conteudoArquivo = _lancamentoDomainService.GerarArquivo(empresaId, competenciasId);
 
             var stream = new MemoryStream(Encoding.ASCII.GetBytes(conteudoArquivo));
             return new FileStreamResult(stream, "text/plain")

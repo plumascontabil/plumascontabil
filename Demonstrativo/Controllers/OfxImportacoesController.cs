@@ -12,6 +12,7 @@ using OFXParser;
 using OFXParser.Entities;
 using OFXSharp;
 using Microsoft.EntityFrameworkCore;
+using DomainService;
 
 namespace Demonstrativo.Controllers
 {
@@ -19,11 +20,17 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
+        private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
 
-        public OfxImportacoesController(Context context, IWebHostEnvironment env)
+
+        public OfxImportacoesController(Context context,
+            IWebHostEnvironment env,
+            OfxImportacoesDomainService ofxImportacoesDomainService
+            )
         {
             _context = context;
             _appEnvironment = env;
+            _ofxImportacoesDomainService = ofxImportacoesDomainService;
         }
 
         public IActionResult Index()
@@ -156,6 +163,9 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult OfxReimportar(ExtratoBancarioViewModel extratoViewModel = null) 
         {
+
+            //var extratoBancarioViewModel = _ofxImportacoesDomainService.OfxReimportar(extratoViewModel);
+
             //Listas
             var empresas = _context.Empresas.ToList();
             var contasContabeis = _context.ContasContabeis.ToList();
@@ -237,12 +247,16 @@ namespace Demonstrativo.Controllers
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
                 });
             }
+
+            //
             return View("Contas", extratoBancarioViewModel);
         }
 
         [HttpPost]
         public IActionResult OfxSalvar(ExtratoBancarioViewModel dados)
         {
+            //var extratoBancarioViewModel = _ofxImportacoesDomainService.OfxSalvar(dados);
+
             decimal saldoMensalTotal = 0;
             foreach (var dado in dados.ContasCorrentes.OfxLancamentos)
             {

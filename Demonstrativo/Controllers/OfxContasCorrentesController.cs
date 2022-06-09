@@ -1,4 +1,5 @@
 ﻿using Demonstrativo.Models;
+using DomainService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,14 @@ namespace Demonstrativo.Controllers
     public class OfxContasCorrentesController : Controller
     {
         private readonly Context _context;
+        private readonly OfxContasCorrentesDomainService _ofxContasCorrentesDomainService;
 
-        public OfxContasCorrentesController(Context context)
+
+        public OfxContasCorrentesController(Context context,
+            OfxContasCorrentesDomainService ofxContasCorrentesDomainService)
         {
             _context = context;
+            _ofxContasCorrentesDomainService = ofxContasCorrentesDomainService;
         }
 
         // GET: OfxContasCorrentes
@@ -31,6 +36,7 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
+            //var ofxContaCorrente = await _OfxContasCorrentesDomainService.Details(id);
             var ofxContaCorrente = await _context.ContasCorrentes
                 .Include(o => o.BancoOfx)
                 .Include(o => o.Empresa)
@@ -60,6 +66,7 @@ namespace Demonstrativo.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var ofxContaCorrente = await _OfxContasCorrentesDomainService.CreateValidar(ofxContaCorrente);
                 _context.Add(ofxContaCorrente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -103,6 +110,8 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
+                    //var ofxContaCorrente = await _OfxContasCorrentesDomainService.EditValidar(ofxContaCorrente);
+
                     _context.Update(ofxContaCorrente);
                     await _context.SaveChangesAsync();
                 }
@@ -149,6 +158,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //var ofxContaCorrente = await _OfxContasCorrentesDomainService.DeleteConfirmado(id);
+
             var ofxContaCorrente = await _context.ContasCorrentes.FindAsync(id);
             _context.ContasCorrentes.Remove(ofxContaCorrente);
             await _context.SaveChangesAsync();
@@ -157,6 +168,8 @@ namespace Demonstrativo.Controllers
 
         private bool OfxContaCorrenteExists(int id)
         {
+            //var ofxContaCorrente = await _OfxContasCorrentesDomainService.OfxContasCorrentesExists(id);
+
             return _context.ContasCorrentes.Any(e => e.Id == id);
         }
     }
