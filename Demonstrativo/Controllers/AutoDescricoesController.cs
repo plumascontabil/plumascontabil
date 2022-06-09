@@ -6,22 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
+using DomainService;
 
 namespace Demonstrativo.Controllers
 {
     public class AutoDescricoesController : Controller
     {
         private readonly Context _context;
+        private readonly AutoDescricoesDomainService _autoDescricoesDomainService;
 
-        public AutoDescricoesController(Context context)
+
+        public AutoDescricoesController(
+            Context context,
+            AutoDescricoesDomainService autoDescricoesDomainService
+            )
         {
             _context = context;
+            _autoDescricoesDomainService = autoDescricoesDomainService;
         }
         
         // GET: AutoDescricoes
         public async Task<IActionResult> Index()
         {
             var context = _context.AutoDescricoes.Include(a => a.LancamentoPadrao);
+          //var context = _autoDescricoesDomainService.AutoDescricoes();
             return View(await context.ToListAsync());
         }
 
@@ -36,6 +44,7 @@ namespace Demonstrativo.Controllers
             var autoDescricao = await _context.AutoDescricoes
                 .Include(a => a.LancamentoPadrao)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            //var autoDescricao = await _autoDescricoesDomainService.GetAutoDescricaoById(id);
             if (autoDescricao == null)
             {
                 return NotFound();
@@ -62,6 +71,7 @@ namespace Demonstrativo.Controllers
             {
                 _context.Add(autoDescricao);
                 await _context.SaveChangesAsync();
+                //await _autoDescricoesDomainService.CreateValidar(autoDescricao);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
@@ -103,6 +113,8 @@ namespace Demonstrativo.Controllers
                 {
                     _context.Update(autoDescricao);
                     await _context.SaveChangesAsync();
+                    //await _autoDescricoesDomainService.EditValidar(autoDescricao);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -148,6 +160,7 @@ namespace Demonstrativo.Controllers
             var autoDescricao = await _context.AutoDescricoes.FindAsync(id);
             _context.AutoDescricoes.Remove(autoDescricao);
             await _context.SaveChangesAsync();
+            //_autoDescricoesDomainService.DeleteConfirmado(id);
             return RedirectToAction(nameof(Index));
         }
 

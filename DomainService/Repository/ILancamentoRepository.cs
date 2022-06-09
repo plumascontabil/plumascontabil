@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,9 @@ namespace DomainService.Repository
 {
     public interface ILancamentoRepository
     {
+        public Task<Lancamento> GetById(int? id);
+        public Task<bool> Adicionar(Lancamento lancamento);
+        public Task<bool> Editar(Lancamento lancamento);
+        public Task<bool> Deletar(int id);
     }
 }
