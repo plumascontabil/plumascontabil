@@ -1,23 +1,23 @@
 ﻿@model LoginViewModel
 @{
     Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Login";
 }
  
 
 <div class="row form-lancamento">
-    <section class="col-md-4 table-bordered mx-auto rounded-lg bg-light">
-        <div class="text-plumas">
-            <br/>
+    <section class=" table-bordered mx-auto rounded-lg bg-light area-login">
+        <div class="text-plumas d-flex justify-content-center pt-2">
+           
             @ViewData["Title"]
-            <br/>
+           
         </div>
-        <hr />
+     
         <div>
             <form asp-controller="Usuario" asp-action="Login" method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Email"></label>
+                    <label asp-for="Email"> </label>
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
@@ -33,7 +33,7 @@
                     </label>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-plumas">Log in</button>
+                    <button type="submit" class="btn-plumas-login w-100 py-1">Avançar</button>
                 </div>
             </form>
         </div>
