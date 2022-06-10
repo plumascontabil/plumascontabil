@@ -1,7 +1,7 @@
 ﻿@model TrimestreViewModel
 
 @{
-    ViewData["Title"] = "Lançamento";
+    ViewData["Title"] = "Lançamentos";
 }
 @using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post, new { @class = "form-lancamento" }))
 {
@@ -15,9 +15,8 @@
         </svg>
     </button>
     <button type="submit" asp-action="GerarArquivo" value="Enviar" class="floatBtnArquivo btn btn-plumas">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
-            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
-        </svg>
+     
+        <span class="download-txt">TXT</span>
     </button>
         @{
             var numeroSkip = 0;
@@ -26,13 +25,19 @@
         }
 </div>
 
+<div class="py-4 pl-3">
+    <h1 class="page-title">Lançamentos</h1>
+</div>
+
 <div class="row">
 @while (numeroSkip < Model.Categorias.Count)
 {
-    <div class="col m-0">
+    <div class="col-md-4 m-0">
     @foreach (var categoria in Model.Categorias.Skip(numeroSkip).Take(numeroTake))
     {
-    <table class="table table-bordered inptable mx-auto">
+
+    
+        <table class="table table-bordered inptable mx-auto">
         <thead>
             <tr>
                 <th colspan="3" class="bg-categoria text-white">@categoria.Descricao</th>
@@ -47,6 +52,7 @@
                     var lancamento = conta.Lancamentos[indexLancamento];
                     <tr>
                         <td class="codigo">
+                            
                             @conta.Codigo<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Conta" value="@conta.Id" />    
                         </td>
                         <td class="descricao">
@@ -76,7 +82,9 @@
                 }
             </tbody>
         }
+       
     </table>
+   
     indexCategoria++;
     }
     </div>
@@ -84,7 +92,7 @@ numeroSkip += numeroTake;
 }
 </div>
 <div class="row">
-    <div class="col">
+    <div class="col-md-4">
         <table class="table table-bordered inptable">
             <thead>
                 <tr>
@@ -159,7 +167,7 @@ numeroSkip += numeroTake;
             </tbody>
         </table>
     </div>
-    <div class="col">
+    <div class="col-md-4">
         <table class="table table-bordered inptable">
             <thead>
                 <tr>
@@ -239,7 +247,7 @@ numeroSkip += numeroTake;
             </tbody>
         </table>
     </div>
-    <div class="col">
+    <div class="col-md-4">
         <table class="table table-bordered inptable">
             <thead>
                 <tr>
@@ -288,7 +296,7 @@ numeroSkip += numeroTake;
     </div>
 </div>
 <div class="row">
-    <div class="col">
+    <div class="col-md-4">
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -355,7 +363,7 @@ numeroSkip += numeroTake;
             </tbody>
         </table>
     </div>
-    <div class="col">
+    <div class="col-md-4">
         <table class="table table-bordered inptable">
 
             @{
@@ -410,7 +418,7 @@ numeroSkip += numeroTake;
             }
         </table>
     </div>
-    <div class="col">
+    <div class="col-md-4">
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -462,7 +470,7 @@ numeroSkip += numeroTake;
             <tr>
                 <th colspan="4" class="bg-categoria text-white">Estoque Combustível</th>
             </tr>
-            <tr>
+            <tr class="bg-dark">
                 <th class="bg-light">Combustíveis</th>
                 <th class="bg-light">Estoque Final (LT)</th>
                 <th class="bg-light">Valor Unitário(R$)</th>

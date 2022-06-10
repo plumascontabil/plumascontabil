@@ -166,6 +166,12 @@ input{
     border-color: #313155;
 }
 
+.btn-plumas-login {
+    color: #fff;
+    background-color: #313155;
+    border-color: #313155;
+}
+
 .btn-plumas:hover {
     margin: 2px;
     color: #313155;
@@ -186,6 +192,8 @@ input{
     border-color: #313155;
 }
 
+
+
 .text-plumas {
     color: #313155;
     font-family: 'Josefin Sans', sans-serif;
@@ -194,4 +202,73 @@ input{
 
 #conta-ofx{
     width: 50px;
+}
+
+.nav-item {
+    transition: all .3s;
+    position: relative;
+    cursor: pointer;
+    color: #202020;
+}
+
+    .nav-item:hover {
+        background-color: #fff;
+        color: black;
+    }
+
+    .nav-item:after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 6px;
+        border-bottom: 2px solid #202020;
+        position: absolute;
+        left: 0;
+    }
+
+    .active:after, .nav-item:hover:after {
+        animation: animate .3s linear forwards;
+    }
+
+    @keyframes animate {
+        0% {
+            width: 0;
+        }
+
+        100% {
+            width: 100%;
+        }
+    }
+
+.download-txt{
+    font-size:1.5rem;
+}
+
+.page-title {
+    font-weight: bold;
+    color: #202020;
+    position:relative;
+}
+.page-title:after {
+    content:'';
+    display:block;
+    position: absolute;
+    left:0;
+    width:70px;
+    height:8px;
+    background-color:#e5e5e5;
+}
+.area-login {
+    border-top: solid 6px #313155 ;
+    width:90%;
+    max-width:500px;
+    padding: 20px ;
+}
+
+.cursor-pointer{
+    cursor:pointer;
+}
+
+.border-dashed {
+    border-style: dashed;
 }
