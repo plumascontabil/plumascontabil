@@ -61,27 +61,17 @@
 							   asp-controller="Role"
 							   asp-action="Index">Roles</a>
 							</li>
-							<li class="nav-item ">
-								<div class="dropdown show">
-									<a class="nav-link text-dark dropdown-toggle"
-								   role="button"
-								   id="dropdownMenuLink"
-								   data-toggle="dropdown"
-								   aria-haspopup="true"
-								   aria-expanded="false"
-								   asp-area=""
-								   asp-controller="Importacao"
-								   asp-action="Index">
-										Importações
-									</a>
-									<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="OfxImportacoes"
-									   asp-action="Index">Ofx</a>
-									</div>
-								</div>
-							</li>
+							<li class="nav-item">
+                                <div class="dropdown show">
+                                    <a class="nav-link text-dark"
+                                       asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
+                                        Importações OFX
+                                    </a>
+                                    @*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
+                                        </div>*@
+                                </div>
+                            </li>
 							<li class="nav-item">
 								<div class="dropdown show">
 									<a class="nav-link text-dark dropdown-toggle"
@@ -162,19 +152,38 @@
 	<script src="~/lib/jquery/dist/jquery.mask.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script>
-		$('[data-toggle="tooltip"]').tooltip()
-		$('.select').select2({
-			placeholder: 'Selecione'
-		});
-	</script>
+	 @*<script src="~/lib/jquery/dist/jquery.mask.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+    <script>
+        $('.select').select2({
+            placeholder: 'Selecione'
+        });
 
-	@*<script type="text/javascript">
-	$(document).ready(function () {
-	$('.mask-valor').mask('000.000.000,00', { reverse: true });
-	$('.mask-valorDecimal').mask('00,00', { reverse: false });
-	});
-	</script>*@
+        $(".mask-valor").maskMoney({
+            prefix: "R$ ",
+            decimal: ",",
+            thousands: "."
+        });
+    </script>
+
+    @*<script type="text/javascript">
+            $(document).ready(function () {
+                $('.mask-valor').mask(' 000.000.000,00', { reverse: true });
+                $('.mask-valorDecimal').mask('00,00', { reverse: false });
+            });
+        </script>*@
+
+    @*<script type="text/javascript">
+            $(document).ready(function () {
+                $(".mask-valor").maskMoney({
+                    prefix: "R$:",
+                    decimal: ",",
+                    thousands: "."
+                });
+            });
+        </script>*@
+
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
