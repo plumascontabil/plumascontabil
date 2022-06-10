@@ -20,17 +20,17 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
-        private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
+       // private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
 
 
         public OfxImportacoesController(Context context,
-            IWebHostEnvironment env,
-            OfxImportacoesDomainService ofxImportacoesDomainService
+            IWebHostEnvironment env
+            //OfxImportacoesDomainService ofxImportacoesDomainService
             )
         {
             _context = context;
             _appEnvironment = env;
-            _ofxImportacoesDomainService = ofxImportacoesDomainService;
+            //_ofxImportacoesDomainService = ofxImportacoesDomainService;
         }
 
         public IActionResult Index()

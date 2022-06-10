@@ -11,14 +11,15 @@ namespace Demonstrativo.Controllers
     public class OfxContasCorrentesController : Controller
     {
         private readonly Context _context;
-        private readonly OfxContasCorrentesDomainService _ofxContasCorrentesDomainService;
+        //private readonly OfxContasCorrentesDomainService _ofxContasCorrentesDomainService;
 
 
-        public OfxContasCorrentesController(Context context,
-            OfxContasCorrentesDomainService ofxContasCorrentesDomainService)
+        public OfxContasCorrentesController(Context context
+           // OfxContasCorrentesDomainService ofxContasCorrentesDomainService
+           )
         {
             _context = context;
-            _ofxContasCorrentesDomainService = ofxContasCorrentesDomainService;
+            //_ofxContasCorrentesDomainService = ofxContasCorrentesDomainService;
         }
 
         // GET: OfxContasCorrentes

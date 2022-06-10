@@ -22,17 +22,17 @@ namespace Demonstrativo.Controllers
         readonly static BaseFont fonteBase = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, false);
         readonly Context _context;
         readonly IWebHostEnvironment _appEnvironment;
-        private readonly ImportacaoDomainService _importacaoDomainService;
+        //private readonly ImportacaoDomainService _importacaoDomainService;
 
         public ImportacaoController(
             Context context, 
-            IWebHostEnvironment env,
-            ImportacaoDomainService importacaoDomainService
+            IWebHostEnvironment env
+            //ImportacaoDomainService importacaoDomainService
             )
         {
             _context = context;
             _appEnvironment = env;
-            _importacaoDomainService = importacaoDomainService;
+            //_importacaoDomainService = importacaoDomainService;
         }
         public IActionResult Index()
         {

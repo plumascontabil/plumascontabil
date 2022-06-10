@@ -13,13 +13,15 @@ namespace Demonstrativo.Controllers
     public class SaldoMensalsController : Controller
     {
         private readonly Context _context;
-        private readonly SaldoMensalsDomainService _saldoMensalsDomainService;
+        //private readonly SaldoMensalsDomainService _saldoMensalsDomainService;
 
-        public SaldoMensalsController(Context context,
-            SaldoMensalsDomainService saldoMensalsDomainService)
+        public SaldoMensalsController(Context context
+            //SaldoMensalsDomainService saldoMensalsDomainService
+            )
+
         {
             _context = context;
-            _saldoMensalsDomainService = saldoMensalsDomainService;
+            //_saldoMensalsDomainService = saldoMensalsDomainService;
         }
 
         // GET: SaldoMensals

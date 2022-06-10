@@ -10,14 +10,14 @@ namespace Demonstrativo.Controllers
     public class ContasContabeisController : Controller
     {
         private readonly Context _context;
-        private readonly ContasContabeisDomainService _contaContabilDomainService;
+        //private readonly ContasContabeisDomainService _contaContabilDomainService;
 
 
-        public ContasContabeisController(Context context,
-            ContasContabeisDomainService contaContabilDomainService)
+        public ContasContabeisController(Context context)
+            //ContasContabeisDomainService contaContabilDomainService)
         {
             _context = context;
-            _contaContabilDomainService = contaContabilDomainService;
+            //_contaContabilDomainService = contaContabilDomainService;
         }
 
         // GET: ContasContabeis

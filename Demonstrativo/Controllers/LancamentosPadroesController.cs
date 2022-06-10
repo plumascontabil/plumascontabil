@@ -11,12 +11,14 @@ namespace Demonstrativo.Controllers
     public class LancamentosPadroesController : Controller
     {
         private readonly Context _context;
-        private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
+        //private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
-        public LancamentosPadroesController(Context context, LancamentoPadroesDomainService lancamentoPadroesDomainService)
+        public LancamentosPadroesController(Context context
+            //LancamentoPadroesDomainService lancamentoPadroesDomainService
+            )
         {
             _context = context;
-            _lancamentoPadroesDomainService = lancamentoPadroesDomainService;
+            //_lancamentoPadroesDomainService = lancamentoPadroesDomainService;
         }
 
         // GET: LancamentosPadroes

@@ -13,16 +13,16 @@ namespace Demonstrativo.Controllers
     public class AutoDescricoesController : Controller
     {
         private readonly Context _context;
-        private readonly AutoDescricoesDomainService _autoDescricoesDomainService;
+        //private readonly AutoDescricoesDomainService _autoDescricoesDomainService;
 
 
         public AutoDescricoesController(
-            Context context,
-            AutoDescricoesDomainService autoDescricoesDomainService
+            Context context
+            //AutoDescricoesDomainService autoDescricoesDomainService
             )
         {
             _context = context;
-            _autoDescricoesDomainService = autoDescricoesDomainService;
+            //_autoDescricoesDomainService = autoDescricoesDomainService;
         }
         
         // GET: AutoDescricoes

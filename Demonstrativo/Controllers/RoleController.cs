@@ -14,15 +14,15 @@ namespace Demonstrativo.Controllers
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly RoleDomainService _roleDomainService;
+        //private readonly RoleDomainService _roleDomainService;
 
 
-        public RoleController(RoleManager<IdentityRole> roleManager,
-            RoleDomainService roleDomainService
+        public RoleController(RoleManager<IdentityRole> roleManager
+            //RoleDomainService roleDomainService
             )
         {
             _roleManager = roleManager;
-            _roleDomainService = roleDomainService;
+            //_roleDomainService = roleDomainService;
         }
 
         public IActionResult Index()

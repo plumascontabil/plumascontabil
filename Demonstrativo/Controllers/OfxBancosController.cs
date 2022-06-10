@@ -10,13 +10,15 @@ namespace Demonstrativo.Controllers
     public class OfxBancosController : Controller
     {
         private readonly Context _context;
-        private readonly OfxBancosDomainService _ofxBancosDomainService;
+        //private readonly OfxBancosDomainService _ofxBancosDomainService;
 
 
-        public OfxBancosController(Context context, OfxBancosDomainService ofxBancosDomainService)
+        public OfxBancosController(Context context 
+            //OfxBancosDomainService ofxBancosDomainService
+            )
         {
             _context = context;
-            _ofxBancosDomainService = ofxBancosDomainService;
+            //_ofxBancosDomainService = ofxBancosDomainService;
         }
 
         // GET: OfxBancos
