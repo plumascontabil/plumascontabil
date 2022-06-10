@@ -5,223 +5,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Demonstrativo</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" /> 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Demonstrativo</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet"
+		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+		  integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+		  crossorigin="anonymous"
+		  referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+	<header>
+		<nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
+			<div class="container">
+				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+					<img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-                @if (User.Identity.IsAuthenticated)
-                {
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 ">
-                        <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active":"")">
-                            <a
-                              class="nav-link text-dark"
-                              asp-area=""
-                              asp-controller="Lancamento"
-                              asp-action="Index"
-                              >Lançamentos</a>
-                         </li>
-                        @if(User.IsInRole("Administrador"))
-                        {
-                        <li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "CarregarUsuario" ? "active":"")">
-                            <a
-                              class="nav-link text-dark"
-                              asp-area=""
-                              asp-controller="Usuario"
-                              asp-action="CarregarUsuario"
-                              >Usuários</a
-                            >
-                        </li>
-                        <li class="nav-item">
-                            <a
-                              class="nav-link text-dark"
-                              asp-area=""
-                              asp-controller="Role"
-                              asp-action="Index"
-                              >Roles</a
-                            >
-                        </li>
-                        <li class="nav-item ">
-                            <div class="dropdown show">
-                                  <a
-                                    class="nav-link text-dark dropdown-toggle"
-                                    role="button"
-                                    id="dropdownMenuLink"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                    asp-area=""
-                                    asp-controller="Importacao"
-                                    asp-action="Index"
-                                  >
-                                    Importações
-                                  </a>
-                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a
-                                      class="dropdown-item"
-                                      asp-area=""
-                                      asp-controller="OfxImportacoes"
-                                      asp-action="Index"
-                                      >Ofx</a
-                                    >
-                                  </div>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                                  <div class="dropdown show">
-                                      <a
-                                        class="nav-link text-dark dropdown-toggle"
-                                        role="button"
-                                        id="dropdownMenuLink"
-                                        data-toggle="dropdown"
-                                        aria-haspopup="true"
-                                        aria-expanded="false"
-                                        asp-area=""
-                                        asp-controller="Importacao"
-                                        asp-action="Index"
-                                      >
-                                        Operações
-                                      </a>
-                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="AutoDescricoes"
-                                          asp-action="Index"
-                                          >Históricos Banco</a
-                                        >
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="OfxContasCorrentes"
-                                          asp-action="Index"
-                                          >Contas Correntes</a
-                                        >
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="SaldoMensals"
-                                          asp-action="Index"
-                                          >Saldos Contas Correntes</a
-                                        >
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="OfxBancos"
-                                          asp-action="Index"
-                                          >Bancos</a
-                                        >
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="ContasContabeis"
-                                          asp-action="Index"
-                                          >Contas Contabeis</a
-                                        >
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="LancamentosPadroes"
-                                          asp-action="Index"
-                                          >Lancamentos Padrões</a
-                                        >
-                                        <a
-                                          class="dropdown-item"
-                                          asp-area=""
-                                          asp-controller="Importacao"
-                                          asp-action="RelatorioOfx"
-                                          >Relatorio</a
-                                        >
-                                      </div>
-                                    </div>
-                            </li>
-                        }
-                    </ul>
+				@if (User.Identity.IsAuthenticated)
+				{
+					<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+						<ul class="navbar-nav flex-grow-1 ">
+							<li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active":"")">
+								<a class="nav-link text-dark"
+							   asp-area=""
+							   asp-controller="Lancamento"
+							   asp-action="Index">Lançamentos</a>
+							</li>
+							@if (User.IsInRole("Administrador"))
+							{
+								<li class="nav-item @(ViewContext.RouteData.Values["action"].ToString() == "CarregarUsuario" ? "active":"")">
+									<a class="nav-link text-dark"
+							   asp-area=""
+							   asp-controller="Usuario"
+							   asp-action="CarregarUsuario">Usuários</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link text-dark"
+							   asp-area=""
+							   asp-controller="Role"
+							   asp-action="Index">Roles</a>
+								</li>
+								<li class="nav-item ">
+									<div class="dropdown show">
+										<a class="nav-link text-dark dropdown-toggle"
+								   role="button"
+								   id="dropdownMenuLink"
+								   data-toggle="dropdown"
+								   aria-haspopup="true"
+								   aria-expanded="false"
+								   asp-area=""
+								   asp-controller="Importacao"
+								   asp-action="Index">
+											Importações
+										</a>
+										<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="OfxImportacoes"
+									   asp-action="Index">Ofx</a>
+										</div>
+									</div>
+								</li>
+								<li class="nav-item">
+									<div class="dropdown show">
+										<a class="nav-link text-dark dropdown-toggle"
+								   role="button"
+								   id="dropdownMenuLink"
+								   data-toggle="dropdown"
+								   aria-haspopup="true"
+								   aria-expanded="false"
+								   asp-area=""
+								   asp-controller="Importacao"
+								   asp-action="Index">
+											Operações
+										</a>
+										<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="AutoDescricoes"
+									   asp-action="Index">Históricos Banco</a>
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="OfxContasCorrentes"
+									   asp-action="Index">Contas Correntes</a>
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="SaldoMensals"
+									   asp-action="Index">Saldos Contas Correntes</a>
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="OfxBancos"
+									   asp-action="Index">Bancos</a>
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="ContasContabeis"
+									   asp-action="Index">Contas Contabeis</a>
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="LancamentosPadroes"
+									   asp-action="Index">Lancamentos Padrões</a>
+											<a class="dropdown-item"
+									   asp-area=""
+									   asp-controller="Importacao"
+									   asp-action="RelatorioOfx">Relatorio</a>
+										</div>
+									</div>
+								</li>
+							}
+						</ul>
 
-                    <a class="btn bg-transparent" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt"></i></a>
-                     
-                </div> 
-                
-                /*    @if(User.IsInRole("Administrador"))
-                    {
-                       <a class="btn btn-plumas-w btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Register">Registrar Usuário
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
-                             <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                             <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
-                           </svg>
-                       </a>    
-                    }*/
-                }
-                else
-                {
-                    <a class="btn btn-plumas btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Login">
-                        Login
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
-                            <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
-                        </svg>
-                    </a>
+						<a class="btn bg-transparent" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt"></i></a>
 
-                  /*  @if(User.IsInRole("Administrador"))
-                    {
-                        <a class="btn btn-plumas-w btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Register">
-                            Registrar Usuário
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
-                                <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
-                            </svg>
-                        </a>
-                    }*/
-                }
-            </div>
+					</div>
 
-           
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3 pt-5">
-            @RenderBody()
-        </main>
-    </div>
+					/*    @if(User.IsInRole("Administrador"))
+					{
+					<a class="btn btn-plumas-w btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Register">Registrar Usuário
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+					<path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+					<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+					</svg>
+					</a>
+					}*/
+				}
+				else
+				{
+					<a class="btn btn-plumas btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Login">
+						Login
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+							<path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
+							<path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+						</svg>
+					</a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - Demonstrativo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        $('.select').select2({
-            placeholder: 'Selecione'
-        });
-    </script>
+					/*  @if(User.IsInRole("Administrador"))
+					{
+					<a class="btn btn-plumas-w btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Register">
+					Registrar Usuário
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+					<path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+					<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+					</svg>
+					</a>
+					}*/
+				}
+			</div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3 pt-5">
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; 2021 - Demonstrativo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>
+	</footer>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/lib/jquery/dist/jquery.mask.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>
+		$('.select').select2({
+			placeholder: 'Selecione'
+		});
+	</script>
+
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
