@@ -40,6 +40,7 @@
            hideValidate(this);
         });
     });
+    $('.money').mask('000.000.000.000.000,00', { reverse: true });
 
     function validate (input) {
         if($(input).attr('type') == 'email' || $(input).attr('name') == 'email') {
@@ -65,7 +66,9 @@
 
         $(thisAlert).removeClass('alert-validate');
     }
-    
+
+
+
     
 
 })(jQuery);

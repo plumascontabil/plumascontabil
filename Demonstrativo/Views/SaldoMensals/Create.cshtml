@@ -5,7 +5,10 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+ <div class="py-4 pl-3 d-flex justify-content-between">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+ 
+</div>
 
 <h4>SaldoMensal</h4>
 <hr />
@@ -25,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ContaCorrenteId" class="control-label"></label>
-                <select asp-for="ContaCorrenteId" class ="form-control" asp-items="ViewBag.ContaCorrenteId"></select>
+                <select asp-for="ContaCorrenteId" class ="form-control select" asp-items="ViewBag.ContaCorrenteId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
