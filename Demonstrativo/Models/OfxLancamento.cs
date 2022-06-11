@@ -18,15 +18,18 @@ namespace Demonstrativo.Models
 
         [Required]
         [Column(TypeName = "decimal(11,2)")]
-        public double ValorOfx { get; set; }
+        public decimal ValorOfx { get; set; }
 
         [ForeignKey("ContaCorrenteId")]
         public int ContaCorrenteId { get; set; }
         public OfxContaCorrente ContaCorrente { get; set; }
         public string TipoLancamento { get; set; }
-        public List<OfxLoteLancamento> LoteLancamentos { get; set; }
+        //public List<OfxLoteLancamento> LoteLancamentos { get; set; }
         [ForeignKey("LancamentoPadraoId")]
         public int? LancamentoPadraoId { get; set; }
         public LancamentoPadrao LancamentoPadrao { get; set; }
+        [ForeignKey("LancamentoPadraoId")]
+        public int? LoteLancamentoId { get; set; }
+        public OfxLoteLancamento Lote { get; set; }
     }
 }

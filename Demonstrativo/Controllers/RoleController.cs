@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 namespace Demonstrativo.Controllers
 {
     [Authorize]
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         //private readonly RoleDomainService _roleDomainService;
 
 
-        public RoleController(RoleManager<IdentityRole> roleManager
+        public RoleController(RoleManager<IdentityRole> roleManager, Context context
             //RoleDomainService roleDomainService
-            )
+            ) : base(context)
         {
             _roleManager = roleManager;
             //_roleDomainService = roleDomainService;
@@ -27,6 +27,8 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var roles = _roleManager.Roles.ToList();
             CarregarRoles();
             return View(roles);
@@ -34,6 +36,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new IdentityRole());
         }
 
@@ -60,7 +64,7 @@ namespace Demonstrativo.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> DeletarRole(string id)
         {
@@ -71,7 +75,10 @@ namespace Demonstrativo.Controllers
                 if (role != null)
                 {
                     await _roleManager.DeleteAsync(role);
-                    return View();
+                    ViewBag.Excluido = true;
+                    var roles = _roleManager.Roles.ToList();
+                    CarregarRoles();
+                    return View("Index", roles);
                 }
 
                 return RedirectToAction("Index");

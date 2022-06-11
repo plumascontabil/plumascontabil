@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class OfxBancosController : Controller
+    public class OfxBancosController : BaseController
     {
         private readonly Context _context;
         //private readonly OfxBancosDomainService _ofxBancosDomainService;
 
 
-        public OfxBancosController(Context context 
+        public OfxBancosController(Context context
             //OfxBancosDomainService ofxBancosDomainService
-            )
+            ) : base(context)
         {
             _context = context;
             //_ofxBancosDomainService = ofxBancosDomainService;
@@ -24,12 +24,16 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos
         public async Task<IActionResult> Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(await _context.OfxBancos.ToListAsync());
         }
 
         // GET: OfxBancos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -50,6 +54,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View();
         }
 
@@ -73,6 +79,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -126,6 +134,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

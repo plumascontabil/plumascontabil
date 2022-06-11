@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class LancamentosPadroesController : Controller
+    public class LancamentosPadroesController : BaseController
     {
         private readonly Context _context;
         //private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
         public LancamentosPadroesController(Context context
             //LancamentoPadroesDomainService lancamentoPadroesDomainService
-            )
+            ) : base(context)
         {
             _context = context;
             //_lancamentoPadroesDomainService = lancamentoPadroesDomainService;
@@ -24,6 +24,8 @@ namespace Demonstrativo.Controllers
         // GET: LancamentosPadroes
         public async Task<IActionResult> Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var context = _context.LancamentosPadroes.Include(l => l.Categoria).Include(l => l.ContaCredito).Include(l => l.ContaDebito).Include(l => l.Tipo);
             return View(await context.ToListAsync());
         }

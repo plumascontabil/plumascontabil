@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class UsuarioController : Controller
+    public class UsuarioController : BaseController
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -22,7 +22,7 @@ namespace Demonstrativo.Controllers
             SignInManager<IdentityUser> signInManager,
             ILogger<UsuarioController> logger,
             RoleManager<IdentityRole> roleManager,
-            ContextIdentity contextIdentity)
+            ContextIdentity contextIdentity, Context context) : base(context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -39,6 +39,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult Register()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new RegistrarViewModel()
             {
                 UserRoles = _roleManager.Roles.ToList()
@@ -77,6 +79,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(string id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var user = await _userManager.FindByIdAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
             var nameRole = roles.FirstOrDefault();
@@ -96,7 +100,6 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
-
             var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 
@@ -138,7 +141,8 @@ namespace Demonstrativo.Controllers
         public IActionResult CarregarUsuario()
         {
             var users = _userManager.Users.ToList();
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var usuarioViewModel = new List<UsuarioViewModel>();
             foreach (var user in users)
             {
