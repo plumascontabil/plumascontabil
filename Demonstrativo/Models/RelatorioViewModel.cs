@@ -13,7 +13,7 @@ namespace Demonstrativo.Models
         public DateTime Date { get; set; }
         public string Type { get; set; }
         public string Description { get; set; }
-        public double TransationValue { get; set; }
+        public decimal TransationValue { get; set; }
         public DateTime DataInicial { get; set; }
         public DateTime DataFinal { get; set; }
         public int ContaDebitar { get; set; }

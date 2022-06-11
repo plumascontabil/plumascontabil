@@ -1,40 +1,42 @@
 ﻿@{
-	Layout = "_LayoutSemFiltroEmpresa";
-	ViewData["Title"] = "Importar";
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Importar";
 }
 
 @if (ViewBag.Message != null)
 {
-	<script type="text/javascript">
-		window.onload = function() {
-			alert("");
-			Swal.fire({
-				icon: 'warning',
-				title: 'Oops...',
-				text: 'Anexe um arquivo!',
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Anexe um arquivo!',
 
-			})
-		};
-	</script>
+            })
+        };
+    </script>
 }
 @if (ViewBag.Importado != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 
 			Swal.fire({
 				icon: 'success',
 				title: 'Sucesso...',
-				text: "@ViewBag.Importado",
+                text: "@ViewBag.Importado",
 
-			})
+
+            }).then((result) => {
+                window.location.href = '/Lancamento/Index';
+            })
 		};
-	</script>
+    </script>
 }
 @if (ViewBag.AdicionarBanco != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 			Swal.fire({
@@ -44,23 +46,71 @@
 
 			})
 		};
-	</script>
+    </script>
+}
+@if (ViewBag.ContaCorrenteNaoEncontrada != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Ops...',
+                text: "Conta Corrente não encontrada, baseado no OFX",
+
+            })
+        };
+    </script>
 }
 
+@if (ViewBag.SemArquivo != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Ops...',
+                text: "@Html.Raw(ViewBag.SemArquivo)",
+
+            })
+        };
+    </script>
+}
+@if (ViewBag.SemBanco != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Ops...',
+                text: "@Html.Raw(ViewBag.SemBanco)",
+
+            })
+        };
+    </script>
+}
 <div class="py-4 pl-3 d-flex justify-content-between">
-	<h1 class="page-title">@ViewData["Title"]</h1>
+    <h1 class="page-title">@ViewData["Title"]</h1>
 
 </div>
 <div class="row">
-	<div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
+    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
 
-		<form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
-			<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
-				<h6 class="display px-3 text-muted">Carregue o arquivo OFX aqui!</h6>
-				<input type="file" name="ofxArquivo" class="btn form-control-file sr-only">
-			</label>
+        <form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
+            <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
+                <h6 class="display px-3 text-muted">Bancos</h6>
+                @Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
+            </label>
+            <br />
 
-			<input type="submit" value="Enviar arquivo" name="submit" class="btn btn-plumas mt-4">
-		</form>
-	</div>
+            <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
+                <h6 class="display px-3 text-muted">Carregue o arquivo OFX aqui!</h6>
+                <input type="file" name="ofxArquivo" class="btn form-control-file sr-only" accept=".ofx">
+            </label>
+
+            <input type="submit" value="Enviar arquivo" name="submit" class="btn btn-plumas mt-4">
+        </form>
+    </div>
 </div>

@@ -1,9 +1,33 @@
 ﻿
 @model ExtratoBancarioViewModel
+@using System.Globalization;
 @{
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "ImportaçãoOfx";
 }
+<style>
+    .blue {
+        color: blue;
+    }
+
+    .red {
+        color: red;
+    }
+</style>
+@if (ViewBag.LancamentoPadraoSelecionadoNotSelect != null)
+{
+    <script type="text/javascript">
+    window.onload = function () {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: '@Html.Raw(ViewBag.LancamentoPadraoSelecionadoNotSelect)',
+
+        })
+    };
+    </script>
+}
+
 <div class="py-4 pl-3 d-flex justify-content-between">
     <h1 class="page-title">@ViewData["Title"]</h1>
 
@@ -47,13 +71,17 @@
                                             <input type="date" asp-for="@Model.LancamentoManual.Data" />
                                         </td>
                                         <td>
-                                            <input type="text" asp-for="@Model.LancamentoManual.TipoSelecionado" />
+                                            <select asp-for="@Model.LancamentoManual.TipoSelecionado">
+                                                <option selected disabled value="">Selecione</option>
+                                                <option style="color:blue" value="CREDIT">CREDIT</option>
+                                                <option style="color:red" value="DEBIT">DEBIT</option>
+                                            </select>
                                         </td>
                                         <td>
                                             <input type="text" asp-for="@Model.LancamentoManual.Descricao" />
                                         </td>
                                         <td>
-                                            <input type="text" asp-for="@Model.LancamentoManual.Valor" />
+                                            <input type="text" asp-for="@Model.LancamentoManual.Valor" class="mask-valor" />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -94,6 +122,8 @@
                         @for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
                         {
                             var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
+                            var value = ofxs.TransationValue > 0 ? "blue" : "red";
+                            var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
                             <tr>
                                 <td>
                                     @ofxs.Id
@@ -103,7 +133,7 @@
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
                                 </td>
                                 <td>
-                                    @ofxs.Date
+                                    @ofxs.Date.Date.ToString("dd/MM/yyyy")
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
                                 </td>
                                 <td>
@@ -114,8 +144,10 @@
                                     @ofxs.Description
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
                                 </td>
-                                <td>
-                                    @ofxs.TransationValue
+                                <td class="@value">
+                                    @*@ofxs.TransationValue*@
+
+                                    @valor
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
                                 </td>
                                 <td>

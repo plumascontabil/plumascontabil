@@ -15,7 +15,7 @@ namespace Demonstrativo.Controllers
         {
             _context = context;
         }
-        
+
         protected void AdicionarCompetenciaMesAtual()
         {
             DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
@@ -39,13 +39,14 @@ namespace Demonstrativo.Controllers
             List<Empresa> empresas = _context.Empresas.ToList();
             List<Competencia> competencias = _context.Competencias.ToList();
 
+
             ViewBag.CompetenciasId = new SelectList(
                     competencias.Select(
                     c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
                     , "Value", "Text",
                     competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
-            ViewBag.EmpresasId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
+            ViewBag.EmpresasId = new SelectList(empresas.Select(F => new { Value = F.Codigo, Text = $"{F.Codigo} - {F.RazaoSocial}" }).ToList(), "Value", "Text", empresaId);
         }
     }
 }

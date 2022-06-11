@@ -10,7 +10,7 @@ namespace Demonstrativo.Models
         public int HistoricoId { get; set; }
         public string Description { get; set; }
         public string Complemento { get; set; }
-        public double TransationValue { get; set; }
+        public decimal TransationValue { get; set; }
         public DateTime Date { get; set; }
         public long CheckSum { get; set; }
         public string Type { get; set; }

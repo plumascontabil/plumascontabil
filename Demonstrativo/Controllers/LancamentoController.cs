@@ -103,7 +103,7 @@ namespace Demonstrativo.Controllers
                 foreach (var conta in contas.Where(c => c.CategoriaId == categoria.Id))
                 {
                     var lancamentosViewModel = new List<LancamentoViewModel>();
-                    double valor = 0;
+                    decimal valor = 0;
                     foreach (var contaCorrente in contasCorrentes)
                     {
                         var ofxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);

@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<OFX>
+	<SIGNONMSGSRSV1>
+		<SONRS>
+			<STATUS>
+				<CODE>0</CODE>
+					<SEVERITY>INFO</SEVERITY>
+					</STATUS>
+					<DTSERVER>20220611</DTSERVER>
+						<LANGUAGE>POR</LANGUAGE>
+							<FI>
+								<ORG>Banco Intermedium S/A</ORG>
+									<FID>077</FID>
+									</FI>
+								</SONRS>
+							</SIGNONMSGSRSV1>
+							<BANKMSGSRSV1>
+								<STMTTRNRS>
+									<TRNUID>1001</TRNUID>
+										<STATUS>
+											<CODE>0</CODE>
+												<SEVERITY>INFO</SEVERITY>
+												</STATUS>
+												<STMTRS>
+													<CURDEF>BRL</CURDEF>
+														<BANKACCTFROM>
+															<BANKID>077</BANKID>
+																<BRANCHID>0001-9</BRANCHID>
+																	<ACCTID>203159446</ACCTID>
+																		<ACCTTYPE>CHECKING</ACCTTYPE>
+																		</BANKACCTFROM>
+																		<BANKTRANLIST>
+																			<DTSTART>20220604</DTSTART>
+																				<DTEND>20220611</DTEND>
+																					<STMTTRN>
+																						<TRNTYPE>CREDIT</TRNTYPE>
+																							<DTPOSTED>20220610</DTPOSTED>
+																								<TRNAMT>1131.86</TRNAMT>
+																									<FITID>202206100771</FITID>
+																										<CHECKNUM>077</CHECKNUM>
+																											<REFNUM>077</REFNUM>
+																												<MEMO>PIX RECEBIDO - Cp :92894922-PAULO JOSE DE SOUZA MELLO</MEMO>
+																												</STMTTRN>
+																												<STMTTRN>
+																													<TRNTYPE>PAYMENT</TRNTYPE>
+																														<DTPOSTED>20220610</DTPOSTED>
+																															<TRNAMT>-1131.86</TRNAMT>
+																																<FITID>202206100772</FITID>
+																																	<CHECKNUM>077</CHECKNUM>
+																																		<REFNUM>077</REFNUM>
+																																			<MEMO>PAGAMENTO FATURA INTER - Pagamento Fatura Cartão Inter</MEMO>
+																																			</STMTTRN>
+																																		</BANKTRANLIST>
+																																		<LEDGERBAL>
+																																			<BALAMT>0.00</BALAMT>
+																																				<DTASOF>20220611</DTASOF>
+																																				</LEDGERBAL>
+																																			</STMTRS>
+																																		</STMTTRNRS>
+																																	</BANKMSGSRSV1>
+																																</OFX>
