@@ -20,6 +20,9 @@ namespace Demonstrativo.Models
         public DbSet<OfxContaCorrente> ContasCorrentes { get; set; }
         public DbSet<AutoDescricao> AutoDescricoes { get; set; }
         public DbSet<SaldoMensal> SaldoMensal { get; set; }
+        public DbSet<RoleTela> RoleTelas { get; set; }
+        public DbSet<Tela> Telas { get; set; }
+
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
@@ -39,6 +42,7 @@ namespace Demonstrativo.Models
                            .WithMany(c => c.LancamentoPadraoDebitar)
                            .HasForeignKey(x => x.ContaDebitoId)
                            .OnDelete(DeleteBehavior.Restrict);
+
         }
 
     }
