@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class UsuarioController : Controller
+    public class UsuarioController : BaseController
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -22,7 +22,7 @@ namespace Demonstrativo.Controllers
             SignInManager<IdentityUser> signInManager,
             ILogger<UsuarioController> logger,
             RoleManager<IdentityRole> roleManager,
-            ContextIdentity contextIdentity)
+            ContextIdentity contextIdentity, Context context) : base(context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -138,7 +138,8 @@ namespace Demonstrativo.Controllers
         public IActionResult CarregarUsuario()
         {
             var users = _userManager.Users.ToList();
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var usuarioViewModel = new List<UsuarioViewModel>();
             foreach (var user in users)
             {

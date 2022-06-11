@@ -7,14 +7,14 @@ using DomainService;
 
 namespace Demonstrativo.Controllers
 {
-    public class ContasContabeisController : Controller
+    public class ContasContabeisController : BaseController
     {
         private readonly Context _context;
         //private readonly ContasContabeisDomainService _contaContabilDomainService;
 
 
-        public ContasContabeisController(Context context)
-            //ContasContabeisDomainService contaContabilDomainService)
+        public ContasContabeisController(Context context) : base(context)
+        //ContasContabeisDomainService contaContabilDomainService)
         {
             _context = context;
             //_contaContabilDomainService = contaContabilDomainService;
@@ -23,6 +23,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis
         public async Task<IActionResult> Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             //var contasContabeis = await _contaContabilDomainService.GetContasContabeis();
             return View(await _context.ContasContabeis.ToListAsync());
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class OfxContasCorrentesController : Controller
+    public class OfxContasCorrentesController : BaseController
     {
         private readonly Context _context;
         //private readonly OfxContasCorrentesDomainService _ofxContasCorrentesDomainService;
@@ -16,7 +16,7 @@ namespace Demonstrativo.Controllers
 
         public OfxContasCorrentesController(Context context
            // OfxContasCorrentesDomainService ofxContasCorrentesDomainService
-           )
+           ) : base(context)
         {
             _context = context;
             //_ofxContasCorrentesDomainService = ofxContasCorrentesDomainService;
@@ -25,6 +25,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxContasCorrentes
         public async Task<IActionResult> Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var context = _context.ContasCorrentes.Include(o => o.BancoOfx).Include(o => o.Empresa);
             return View(await context.ToListAsync());
         }

@@ -1,13 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using Demonstrativo.Models;
+﻿using Demonstrativo.Models;
+using DomainService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class BaseController : Microsoft.AspNetCore.Mvc.Controller
+    public class BaseController : Controller
     {
         readonly Context _context;
 
@@ -36,6 +43,48 @@ namespace Demonstrativo.Controllers
 
         protected void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
         {
+
+            if (empresaId.HasValue)
+            {
+                HttpContext.Session.SetInt32("empresaId", empresaId.Value);
+            }
+            else
+            {
+                try
+                {
+                    var aju = HttpContext.Session.GetInt32("empresaId");
+                    empresaId = aju;
+                    ViewBag.EmpresaSeleciodaId = empresaId.Value;
+                }
+                catch (Exception)
+                {
+
+                    empresaId = null;
+                }
+
+            }
+
+            if (competenciasId.HasValue)
+            {
+                HttpContext.Session.SetString("competenciasId", competenciasId.Value.ToLongDateString());
+            }
+            else
+            {
+
+                try
+                {
+                    var aju = HttpContext.Session.GetString("competenciasId");
+                    competenciasId = !string.IsNullOrEmpty(aju) ? Convert.ToDateTime(aju) : null;
+                    ViewBag.CompetenciasSelecionadaId = competenciasId.Value.ToString("yyyy-MM-dd");
+                }
+                catch (Exception)
+                {
+
+                    competenciasId = null;
+                }
+            }
+
+
             List<Empresa> empresas = _context.Empresas.ToList();
             List<Competencia> competencias = _context.Competencias.ToList();
 
@@ -47,6 +96,10 @@ namespace Demonstrativo.Controllers
                     competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
             ViewBag.EmpresasId = new SelectList(empresas.Select(F => new { Value = F.Codigo, Text = $"{F.Codigo} - {F.RazaoSocial}" }).ToList(), "Value", "Text", empresaId);
+
+
+
+
         }
     }
 }

@@ -10,14 +10,14 @@ using DomainService;
 
 namespace Demonstrativo.Controllers
 {
-    public class SaldoMensalsController : Controller
+    public class SaldoMensalsController : BaseController
     {
         private readonly Context _context;
         //private readonly SaldoMensalsDomainService _saldoMensalsDomainService;
 
         public SaldoMensalsController(Context context
             //SaldoMensalsDomainService saldoMensalsDomainService
-            )
+            ) : base(context)
 
         {
             _context = context;
@@ -27,6 +27,8 @@ namespace Demonstrativo.Controllers
         // GET: SaldoMensals
         public async Task<IActionResult> Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var context = _context.SaldoMensal.Include(s => s.ContaCorrente);
             return View(await context.ToListAsync());
         }

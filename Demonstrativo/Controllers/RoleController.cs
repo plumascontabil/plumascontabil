@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 namespace Demonstrativo.Controllers
 {
     [Authorize]
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         //private readonly RoleDomainService _roleDomainService;
 
 
-        public RoleController(RoleManager<IdentityRole> roleManager
+        public RoleController(RoleManager<IdentityRole> roleManager, Context context
             //RoleDomainService roleDomainService
-            )
+            ) : base(context)
         {
             _roleManager = roleManager;
             //_roleDomainService = roleDomainService;
@@ -27,6 +27,8 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var roles = _roleManager.Roles.ToList();
             CarregarRoles();
             return View(roles);

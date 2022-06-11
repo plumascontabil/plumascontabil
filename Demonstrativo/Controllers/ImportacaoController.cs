@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Demonstrativo.Controllers
 {
-    public class ImportacaoController : Controller
+    public class ImportacaoController : BaseController
     {
         readonly static BaseFont fonteBase = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, false);
         readonly Context _context;
@@ -25,10 +25,10 @@ namespace Demonstrativo.Controllers
         //private readonly ImportacaoDomainService _importacaoDomainService;
 
         public ImportacaoController(
-            Context context, 
+            Context context,
             IWebHostEnvironment env
             //ImportacaoDomainService importacaoDomainService
-            )
+            ) : base(context)
         {
             _context = context;
             _appEnvironment = env;
@@ -36,6 +36,8 @@ namespace Demonstrativo.Controllers
         }
         public IActionResult Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View();
         }
         [HttpPost]
@@ -139,6 +141,8 @@ namespace Demonstrativo.Controllers
 
         public async Task<IActionResult> RelatorioOfx()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var empresas = _context.Empresas.ToList();
             var contasContabeis = _context.ContasContabeis.ToList();
             var relatorioViewModel = new RelatorioViewModel()

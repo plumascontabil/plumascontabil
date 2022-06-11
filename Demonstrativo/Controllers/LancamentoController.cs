@@ -15,14 +15,14 @@ using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 namespace Demonstrativo.Controllers
 {
     [Authorize]
-    public class LancamentoController : Controller
+    public class LancamentoController : BaseController
     {
         readonly Context _context;
         //private readonly LancamentoDomainService _lancamentoDomainService;
 
         public LancamentoController(Context context
             //LancamentoDomainService LancamentoDomainService
-            )
+            ) : base(context)
         {
             _context = context;
             //_lancamentoDomainService = LancamentoDomainService;
@@ -38,43 +38,43 @@ namespace Demonstrativo.Controllers
             return View(CarregarCategorias());
         }
 
-        private void AdicionarCompetenciaMesAtual()
-        {
-            DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
+        //private void AdicionarCompetenciaMesAtual()
+        //{
+        //    DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
 
-            if (_context.Competencias.Any(c => c.Data == competenciaAtual))
-            {
-                return;
-            }
+        //    if (_context.Competencias.Any(c => c.Data == competenciaAtual))
+        //    {
+        //        return;
+        //    }
 
-            var competencia = new Competencia()
-            {
-                Data = competenciaAtual
-            };
+        //    var competencia = new Competencia()
+        //    {
+        //        Data = competenciaAtual
+        //    };
 
-            _context.Competencias.Add(competencia);
-            _context.SaveChanges();
+        //    _context.Competencias.Add(competencia);
+        //    _context.SaveChanges();
 
-            //_lancamentoDomainService.AdicionarCompetenciaMesAtual();
-        }
+        //    //_lancamentoDomainService.AdicionarCompetenciaMesAtual();
+        //}
 
-        private void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
-        {
-            List<Empresa> empresas = _context.Empresas.ToList();
-            List<Competencia> competencias = _context.Competencias.ToList();
+        //private void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
+        //{
+        //    List<Empresa> empresas = _context.Empresas.ToList();
+        //    List<Competencia> competencias = _context.Competencias.ToList();
 
-            //_lancamentoDomainService.CarregarEmpresas();
-            //_lancamentoDomainService.CarregarCompetencias();
+        //    //_lancamentoDomainService.CarregarEmpresas();
+        //    //_lancamentoDomainService.CarregarCompetencias();
 
 
-            ViewBag.CompetenciasId = new SelectList(
-                    competencias.Select(
-                    c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
-                    , "Value", "Text",
-                    competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
+        //    ViewBag.CompetenciasId = new SelectList(
+        //            competencias.Select(
+        //            c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
+        //            , "Value", "Text",
+        //            competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
-            ViewBag.EmpresasId = new SelectList(empresas.Select(F => new { Value = F.Codigo, Text = $"{F.Codigo} - {F.RazaoSocial}" }).ToList(), "Value", "Text", empresaId);
-        }
+        //    ViewBag.EmpresasId = new SelectList(empresas.Select(F => new { Value = F.Codigo, Text = $"{F.Codigo} - {F.RazaoSocial}" }).ToList(), "Value", "Text", empresaId);
+        //}
 
         private TrimestreViewModel CarregarCategorias(int? empresasId = null, DateTime? competenciasId = null)
         {
@@ -110,11 +110,13 @@ namespace Demonstrativo.Controllers
 
                         if (conta.Codigo == 200)
                         {
-                            var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId
-                                                                              && c.ContaCorrenteId == contaCorrente.Id).Saldo;
+                            var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
+
+
+
                             lancamentosViewModel.Add(new LancamentoViewModel()
                             {
-                                Valor = saldoBanco,
+                                Valor = saldoBanco != null ? saldoBanco.Saldo : 0,
                                 Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome
                             });
                         }
@@ -177,8 +179,7 @@ namespace Demonstrativo.Controllers
         {
             CarregarEmpresasCompetencias(empresasId, competenciasId);
 
-            ViewBag.EmpresaSeleciodaId = empresasId;
-            ViewBag.CompetenciasSelecionadaId = competenciasId.ToString("yyyy-MM-dd");
+
 
             return View("Index", CarregarCategorias(empresasId, competenciasId));
         }

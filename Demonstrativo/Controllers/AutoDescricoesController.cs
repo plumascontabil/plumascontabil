@@ -10,7 +10,7 @@ using DomainService;
 
 namespace Demonstrativo.Controllers
 {
-    public class AutoDescricoesController : Controller
+    public class AutoDescricoesController : BaseController
     {
         private readonly Context _context;
         //private readonly AutoDescricoesDomainService _autoDescricoesDomainService;
@@ -19,17 +19,19 @@ namespace Demonstrativo.Controllers
         public AutoDescricoesController(
             Context context
             //AutoDescricoesDomainService autoDescricoesDomainService
-            )
+            ) : base(context)
         {
             _context = context;
             //_autoDescricoesDomainService = autoDescricoesDomainService;
         }
-        
+
         // GET: AutoDescricoes
         public async Task<IActionResult> Index()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var context = _context.AutoDescricoes.Include(a => a.LancamentoPadrao);
-          //var context = _autoDescricoesDomainService.AutoDescricoes();
+            //var context = _autoDescricoesDomainService.AutoDescricoes();
             return View(await context.ToListAsync());
         }
 
