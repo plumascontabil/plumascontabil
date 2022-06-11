@@ -39,6 +39,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult Register()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new RegistrarViewModel()
             {
                 UserRoles = _roleManager.Roles.ToList()
@@ -77,6 +79,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(string id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var user = await _userManager.FindByIdAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
             var nameRole = roles.FirstOrDefault();
@@ -96,7 +100,6 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
-
             var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 

@@ -36,6 +36,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new IdentityRole());
         }
 
