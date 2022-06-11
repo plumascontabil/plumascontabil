@@ -7,21 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
 using DomainService;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
     public class AutoDescricoesController : Controller
     {
         private readonly Context _context;
+        private readonly ILogger _logger;
         //private readonly AutoDescricoesDomainService _autoDescricoesDomainService;
 
 
         public AutoDescricoesController(
-            Context context
+            Context context,
+            ILogger<AutoDescricao> logger
             //AutoDescricoesDomainService autoDescricoesDomainService
             )
         {
             _context = context;
+            _logger = logger;   
             //_autoDescricoesDomainService = autoDescricoesDomainService;
         }
         
@@ -36,6 +40,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            _logger.LogInformation(1002, "GET {ID} da consulta", id);
+
             if (id == null)
             {
                 return NotFound();

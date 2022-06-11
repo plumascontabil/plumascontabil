@@ -1,18 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demonstrativo.Models
 {
-    public class AutoDescricao
+    public class LogEvent
     {
         [Key]
         public int Id { get; set; }
-        [Column(TypeName = "varchar(1000)")]
-        public string Descricao { get; set; }
+        public string LogLevel { get; set; }
 
-        [ForeignKey("LancamentoPadraoId")]
-        public int LancamentoPadraoId { get; set; }
-        public LancamentoPadrao LancamentoPadrao { get; set; }
+        public int EventId { get; set; }
+        public string Message { get; set; }
+        public DateTime CreatedAt { get; set; }
+
         public void Qualquer() { }
     }
 }
