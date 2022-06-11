@@ -73,7 +73,7 @@ namespace Demonstrativo.Controllers
                     , "Value", "Text",
                     competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);
 
-            ViewBag.EmpresasId = new SelectList(empresas, "Codigo", "RazaoSocial", empresaId);
+            ViewBag.EmpresasId = new SelectList(empresas.Select(F => new { Value = F.Codigo, Text = $"{F.Codigo} - {F.RazaoSocial}" }).ToList(), "Value", "Text", empresaId);
         }
 
         private TrimestreViewModel CarregarCategorias(int? empresasId = null, DateTime? competenciasId = null)
@@ -107,8 +107,8 @@ namespace Demonstrativo.Controllers
                     foreach (var contaCorrente in contasCorrentes)
                     {
                         var ofxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);
-                        
-                        if(conta.Codigo == 200)
+
+                        if (conta.Codigo == 200)
                         {
                             var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId
                                                                               && c.ContaCorrenteId == contaCorrente.Id).Saldo;
@@ -123,7 +123,7 @@ namespace Demonstrativo.Controllers
                                    && l.Data.Month == competenciasId.Value.Month))
                         {
                             var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
-                            if(ofxLancamento != null && contaCodigo == conta.Id && contaCodigo != 200)
+                            if (ofxLancamento != null && contaCodigo == conta.Id && contaCodigo != 200)
                             {
                                 valor += ofxLancamento.ValorOfx;
                             }
@@ -150,7 +150,7 @@ namespace Demonstrativo.Controllers
                         Descricao = conta.Descricao,
                         Lancamentos = lancamentosViewModel
                     });
-                    
+
                 }
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
@@ -419,7 +419,7 @@ namespace Demonstrativo.Controllers
 
             foreach (var competencia in trimestre)
             {
-                foreach(var contaCorrente in contasCorrentes)
+                foreach (var contaCorrente in contasCorrentes)
                 {
                     foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia
                                                             && l.LancamentoPadrao?.TipoContaId == (int)ETipoConta.Compras
@@ -466,7 +466,7 @@ namespace Demonstrativo.Controllers
                         });
                     }
 
-                    foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia 
+                    foreach (var lancamento in OfxLancamentos.Where(l => l.Data.Month == competencia
                                                             && l.LancamentoPadrao?.TipoContaId == (int)ETipoConta.Receitas
                                                             && l.ContaCorrenteId == contaCorrente.Id))
                     {

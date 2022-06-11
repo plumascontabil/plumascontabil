@@ -60,7 +60,7 @@ namespace Demonstrativo.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> DeletarRole(string id)
         {
@@ -71,7 +71,10 @@ namespace Demonstrativo.Controllers
                 if (role != null)
                 {
                     await _roleManager.DeleteAsync(role);
-                    return View();
+                    ViewBag.Excluido = true;
+                    var roles = _roleManager.Roles.ToList();
+                    CarregarRoles();
+                    return View("Index", roles);
                 }
 
                 return RedirectToAction("Index");

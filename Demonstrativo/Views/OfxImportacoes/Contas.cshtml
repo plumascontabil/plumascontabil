@@ -4,129 +4,132 @@
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "ImportaçãoOfx";
 }
- <div class="py-4 pl-3 d-flex justify-content-between">
+<div class="py-4 pl-3 d-flex justify-content-between">
     <h1 class="page-title">@ViewData["Title"]</h1>
- 
+
 </div>
 <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
     <div class="text-plumas">
-        <br/>
+        <br />
         @ViewData["Title"]
-        <br/>
+        <br />
     </div>
     <hr />
-    <div class="m-auto" >
-    <form asp-controller="Importacao" asp-action="OfxReimportar">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            Adicionar Lancamento Manual
-        </button>
-        <!-- Modal -->
-        <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Lancamento Manual</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="m-auto">
+        <form asp-controller="Importacao" asp-action="OfxReimportar">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Adicionar Lancamento Manual
+            </button>
+            <!-- Modal -->
+            <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Lancamento Manual</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered d-lg-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Tipo</th>
+                                        <th>Descrição</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input type="date" asp-for="@Model.LancamentoManual.Data" />
+                                        </td>
+                                        <td>
+                                            <input type="text" asp-for="@Model.LancamentoManual.TipoSelecionado" />
+                                        </td>
+                                        <td>
+                                            <input type="text" asp-for="@Model.LancamentoManual.Descricao" />
+                                        </td>
+                                        <td>
+                                            <input type="text" asp-for="@Model.LancamentoManual.Valor" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" asp-action="OfxReimportar">Adicionar</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <table class="table table-bordered d-lg-table">
+            </div>
+            <hr />
+            <form asp-controller="Importacao" asp-action="OfxSalvar">
+                <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp">
+                    <option value="">Selecione</option>
+                </select>
+                <hr />
+                <output>
+                    @Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
+                    <input type="hidden" asp-for="@Model.Banco.Codigo" />
+                    <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
+                </output>
+                <hr />
+
+                <table class="table table-bordered d-lg-table">
                     <thead>
                         <tr>
+                            <th>Id</th>
                             <th>Data</th>
                             <th>Tipo</th>
                             <th>Descrição</th>
                             <th>Valor</th>
+                            <th>Lançamento Padrão</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type="date" asp-for="@Model.LancamentoManual.Data"/>
-                            </td>
-                            <td>
-                                <input type="text" asp-for="@Model.LancamentoManual.TipoSelecionado"/>
-                            </td>
-                            <td>
-                                <input type="text" asp-for="@Model.LancamentoManual.Descricao"/>
-                            </td>
-                            <td>
-                                <input type="text" asp-for="@Model.LancamentoManual.Valor"/>
-                            </td>
-                        </tr>
+                        @for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
+                        {
+                            var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
+                            <tr>
+                                <td>
+                                    @ofxs.Id
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
+                                </td>
+                                <td>
+                                    @ofxs.Date
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
+                                </td>
+                                <td>
+                                    @ofxs.Type
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
+                                </td>
+                                <td>
+                                    @ofxs.Description
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
+                                </td>
+                                <td>
+                                    @ofxs.TransationValue
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
+                                </td>
+                                <td>
+                                    <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
+                                        <option value="">Selecione</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                        }
                     </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" asp-action="OfxReimportar">Adicionar</button>
-                </div>
-            </div>
-            </div>
-        </div>
-        <hr/>
-        <form asp-controller="Importacao" asp-action="OfxSalvar">
-            <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp">
-                <option value="">Selecione</option>
-            </select>
-            <hr/>
-            <output>@Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
-                                <input type="hidden" asp-for="@Model.Banco.Codigo"/>
-                                <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta"/></output>
-            <hr/>
-            
-            <table class="table table-bordered d-lg-table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Data</th>
-                        <th>Tipo</th>
-                        <th>Descrição</th>
-                        <th>Valor</th>
-                        <th>Lançamento Padrão</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @for(int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
-                {
-                    var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
-                    <tr>
-                        <td>
-                            @ofxs.Id
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id"/>
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId"/>
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal"/>
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia"/>
-                        </td>
-                        <td>
-                            @ofxs.Date
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date"/>
-                        </td>
-                        <td>
-                            @ofxs.Type
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type"/>
-                        </td>
-                        <td>
-                            @ofxs.Description
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description"/>
-                        </td>
-                        <td>
-                            @ofxs.TransationValue
-                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue"/>
-                        </td>
-                        <td> 
-                            <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
-                                <option value="">Selecione</option>
-                            </select>
-                        </td>
-                    </tr>   
-                }
-                </tbody>
-            </table>
-            <input type="submit" asp-action="OfxSalvar"/>
+                </table>
+                <input type="submit" asp-action="OfxSalvar" />
+            </form>
         </form>
-    </form>
     </div>
 </div>
