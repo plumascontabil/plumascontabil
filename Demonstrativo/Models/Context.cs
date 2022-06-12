@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Demonstrativo.Models
 {
@@ -40,7 +41,7 @@ namespace Demonstrativo.Models
                            .WithMany(c => c.LancamentoPadraoDebitar)
                            .HasForeignKey(x => x.ContaDebitoId)
                            .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<OfxLoteLancamento>().Property(f => f.Data).HasColumnType("datetime2");
             modelBuilder.Entity<OfxLoteLancamento>()
                 .HasMany(f => f.Lancamentos)
                 .WithOne(x => x.Lote)

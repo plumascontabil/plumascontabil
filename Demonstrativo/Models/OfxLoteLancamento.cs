@@ -17,14 +17,13 @@ namespace Demonstrativo.Models
         [Required]
         [Column(TypeName = "varchar(70)")]
         public string Descricao { get; set; }
-
-        [Required]
+        [Column(TypeName = "datetime2")]
         public DateTime Data { get; set; }
 
         [ForeignKey("EmpresaId")]
         public int EmpresaId { get; set; }
         public DateTime CompetenciaId { get; set; }
         public virtual List<OfxLancamento> Lancamentos { get; set; }
-        public Empresa Empresa { get; set; 
+        public Empresa Empresa { get; set; }
     }
 }

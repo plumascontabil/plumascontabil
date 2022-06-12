@@ -83,9 +83,7 @@ button {
     border: 0;
 }
 
-input {
-    text-transform: uppercase !important;
-}
+
 
 .footer {
     position: absolute;
@@ -96,7 +94,8 @@ input {
 }
 
 .inptable {
-    width: 450px !important;
+    width: 90%;
+    max-width: 940px !important;
 }
 
 th {
@@ -321,20 +320,24 @@ input {
     background-position: center center;
     cursor: pointer;
     position: relative;
-    opacity:.7;
+    opacity: .7;
+    transition: all .3s ease;
 }
-.checkado{
-    opacity:1;
+
+.checkado {
+    opacity: 1;
 }
-.checkado:after {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 100%;
-    border-bottom: solid 4px #202020;
-    left: 0;
-    bottom: -10px;
-}
+
+    .checkado:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 100%;
+        border-bottom: solid 4px #202020;
+        left: 0;
+        bottom: -10px;
+        transition: all .3s ease;
+    }
 
 .select {
     margin-right: 10px !important;
@@ -358,4 +361,8 @@ input {
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     top: 6px !important;
+}
+
+th, td {
+    text-align: center;
 }

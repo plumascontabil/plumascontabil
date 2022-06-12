@@ -1,42 +1,42 @@
 ﻿@model Demonstrativo.Models.OfxContaCorrente
 
 @{
-    Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Create";
+	Layout = "_LayoutSemFiltroEmpresa";
+	ViewData["Title"] = "Conta corrente";
 }
+<div class="py-4 pl-3 d-flex justify-content-between">
+	<h1 class="page-title">@ViewData["Title"]</h1>
+</div>
 
-<h1>Create</h1>
-
-<h4>OfxContaCorrente</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NumeroConta" class="control-label"></label>
-                <input asp-for="NumeroConta" class="form-control" />
-                <span asp-validation-for="NumeroConta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmpresaId" class="control-label"></label>
-                <select asp-for="EmpresaId" class ="form-control select" asp-items="ViewBag.EmpresaId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="BancoOfxId" class="control-label"></label>
-                <select asp-for="BancoOfxId" class ="form-control select" asp-items="ViewBag.BancoOfxId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+	<div class="col-md-4">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="NumeroConta" class="control-label">Número da conta</label>
+				<input asp-for="NumeroConta" class="form-control" />
+				<span asp-validation-for="NumeroConta" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="EmpresaId" class="control-label">Empresa</label>
+				<select asp-for="EmpresaId" class="form-control select" asp-items="ViewBag.EmpresaId"></select>
+			</div>
+			<div class="form-group">
+				<label asp-for="BancoOfxId" class="control-label">Banco</label>
+				<select asp-for="BancoOfxId" class="form-control select" asp-items="ViewBag.BancoOfxId"></select>
+			</div>
+			<div class="form-group">
+				<a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
+				<input type="submit" value="Create" class="btn btn-plumas-w" />
+			</div>
+		</form>
+	</div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	}

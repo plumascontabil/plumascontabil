@@ -15,7 +15,7 @@
             <div class="col-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Codigo" class="control-label"></label>
+                <label asp-for="Codigo" class="control-label">Código</label>
                 <input type="number" asp-for="Codigo" class="form-control" />
                 <span asp-validation-for="Codigo" class="text-danger"></span>
             </div>
@@ -29,21 +29,22 @@
             </div>
              <div class="col-8">
             @*<div class="form-group">
-                <label asp-for="file" class="control-label">Icone do banco</label>
+                <label asp-for="file" class="control-label">Ícone do banco</label>
                 <input asp-for="file"  type="file" class="form-control" style="height:auto;"/>
             
             </div>*@
             </div>
             <div class="form-group col-12">
-                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
+                <input type="submit" value="Cadastrar" class="btn btn-plumas-w" />
             </div>
+          
+
         </form>
     
 
 
-<div>
-    <a asp-action="Index">Voltar</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
