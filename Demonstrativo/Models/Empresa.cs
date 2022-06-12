@@ -27,5 +27,7 @@ namespace Demonstrativo.Models
         public List<OfxContaCorrente> ContasCorrentes { get; set; }
         public List<Venda> Vendas { get; set; }
         public List<OfxSaldoConta> SaldosContas { get; set; }
+
+        public virtual List<OfxLoteLancamento> Lotes { get; set; }
     }
 }

@@ -44,13 +44,31 @@ namespace Demonstrativo.Controllers
         {
             var bancos = _context.OfxBancos.ToList();
             ViewBag.BancosId = new SelectList(bancos.Select(f => new { Value = f.Id, Text = $"{f.Codigo} - {f.Nome}" }), "Value", "Text", ViewBag.BancoId);
+            ViewBag.Lotes = _context.OfxLoteLancamento.ToList().OrderByDescending(f => f.Data).ToList();
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
         }
 
         [HttpPost]
-        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null)
+        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null, string DescricaoLote = null)
         {
+            IniT();
+
+            if (ViewBag.EmpresaSeleciodaId == null)
+            {
+              
+                ViewBag.Message = "Porfavor, Selecione uma empresa, localizada no topo e Filtre!";
+                return View("Index");
+
+            }
+
+            if (ViewBag.CompetenciasSelecionadaId == null)
+            {
+               // IniT();
+                ViewBag.Message = "Porfavor, Selecione uma competência, localizada no topo e Filtre!";
+                return View("Index");
+
+            }
             //Listas
             var empresas = _context.Empresas.ToList();
             var contasContabeis = _context.ContasContabeis.ToList();
@@ -59,21 +77,21 @@ namespace Demonstrativo.Controllers
 
             if (ofxArquivo == null)
             {
-                IniT();
+               // IniT();
                 ViewBag.SemArquivo = "É necessário escolher um arquivo para envio do OFX!";
                 return View("Index");
             }
 
             if (!ofxArquivo.FileName.Contains("ofx"))
             {
-                IniT();
+               // IniT();
                 ViewBag.SemArquivo = $"Esse arquivo não possui o formato correto! Importe um arquivo OFX.";
                 return View("Index");
             }
 
             if (!BancosId.HasValue)
             {
-                IniT();
+               // IniT();
                 ViewBag.SemBanco = "É necessário escolher um banco para envio do OFX!";
                 return View("Index");
             }
@@ -118,7 +136,7 @@ namespace Demonstrativo.Controllers
                 }
                 else
                 {
-                    IniT();
+                   // IniT();
                     ViewBag.ContaCorrenteNaoEncontrada = true;
                     return View("Index");
                 }
@@ -191,7 +209,9 @@ namespace Demonstrativo.Controllers
                         {
                             Empresas = ConstruirEmpresas(empresas),
                             ContasCorrentes = contaCorrenteViewModel,
-                            Banco = bancoViewModel
+                            Banco = bancoViewModel,
+                            DescricaoLote = DescricaoLote
+
                         };
                     }
                     else
@@ -201,11 +221,11 @@ namespace Demonstrativo.Controllers
                 }
                 if (ViewBag.SemBanco != null)
                 {
-                    IniT();
+                   // IniT();
                     return View("Index");
 
                 }
-
+                extratoBancarioViewModel.EmpresaSelecionada = ViewBag.EmpresaSeleciodaId;
 
                 //Deletando arquivo do servidor
                 System.IO.File.Delete(caminhoDestinoArquivo);
@@ -213,6 +233,7 @@ namespace Demonstrativo.Controllers
             }
             if (extratoBancarioViewModel.Banco == null)
             {
+               // IniT();
                 ViewBag.Message = "Este arquivo já foi importado!";
                 return View("Index");
             }
@@ -336,6 +357,23 @@ namespace Demonstrativo.Controllers
             }
 
             decimal saldoMensalTotal = 0;
+
+            // Fazer Toda a parte do Lote
+
+            var lote = new OfxLoteLancamento()
+            {
+                Data = DateTime.Now,
+                Descricao = dados.DescricaoLote,
+                Valor = 0.
+                em
+            };
+            dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            {
+                lote.Valor += el.TransationValue;
+            });
+            _context.OfxLoteLancamento.Add(lote);
+            _context.SaveChanges();
+
             foreach (var dado in dados.ContasCorrentes.OfxLancamentos)
             {
                 var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
@@ -379,6 +417,7 @@ namespace Demonstrativo.Controllers
                     Descricao = dado.Description,
                     ValorOfx = dado.TransationValue,
                     Data = dado.Date,
+                    LoteLancamentoId = lote.Id,
                     ContaCorrenteId = _context.ContasCorrentes
                         .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id,
                     LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id
@@ -413,7 +452,7 @@ namespace Demonstrativo.Controllers
 
             _context.SaveChanges();
             ViewBag.Importado = "Arquivo Importado!";
-            IniT();
+           // IniT();
             return View("Index");
         }
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)

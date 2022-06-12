@@ -28,7 +28,7 @@ namespace Demonstrativo.Models
         [ForeignKey("LancamentoPadraoId")]
         public int? LancamentoPadraoId { get; set; }
         public LancamentoPadrao LancamentoPadrao { get; set; }
-        [ForeignKey("LancamentoPadraoId")]
+        [ForeignKey("LoteLancamentoId")]
         public int? LoteLancamentoId { get; set; }
         public OfxLoteLancamento Lote { get; set; }
     }

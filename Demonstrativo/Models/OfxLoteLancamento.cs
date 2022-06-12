@@ -9,7 +9,9 @@ namespace Demonstrativo.Models
     public class OfxLoteLancamento
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         public decimal Valor { get; set; }
 
         [Required]
@@ -19,6 +21,10 @@ namespace Demonstrativo.Models
         [Required]
         public DateTime Data { get; set; }
 
-        public virtual ICollection<OfxLancamento> Lancamentos { get; set; }
+        [ForeignKey("EmpresaId")]
+        public int EmpresaId { get; set; }
+        public DateTime CompetenciaId { get; set; }
+        public virtual List<OfxLancamento> Lancamentos { get; set; }
+        public Empresa Empresa { get; set; 
     }
 }

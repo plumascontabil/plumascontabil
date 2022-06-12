@@ -43,7 +43,7 @@
         <form asp-controller="Importacao" asp-action="OfxReimportar">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Adicionar Lancamento Manual
+                Adicionar Lançamento Manual
             </button>
             <!-- Modal -->
             <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -96,11 +96,12 @@
             </div>
             <hr />
             <form asp-controller="Importacao" asp-action="OfxSalvar">
-                <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp">
+                <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
                     <option value="">Selecione</option>
                 </select>
                 <hr />
                 <output>
+                    <H2>@Model.DescricaoLote</H2>
                     @Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
                     <input type="hidden" asp-for="@Model.Banco.Codigo" />
                     <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
