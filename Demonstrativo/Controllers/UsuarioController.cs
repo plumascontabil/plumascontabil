@@ -164,7 +164,10 @@ namespace Demonstrativo.Controllers
             return View("Usuarios", usuarioViewModel);
         }
         public IActionResult Login()
+
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new LoginViewModel());
         }
 

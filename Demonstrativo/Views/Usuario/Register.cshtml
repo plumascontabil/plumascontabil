@@ -23,33 +23,41 @@
          <div class="col-md-6">
               
             <div class="form-group">
-                <label asp-for="Password"></label>
+                <label asp-for="Password">Senha</label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
          </div>
          <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="ConfirmPassword"></label>
+                <label asp-for="ConfirmPassword">Confirme a senha</label>
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
          </div>
          <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="UserRole"></label>
+                <label asp-for="UserRole">Perfil do usuário</label>
+                <select asp-for="UserRole" class="form-control  select" asp-items='new SelectList(Model.UserRoles,"Id","Name")'>
+                </select>
+                <span asp-validation-for="UserRole" class="text-danger"></span>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="UserRole">Empresa</label>
                 <select asp-for="UserRole" class="form-control  select" asp-items='new SelectList(Model.UserRoles,"Id","Name")'>
                 </select>
                 <span asp-validation-for="UserRole" class="text-danger"></span>
             </div>
          </div>
          <div class="col-12">
+             <a asp-action="CarregarUsuario" class="btn btn-plumas-w">Voltar</a>
             <button type="submit" class="btn btn-plumas-w">Cadastrar</button>
          </div>
         </form>
         <div>
 
-    <a asp-action="CarregarUsuario" class="mt-2">Voltar</a>
 </div>
       
   
