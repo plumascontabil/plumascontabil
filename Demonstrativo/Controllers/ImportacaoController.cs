@@ -66,7 +66,8 @@ namespace Demonstrativo.Controllers
             }
 
             //await _importacaoDomainService.Importar(file);
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("Index");
         }
 
@@ -94,7 +95,8 @@ namespace Demonstrativo.Controllers
             }
 
             //await _importacaoDomainService.ImportarContasContabeis(file);
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("Index");
         }
 
@@ -129,7 +131,8 @@ namespace Demonstrativo.Controllers
             //var relatorioDadosViewModel = await _importacaoDomainService.Filtrar(relatorioViewModel);
 
             GerarRelatorioRazao(relatorioViewModel);
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("RelatorioExibir", relatorioDadosViewModel);
         }
 
@@ -151,7 +154,8 @@ namespace Demonstrativo.Controllers
                 ContasContabeis = ConstruirContasContabeisSelectList(contasContabeis),
             };
             //var relatorioViewModel = await _importacaoDomainService.RelatorioOfx();
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("RelatorioOfx", relatorioViewModel);
         }
         public void GerarRelatorioRazao(RelatorioViewModel relatorioViewModel)

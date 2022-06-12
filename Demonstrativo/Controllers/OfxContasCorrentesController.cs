@@ -48,13 +48,16 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(ofxContaCorrente);
         }
 
         // GET: OfxContasCorrentes/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id");
             ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido");
             return View();
@@ -74,6 +77,8 @@ namespace Demonstrativo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id", ofxContaCorrente.BancoOfxId);
             ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido", ofxContaCorrente.EmpresaId);
             return View(ofxContaCorrente);
@@ -92,6 +97,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id", ofxContaCorrente.BancoOfxId);
             ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido", ofxContaCorrente.EmpresaId);
             return View(ofxContaCorrente);

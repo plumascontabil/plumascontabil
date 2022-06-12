@@ -33,6 +33,7 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
+
             return View(CarregarUsuario());
         }
 
@@ -71,7 +72,8 @@ namespace Demonstrativo.Controllers
             }
 
             viewModel.UserRoles = _roleManager.Roles.ToList();
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
@@ -134,7 +136,8 @@ namespace Demonstrativo.Controllers
             {
                 UserRole = userRole.Id
             };
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("Usuarios", viewModel);
         }
         [Authorize(Policy = "roleAdministrador")]
@@ -164,6 +167,8 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             viewModel.ReturnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -189,6 +194,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Logout()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
 
@@ -197,6 +204,8 @@ namespace Demonstrativo.Controllers
 
         public IActionResult AccessDenied()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("AccessDenied");
         }
 

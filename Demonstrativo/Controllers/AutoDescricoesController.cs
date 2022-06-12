@@ -51,13 +51,16 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(autoDescricao);
         }
 
         // GET: AutoDescricoes/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao");
             return View();
         }
@@ -76,6 +79,8 @@ namespace Demonstrativo.Controllers
                 //await _autoDescricoesDomainService.CreateValidar(autoDescricao);
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
             return View(autoDescricao);
         }
@@ -93,6 +98,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
             return View(autoDescricao);
         }
@@ -131,6 +138,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
             return View(autoDescricao);
         }
@@ -150,7 +159,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(autoDescricao);
         }
 

@@ -311,7 +311,8 @@ namespace Demonstrativo.Controllers
 
                 });
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             //
             return View("Contas", extratoBancarioViewModel);
         }

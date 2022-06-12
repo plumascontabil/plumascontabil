@@ -44,13 +44,16 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
         // GET: ContasContabeis/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View();
         }
 
@@ -68,6 +71,8 @@ namespace Demonstrativo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -84,6 +89,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -120,6 +127,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -136,7 +145,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 

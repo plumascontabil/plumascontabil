@@ -49,13 +49,16 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(saldoMensal);
         }
 
         // GET: SaldoMensals/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id");
             return View();
         }
@@ -74,6 +77,8 @@ namespace Demonstrativo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id", saldoMensal.ContaCorrenteId);
             return View(saldoMensal);
         }
@@ -91,6 +96,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id", saldoMensal.ContaCorrenteId);
             return View(saldoMensal);
         }
@@ -128,6 +135,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id", saldoMensal.ContaCorrenteId);
             return View(saldoMensal);
         }
@@ -147,7 +156,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(saldoMensal);
         }
 
