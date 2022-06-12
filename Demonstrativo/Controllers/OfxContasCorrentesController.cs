@@ -138,6 +138,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id", ofxContaCorrente.BancoOfxId);
             ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido", ofxContaCorrente.EmpresaId);
             return View(ofxContaCorrente);
@@ -159,7 +161,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(ofxContaCorrente);
         }
 

@@ -32,7 +32,8 @@ namespace Demonstrativo.Controllers
 
         // GET: LancamentosPadroes/Details/5
         public async Task<IActionResult> Details(int? id)
-        {
+        {  AdicionarCompetenciaMesAtual();
+                    CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

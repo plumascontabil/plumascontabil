@@ -38,6 +38,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -111,6 +113,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,LancamentoPadraoId")] AutoDescricao autoDescricao)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id != autoDescricao.Id)
             {
                 return NotFound();
@@ -147,6 +151,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

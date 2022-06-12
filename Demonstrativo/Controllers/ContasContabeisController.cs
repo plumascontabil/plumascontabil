@@ -32,6 +32,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -64,6 +66,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Codigo,Classificacao,Historico")] ContaContabil contaContabil)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (ModelState.IsValid)
             {
                 //var contaContabil = _contaContabilDomainService.CreateValidar(contaContabil);
@@ -79,6 +83,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -101,6 +107,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Codigo,Classificacao,Historico")] ContaContabil contaContabil)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id != contaContabil.Codigo)
             {
                 return NotFound();
@@ -135,6 +143,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

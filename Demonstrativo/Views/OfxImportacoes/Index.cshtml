@@ -1,116 +1,179 @@
 ﻿@{
-    Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Importar";
+	Layout = "_LayoutSemFiltroEmpresa";
+	ViewData["Title"] = "Importar";
 }
 
 @if (ViewBag.Message != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'Anexe um arquivo!',
+	<script type="text/javascript">
+		window.onload = function() {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Oops...',
+				text: 'Anexe um arquivo!',
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 @if (ViewBag.Importado != null)
 {
-    <script type="text/javascript">
+	<script type="text/javascript">
 		window.onload = function() {
 
 
 			Swal.fire({
 				icon: 'success',
 				title: 'Sucesso...',
-                text: "@ViewBag.Importado",
+				text: "@Html.Raw(ViewBag.Importado)",
 
 
-            }).then((result) => {
-                window.location.href = '/Lancamento/Index';
-            })
+			}).then((result) => {
+				window.location.href = '/Lancamento/Index';
+			})
 		};
-    </script>
+	</script>
 }
 @if (ViewBag.AdicionarBanco != null)
 {
-    <script type="text/javascript">
+	<script type="text/javascript">
 		window.onload = function() {
 
 			Swal.fire({
 				icon: 'warning',
 				title: 'Ops...',
-				text: "@ViewBag.Importado",
+				text: "@Html.Raw(ViewBag.AdicionarBanco)",
 
 			})
 		};
-    </script>
+	</script>
 }
 @if (ViewBag.ContaCorrenteNaoEncontrada != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
+	<script type="text/javascript">
+		window.onload = function() {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Ops...',
-                text: "Conta Corrente não encontrada, baseado no OFX",
+			Swal.fire({
+				icon: 'warning',
+				title: 'Ops...',
+				text: "Conta Corrente não encontrada, baseado no OFX",
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 
 @if (ViewBag.SemArquivo != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
+	<script type="text/javascript">
+		window.onload = function() {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Ops...',
-                text: "@Html.Raw(ViewBag.SemArquivo)",
+			Swal.fire({
+				icon: 'warning',
+				title: 'Ops...',
+				text: "@Html.Raw(ViewBag.SemArquivo)",
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 @if (ViewBag.SemBanco != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
+	<script type="text/javascript">
+		window.onload = function() {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Ops...',
-                text: "@Html.Raw(ViewBag.SemBanco)",
+			Swal.fire({
+				icon: 'warning',
+				title: 'Ops...',
+				text: "@Html.Raw(ViewBag.SemBanco)",
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
+}
+@{
+	var checkadondo = "";
 }
 <div class="py-4 pl-3 d-flex justify-content-between">
-    <h1 class="page-title">@ViewData["Title"]</h1>
+	<h1 class="page-title">@ViewData["Title"]</h1>
 
 </div>
-<div class="row">
-    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
+<div class="row import-ofx">
+	<div class="col-12 border-0 table-bordered">
 
-        <form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
-            <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
-                <h6 class="display px-3 text-muted">Bancos</h6>
-                @Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
-            </label>
-            <br />
+		<form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
+			@*
+			<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
+			<h6 class="display px-3 text-muted">Bancos</h6>
+			@Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
+			</label>
+			*@
 
-            <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
-                <h6 class="display px-3 text-muted">Carregue o arquivo OFX aqui!</h6>
-                <input type="file" name="ofxArquivo" class="btn form-control-file sr-only" accept=".ofx">
-            </label>
+			<h2 class="text-center mt-2">Selecione o banco</h2>
+			<div class="d-flex justify-content-center flex-wrap py-3" style="gap: 10px">
+				@foreach (var item in ViewBag.BancosId)
+				{
+					var checkado = item.Value == checkadondo;
+					<label>
+					<span id="Bank_@item.Value" class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
+					<input type="radio" checked="@checkado" name="BancosId" value="@item.Value" class="sr-only" >
+					</label>
+					}
+			</div>
 
-            <input type="submit" value="Enviar arquivo" name="submit" class="btn btn-plumas mt-4">
-        </form>
-    </div>
+			<h2 class="text-center">Selecione o arquivo</h2>
+			<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed col-6">
+
+				<input type="file" name="ofxArquivo" class="btn form-control-file" accept=".ofx">
+			</label>
+
+			<div class="d-flex justify-content-center"><input type="submit" value="Enviar arquivo" name="submit" class="btn btn-plumas mt-4"></div>
+		</form>
+
+		<h2 class="text-center mt-5">Lista de arquivos</h2>
+		<table class="w-100 mx-auto">
+			<thead>
+				<tr>
+					<th class="bg-categoria text-white p-2">ID</th>
+					<th class="bg-categoria text-white p-2">Nome</th>
+					<th class="bg-categoria text-white p-2">Data de inclusão</th>
+					<th class="bg-categoria text-white p-2">Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				@*@foreach (var user in Model)*@
+				@*{*@
+				<tr>
+					<td class="text-center">Id</td>
+					<td class="text-center">Nome</td>
+					<td class="text-center">Data de inclusção</td>
+					<td class="text-center">
+						<div class="d-flex justify-content-center">
+							<button data-toggle="tooltip" title="Editar">
+								<i class="fa fa-edit"></i>
+							</button>
+						</div>
+					</td>
+				</tr>
+				@*}*@
+			</tbody>
+		</table>
+
+	</div>
 </div>
+@section Scripts{
+	<script type="text/javascript">
+$(':radio[name=BancosId]').change(function() {    
+    var value = $(this).val();
+	$("span[id*=Bank]").each(function(){
+		$(this).removeClass("checkado");             
+	});
+    $("#Bank_"+value).addClass("checkado");
+});
+	</script>
+
+
+
+    }
+});
+}
