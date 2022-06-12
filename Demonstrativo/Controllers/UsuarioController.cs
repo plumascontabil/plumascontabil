@@ -37,7 +37,7 @@ namespace Demonstrativo.Controllers
             return View(CarregarUsuario());
         }
 
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public IActionResult Register()
         {
             AdicionarCompetenciaMesAtual();
@@ -49,7 +49,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Register(RegistrarViewModel viewModel)
         {
             var role = await _roleManager.FindByIdAsync(viewModel.UserRole);
@@ -79,7 +79,7 @@ namespace Demonstrativo.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(string id)
         {
             AdicionarCompetenciaMesAtual();
@@ -101,7 +101,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
             var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
@@ -144,7 +144,7 @@ namespace Demonstrativo.Controllers
             CarregarEmpresasCompetencias();
             return View("Usuarios", viewModel);
         }
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
         {
             var users = _userManager.Users.ToList();
@@ -195,7 +195,7 @@ namespace Demonstrativo.Controllers
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Logout()
         {
             AdicionarCompetenciaMesAtual();
