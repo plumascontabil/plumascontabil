@@ -43,6 +43,8 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> Importar(IFormFile file)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var stream = file.OpenReadStream();
             using (var reader = new StreamReader(stream))
             using (var csv = new CsvReader(reader, new CultureInfo("pt-BR")))
@@ -73,6 +75,8 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportarContasContabeis(IFormFile fileContasContabeis)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var stream = fileContasContabeis.OpenReadStream();
 
             using (var reader = new StreamReader(stream))
@@ -104,6 +108,8 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult Filtrar(RelatorioViewModel relatorioViewModel)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var contaContabil = _context.ContasContabeis.FirstOrDefault(c => c.Codigo == relatorioViewModel.ContaContabil);
             //var historicos = _context.OfxDescricoes.Where(h => h.ContaDebitoId == contaContabil.Codigo
             //                                    || h.ContaCreditoId == contaContabil.Codigo);

@@ -78,6 +78,8 @@ namespace Demonstrativo.Controllers
                     ViewBag.Excluido = true;
                     var roles = _roleManager.Roles.ToList();
                     CarregarRoles();
+                    AdicionarCompetenciaMesAtual();
+                    CarregarEmpresasCompetencias();
                     return View("Index", roles);
                 }
 

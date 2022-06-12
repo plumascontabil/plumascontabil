@@ -32,7 +32,8 @@ namespace Demonstrativo.Controllers
 
         // GET: LancamentosPadroes/Details/5
         public async Task<IActionResult> Details(int? id)
-        {
+        {  AdicionarCompetenciaMesAtual();
+                    CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -56,6 +57,8 @@ namespace Demonstrativo.Controllers
         // GET: LancamentosPadroes/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao");
             ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo");
             ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo");
@@ -78,6 +81,8 @@ namespace Demonstrativo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao", lancamentoPadrao.CategoriaId);
             ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaCreditoId);
             ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaDebitoId);
@@ -98,6 +103,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao", lancamentoPadrao.CategoriaId);
             ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaCreditoId);
             ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaDebitoId);
@@ -139,6 +146,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao", lancamentoPadrao.CategoriaId);
             ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaCreditoId);
             ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaDebitoId);
@@ -164,6 +173,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
 
             return View(lancamentoPadrao);
         }

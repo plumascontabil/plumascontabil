@@ -69,7 +69,8 @@ namespace Demonstrativo.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             viewModel.UserRoles = _roleManager.Roles.ToList();
 
             // If we got this far, something failed, redisplay form
@@ -86,7 +87,8 @@ namespace Demonstrativo.Controllers
             var nameRole = roles.FirstOrDefault();
 
             var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new EditarViewModel()
             {
                 Id = id,
@@ -130,6 +132,8 @@ namespace Demonstrativo.Controllers
                 }
 
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var editarViewModel = new EditarViewModel
             {
                 UserRole = userRole.Id

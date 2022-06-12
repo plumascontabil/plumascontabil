@@ -1,42 +1,42 @@
 ﻿@{
-    Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Importar";
+	Layout = "_LayoutSemFiltroEmpresa";
+	ViewData["Title"] = "Importar";
 }
 
 @if (ViewBag.Message != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'Anexe um arquivo!',
+	<script type="text/javascript">
+		window.onload = function() {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Oops...',
+				text: 'Anexe um arquivo!',
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 @if (ViewBag.Importado != null)
 {
-    <script type="text/javascript">
+	<script type="text/javascript">
 		window.onload = function() {
 
 
 			Swal.fire({
 				icon: 'success',
 				title: 'Sucesso...',
-                text: "@Html.Raw(ViewBag.Importado)",
+				text: "@Html.Raw(ViewBag.Importado)",
 
 
-            }).then((result) => {
-                window.location.href = '/Lancamento/Index';
-            })
+			}).then((result) => {
+				window.location.href = '/Lancamento/Index';
+			})
 		};
-    </script>
+	</script>
 }
 @if (ViewBag.AdicionarBanco != null)
 {
-    <script type="text/javascript">
+	<script type="text/javascript">
 		window.onload = function() {
 
 			Swal.fire({
@@ -46,152 +46,134 @@
 
 			})
 		};
-    </script>
+	</script>
 }
 @if (ViewBag.ContaCorrenteNaoEncontrada != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
+	<script type="text/javascript">
+		window.onload = function() {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Ops...',
-                text: "Conta Corrente não encontrada, baseado no OFX",
+			Swal.fire({
+				icon: 'warning',
+				title: 'Ops...',
+				text: "Conta Corrente não encontrada, baseado no OFX",
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 
 @if (ViewBag.SemArquivo != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
+	<script type="text/javascript">
+		window.onload = function() {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Ops...',
-                text: "@Html.Raw(ViewBag.SemArquivo)",
+			Swal.fire({
+				icon: 'warning',
+				title: 'Ops...',
+				text: "@Html.Raw(ViewBag.SemArquivo)",
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 @if (ViewBag.SemBanco != null)
 {
-    <script type="text/javascript">
-        window.onload = function () {
+	<script type="text/javascript">
+		window.onload = function() {
 
-            Swal.fire({
-                icon: 'warning',
-                title: 'Ops...',
-                text: "@Html.Raw(ViewBag.SemBanco)",
+			Swal.fire({
+				icon: 'warning',
+				title: 'Ops...',
+				text: "@Html.Raw(ViewBag.SemBanco)",
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
+}
+@{
+	var checkadondo = "";
 }
 <div class="py-4 pl-3 d-flex justify-content-between">
-    <h1 class="page-title">@ViewData["Title"]</h1>
+	<h1 class="page-title">@ViewData["Title"]</h1>
 
 </div>
 <div class="row import-ofx">
-    <div class="col-12 border-0 table-bordered">
+	<div class="col-12 border-0 table-bordered">
 
-        <form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
-            @*
-            <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
-                <h6 class="display px-3 text-muted">Bancos</h6>
-                @Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
-            </label>
-            *@
+		<form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
+			@*
+			<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
+			<h6 class="display px-3 text-muted">Bancos</h6>
+			@Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
+			</label>
+			*@
 
-             <h2 class="text-center mt-2">Selecione o banco</h2>
-            <div class="d-flex justify-content-center flex-wrap py-3" style="gap: 10px">
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-                <span class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
-            </div>
-           
-            <h2 class="text-center">Selecione o arquivo</h2>
-            <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed col-6">
-               
-                <input type="file" name="ofxArquivo" class="btn form-control-file" accept=".ofx">
-            </label>
+			<h2 class="text-center mt-2">Selecione o banco</h2>
+			<div class="d-flex justify-content-center flex-wrap py-3" style="gap: 10px">
+				@foreach (var item in ViewBag.BancosId)
+				{
+					var checkado = item.Value == checkadondo;
 
-           <div class="d-flex justify-content-center"><input type="submit" value="Enviar arquivo" name="submit" class="btn btn-plumas mt-4"></div>
-        </form>
+					<span id="Bank_@item.Value" class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
+					<input type="radio" checked="@checkado" name="BancosId" value="@item.Value" >
 
-         <h2 class="text-center mt-5">Lista de arquivos</h2>
-        <table class="w-100 mx-auto">
-                <thead>
-                    <tr>
-                        <th class="bg-categoria text-white p-2">ID</th>
-                        <th class="bg-categoria text-white p-2">Nome</th>
-                        <th class="bg-categoria text-white p-2">Data de inclusão</th>
-                        <th class="bg-categoria text-white p-2">Editar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @*@foreach (var user in Model)*@
-                   @*{*@
-                        <tr>
-                            <td class="text-center">Id</td>
-                            <td class="text-center">Nome</td>
-                            <td class="text-center">Data de inclusção</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center">
-                                <a class="btn btn-outline-primary my-2 my-sm-0 m-auto" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                    </svg>
-                                </a>
-                                </div>
-                            </td>
-                        </tr>
-                    @*}*@
-                </tbody>
-            </table>
+					}
+			</div>
 
-    </div>
+			<h2 class="text-center">Selecione o arquivo</h2>
+			<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed col-6">
+
+				<input type="file" name="ofxArquivo" class="btn form-control-file" accept=".ofx">
+			</label>
+
+			<div class="d-flex justify-content-center"><input type="submit" value="Enviar arquivo" name="submit" class="btn btn-plumas mt-4"></div>
+		</form>
+
+		<h2 class="text-center mt-5">Lista de arquivos</h2>
+		<table class="w-100 mx-auto">
+			<thead>
+				<tr>
+					<th class="bg-categoria text-white p-2">ID</th>
+					<th class="bg-categoria text-white p-2">Nome</th>
+					<th class="bg-categoria text-white p-2">Data de inclusão</th>
+					<th class="bg-categoria text-white p-2">Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				@*@foreach (var user in Model)*@
+				@*{*@
+				<tr>
+					<td class="text-center">Id</td>
+					<td class="text-center">Nome</td>
+					<td class="text-center">Data de inclusção</td>
+					<td class="text-center">
+						<div class="d-flex justify-content-center">
+							<button data-toggle="tooltip" title="Editar">
+								<i class="fa fa-edit"></i>
+							</button>
+						</div>
+					</td>
+				</tr>
+				@*}*@
+			</tbody>
+		</table>
+
+	</div>
 </div>
+@section Scripts{
+	<script type="text/javascript">
+$(':radio[name=BancosId]').change(function() {    
+    var value = $(this).val();
+	$("span[id*=Bank]").each(function(){
+		$(this).removeClass("checkado");             
+	});
+    $("#Bank_"+value).addClass("checkado");
+});
+	</script>
+
+
+
+    }
+});
+}
