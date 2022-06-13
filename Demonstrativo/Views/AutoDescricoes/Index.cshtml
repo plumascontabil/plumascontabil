@@ -38,13 +38,16 @@
 							@Html.DisplayFor(modelItem => item.LancamentoPadrao.Descricao)
 						</td>
 						<td>
+							<button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "AutoDescricoes",new { id = item.Id })'"> <i class="fa fa-edit"></i></button>
+                            <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "AutoDescricoes",new { id = item.Id })'"><i class="fa fa-info-circle"></i></button>
+                            <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "AutoDescricoes",new { id = item.Id })'"> <i class="fa fa-trash"></i></button>
 
 
 
-							<button data-toggle="tooltip" title="Editar" asp-action="Edit" asp-route-id="@item.Id"> <i class="fa fa-edit"></i></button>
+@*							<button data-toggle="tooltip" title="Editar" asp-action="Edit" asp-route-id="@item.Id"> <i class="fa fa-edit"></i></button>
 							<button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-info-circle"></i></button>
 							<button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Id"> <i class="fa fa-trash"></i></button>
-						</td>
+*@						</td>
 					</tr>
 				}
 			</tbody>
