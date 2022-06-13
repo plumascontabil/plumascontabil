@@ -42,15 +42,73 @@ namespace Demonstrativo.Controllers
 
         private void IniT()
         {
-            var bancos = _context.OfxBancos.ToList();
-            ViewBag.BancosId = new SelectList(bancos.Select(f => new { Value = f.Id, Text = $"{f.Codigo} - {f.Nome}" }), "Value", "Text", ViewBag.BancoId);
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
+
+            if (ViewBag.EmpresaSeleciodaId != null)
+            {
+                var idEmp = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
+                var contaCorrente = _context.ContasCorrentes.Include(f => f.BancoOfx).Where(f => f.EmpresaId == idEmp).ToList();
+                //contaCorrente.ForEach(el =>
+                //{
+                //    el.BancoOfx.UrlImagem = el.BancoOfx.UrlImagem != null ? $"~/Bancos/{el.BancoOfx.UrlImagem.Split("\\").LastOrDefault()}" : "";
+
+                //});
+
+                ViewBag.BancosId = contaCorrente;
+                ViewBag.Lotes = _context.OfxLoteLancamento.Where(f => f.EmpresaId == idEmp).ToList().OrderByDescending(f => f.Data).ToList();
+            }
+            else
+            {
+                ViewBag.BancosId = new List<OfxContaCorrente>();
+                ViewBag.Lotes = new List<OfxLoteLancamento>();
+            }
+
+
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null)
+        public async Task<IActionResult> OfxLoteDelete(int LoteLancamentoId)
         {
+            IniT();
+            var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
+            var lancamentos = _context.OfxLancamentos.Where(f => f.LoteLancamentoId == lote.Id).ToList();
+            var saldo = _context.SaldoMensal.Where(f => f.Competencia == lote.CompetenciaId && f.ContaCorrenteId == lancamentos.FirstOrDefault().ContaCorrenteId).FirstOrDefault();
+            saldo.Saldo -= lote.Valor;
+
+            lancamentos.ForEach(el =>
+            {
+                _context.OfxLancamentos.Remove(el);
+            });
+            _context.SaveChanges();
+            _context.Remove(lote);
+            _context.SaveChanges();
+            ViewBag.Sucesso = "Lote Deletado com Sucesso";
+            IniT();
+            return View("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null, string DescricaoLote = null)
+        {
+            IniT();
+
+            if (ViewBag.EmpresaSeleciodaId == null)
+            {
+
+                ViewBag.Message = "Porfavor, Selecione uma empresa, localizada no topo e Filtre!";
+                return View("Index");
+
+            }
+
+            if (ViewBag.CompetenciasSelecionadaId == null)
+            {
+                // IniT();
+                ViewBag.Message = "Porfavor, Selecione uma competência, localizada no topo e Filtre!";
+                return View("Index");
+
+            }
             //Listas
             var empresas = _context.Empresas.ToList();
             var contasContabeis = _context.ContasContabeis.ToList();
@@ -59,24 +117,31 @@ namespace Demonstrativo.Controllers
 
             if (ofxArquivo == null)
             {
-                IniT();
+                // IniT();
                 ViewBag.SemArquivo = "É necessário escolher um arquivo para envio do OFX!";
                 return View("Index");
             }
 
             if (!ofxArquivo.FileName.Contains("ofx"))
             {
-                IniT();
+                // IniT();
                 ViewBag.SemArquivo = $"Esse arquivo não possui o formato correto! Importe um arquivo OFX.";
                 return View("Index");
             }
 
             if (!BancosId.HasValue)
             {
-                IniT();
+                // IniT();
                 ViewBag.SemBanco = "É necessário escolher um banco para envio do OFX!";
                 return View("Index");
             }
+
+            if (string.IsNullOrEmpty(DescricaoLote))
+            {
+                ViewBag.Message = "Descrição do Lote é obrigatória!";
+                return View("Index");
+            }
+
             var bancoEscolhido = _context.OfxBancos.FirstOrDefault(f => f.Id == BancosId.Value);
 
             //Views Models
@@ -89,7 +154,10 @@ namespace Demonstrativo.Controllers
             //If Leitura arquivo não nulo
             if (ofxArquivo != null)
             {
-
+                if (!Directory.Exists($"{_appEnvironment.WebRootPath}\\Temp"))
+                {
+                    Directory.CreateDirectory($"{_appEnvironment.WebRootPath}\\Temp");
+                }
                 //Caminho para salvar arquivo no servidor
                 string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
 
@@ -103,7 +171,7 @@ namespace Demonstrativo.Controllers
                 {
                     var documento = new OFXDocumentParser();
                     var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
-                    saldo = dadoDocumento.Balance.LedgerBalance;
+                    //saldo = dadoDocumento.Balance.LedgerBalance;
                 }
 
                 var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == extratoBancario.BankAccount.AccountCode);
@@ -111,18 +179,23 @@ namespace Demonstrativo.Controllers
                 {
                     saldoMensalViewModel = new SaldoMensalViewModel()
                     {
-                        SaldoMensal = saldo,
-                        Competencia = extratoBancario.InitialDate,
+                        SaldoMensal = 0,
+                        Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),
                         ContaCorrenteId = dadosContaCorrente.Id,
                     };
                 }
                 else
                 {
-                    IniT();
+                    // IniT();
                     ViewBag.ContaCorrenteNaoEncontrada = true;
                     return View("Index");
                 }
+                extratoBancario.Transactions.ToList().ForEach(el =>
+                {
+                    saldo += Convert.ToDecimal(el.TransactionValue);
+                });
 
+                saldoMensalViewModel.SaldoMensal = saldo;
 
                 //varrendo arquivo e adicionado as ViewsModel
                 foreach (var dados in extratoBancario.Transactions)
@@ -148,6 +221,7 @@ namespace Demonstrativo.Controllers
                         Codigo = banco.Codigo,
                         Nome = banco.Nome
                     };
+
 
                     if (_context.OfxLancamentos.ToList().Any(c => c.Documento == dados.Id) == false)
                     {
@@ -191,7 +265,9 @@ namespace Demonstrativo.Controllers
                         {
                             Empresas = ConstruirEmpresas(empresas),
                             ContasCorrentes = contaCorrenteViewModel,
-                            Banco = bancoViewModel
+                            Banco = bancoViewModel,
+                            DescricaoLote = DescricaoLote
+
                         };
                     }
                     else
@@ -201,11 +277,11 @@ namespace Demonstrativo.Controllers
                 }
                 if (ViewBag.SemBanco != null)
                 {
-                    IniT();
+                    // IniT();
                     return View("Index");
 
                 }
-
+                extratoBancarioViewModel.EmpresaSelecionada = ViewBag.EmpresaSeleciodaId;
 
                 //Deletando arquivo do servidor
                 System.IO.File.Delete(caminhoDestinoArquivo);
@@ -213,6 +289,7 @@ namespace Demonstrativo.Controllers
             }
             if (extratoBancarioViewModel.Banco == null)
             {
+                // IniT();
                 ViewBag.Message = "Este arquivo já foi importado!";
                 return View("Index");
             }
@@ -236,6 +313,8 @@ namespace Demonstrativo.Controllers
             var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
             var extratoBancarioViewModel = new ExtratoBancarioViewModel();
 
+
+
             foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
                 var lancamentoPadrao = lancamentosPadroes
@@ -245,6 +324,7 @@ namespace Demonstrativo.Controllers
                 {
                     lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                     {
+                        IdBd = dados.IdBd,
                         Id = dados.Id,
                         TransationValue = dados.TransationValue,
                         Description = dados.Description,
@@ -258,6 +338,7 @@ namespace Demonstrativo.Controllers
                 {
                     lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                     {
+                        IdBd = dados.IdBd,
                         Id = dados.Id,
                         TransationValue = dados.TransationValue,
                         Description = dados.Description,
@@ -311,10 +392,165 @@ namespace Demonstrativo.Controllers
 
                 });
             }
+            decimal saldo = 0;
+            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            {
+                saldo += el.TransationValue;
+            });
 
+            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            {
+                if (el.SaldoMensal != null)
+                {
+                    el.SaldoMensal.SaldoMensal = saldo;
+                }
+                else
+                {
+                    el.SaldoMensal = new SaldoMensalViewModel()
+                    {
+                        SaldoMensal = saldo
+                    };
+                }
+
+            });
+
+
+            extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             //
             return View("Contas", extratoBancarioViewModel);
         }
+
+        [HttpPost]
+        public IActionResult OfxReimportarLote(int LoteLancamentoId)
+        {
+            var empresas = _context.Empresas.ToList();
+            var contasContabeis = _context.ContasContabeis.ToList();
+            var lancamentosPadroes = _context.LancamentosPadroes.ToList();
+            var autoDescricoes = _context.AutoDescricoes;
+
+            var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
+            var lancamentos = _context.OfxLancamentos.Include(f => f.ContaCorrente).ThenInclude(f => f.BancoOfx).Where(f => f.LoteLancamentoId == lote.Id).ToList();
+
+
+            ExtratoBancarioViewModel extratoViewModel = new ExtratoBancarioViewModel()
+            {
+                Empresas = ConstruirEmpresas(empresas),
+                Banco = new OfxBancoViewModel()
+                {
+                    Codigo = lancamentos.FirstOrDefault().ContaCorrente.BancoOfx.Codigo,
+                    Id = lancamentos.FirstOrDefault().ContaCorrente.BancoOfx.Id,
+                    Nome = lancamentos.FirstOrDefault().ContaCorrente.BancoOfx.Nome
+                },
+                LancamentoManual = null
+            };
+
+            extratoViewModel.DescricaoLote = lote.Descricao;
+            extratoViewModel.LoteLancamentoid = lote.Id;
+            extratoViewModel.EmpresaSelecionada = lote.EmpresaId;
+            extratoViewModel.ContasCorrentes = new OfxContaCorrenteViewModel()
+            {
+                OfxLancamentos = new List<OfxLancamentoViewModel>(),
+                NumeroConta = lancamentos.FirstOrDefault().ContaCorrente.NumeroConta
+            };
+            lancamentos.ForEach(el =>
+            {
+                extratoViewModel.ContasCorrentes.OfxLancamentos.Add(new OfxLancamentoViewModel()
+                {
+                    IdBd = el.Id,
+                    TransationValue = el.ValorOfx,
+                    Date = el.Data,
+                    Type = el.TipoLancamento,
+                    Description = el.Descricao,
+                    SaldoMensal = new SaldoMensalViewModel()
+                    {
+                        SaldoMensal = lote.Valor,
+                        Competencia = lote.CompetenciaId,
+                        ContaCorrenteId = el.ContaCorrente.Id,
+
+                    },
+                    Id = el.Documento,
+                    LancamentoPadraoSelecionado = el.LancamentoPadraoId.HasValue ? el.LancamentoPadrao.Codigo.Value : 0,
+                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
+
+                });
+            });
+
+
+            //var extratoBancarioViewModel = _ofxImportacoesDomainService.OfxReimportar(extratoViewModel);
+
+            //Listas
+
+
+            //Views Models
+            var lancamentoOfxViewModel = new List<OfxLancamentoViewModel>();
+            var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
+            var extratoBancarioViewModel = new ExtratoBancarioViewModel();
+
+            foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
+            {
+
+
+                lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                {
+                    IdBd = dados.IdBd,
+                    Id = dados.Id,
+                    TransationValue = dados.TransationValue,
+                    Description = dados.Description,
+                    Date = dados.Date,
+                    CheckSum = dados.CheckSum,
+                    Type = dados.Type,
+                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                    LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado
+                }); ;
+
+                var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == extratoViewModel.Banco.Codigo);
+
+                var bancoViewModel = new OfxBancoViewModel()
+                {
+                    Id = banco.Id,
+                    Codigo = banco.Codigo,
+                    Nome = banco.Nome
+                };
+
+                contaCorrenteViewModel = new OfxContaCorrenteViewModel()
+                {
+                    OfxLancamentos = lancamentoOfxViewModel,
+                    NumeroConta = extratoViewModel.ContasCorrentes.NumeroConta
+                };
+                extratoBancarioViewModel = new ExtratoBancarioViewModel()
+                {
+                    Empresas = ConstruirEmpresas(empresas),
+                    ContasCorrentes = contaCorrenteViewModel,
+                    Banco = bancoViewModel
+                };
+            }
+
+            if (extratoViewModel.LancamentoManual != null)
+            {
+                var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
+                lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                {
+                    TransationValue = extratoViewModel.LancamentoManual.Valor,
+                    Description = extratoViewModel.LancamentoManual.Descricao,
+                    Date = extratoViewModel.LancamentoManual.Data,
+                    CheckSum = 1,
+                    Type = extratoViewModel.LancamentoManual.TipoSelecionado,
+                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                    SaldoMensal = new SaldoMensalViewModel(),
+
+                    Id = ids
+
+                });
+            }
+            extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
+            //
+            return View("Contas", extratoBancarioViewModel);
+        }
+
 
         [HttpPost]
         public IActionResult OfxSalvar(ExtratoBancarioViewModel dados)
@@ -327,7 +563,8 @@ namespace Demonstrativo.Controllers
             //    ViewBag.LancamentoPadraoSelecionadoNotSelect = "Existe lançamentos sem ser atribuidos a contas contábeis";
             //    return View("Contas", dados);
             //}
-
+            IniT();
+            dados.EmpresaSelecionada = ViewBag.EmpresaSeleciodaId;
             if (dados.EmpresaSelecionada == 0)
             {
                 ViewBag.LancamentoPadraoSelecionadoNotSelect = "Selecione a empresa";
@@ -335,6 +572,57 @@ namespace Demonstrativo.Controllers
             }
 
             decimal saldoMensalTotal = 0;
+            var lote = new OfxLoteLancamento();
+            // Fazer Toda a parte do Lote
+            if (dados.LoteLancamentoid.HasValue)
+            {
+                lote = _context.OfxLoteLancamento.Where(f => f.Id == dados.LoteLancamentoid.Value).FirstOrDefault();
+                dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
+                {
+                    lote.Valor += el.TransationValue;
+                });
+                //_context.OfxLoteLancamento.Add(lote);
+                _context.SaveChanges();
+            }
+            else
+            {
+                lote = new OfxLoteLancamento()
+                {
+                    Data = DateTime.Now,
+                    Descricao = dados.DescricaoLote,
+                    Valor = 0,
+                    EmpresaId = ViewBag.EmpresaSeleciodaId,
+                    CompetenciaId = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId)
+                };
+                dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
+                {
+                    lote.Valor += el.TransationValue;
+                });
+                _context.OfxLoteLancamento.Add(lote);
+                _context.SaveChanges();
+            }
+
+
+
+            var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+            var data = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+            var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == data
+                                                                    && s.ContaCorrenteId == contaCorrente.Id);
+            if (saldoMensalId == null)
+            {
+                _context.SaldoMensal.Add(new SaldoMensal()
+                {
+                    Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
+                    Saldo = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal == 0 ? lote.Valor : dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal,
+                    ContaCorrenteId = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.ContaCorrenteId
+                });
+            }
+            else
+            {
+                //saldoMensalId.Saldo += dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal;
+            }
+
+
             foreach (var dado in dados.ContasCorrentes.OfxLancamentos)
             {
                 var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
@@ -357,31 +645,55 @@ namespace Demonstrativo.Controllers
                     _context.SaveChanges();
                 }
 
-                var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+                //var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
 
-                var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == Convert.ToDateTime(dado.Date.ToString("yyyy/MM"))
-                                                                        && s.ContaCorrenteId == contaCorrente.Id);
-                if (saldoMensalId == null)
+                //var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == Convert.ToDateTime(dado.Date.ToString("yyyy/MM"))
+                //                                                        && s.ContaCorrenteId == contaCorrente.Id);
+                //if (saldoMensalId == null)
+                //{
+                //    _context.SaldoMensal.Add(new SaldoMensal()
+                //    {
+                //        Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
+                //        Saldo = dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal,
+                //        ContaCorrenteId = dado.SaldoMensal.ContaCorrenteId
+                //    });
+                //}
+                //else
+                //{
+                //    //saldoMensalId.Saldo += dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal;
+                //}
+
+                if (dado.IdBd.HasValue)
                 {
-                    _context.SaldoMensal.Add(new SaldoMensal()
+                    var lanc = _context.OfxLancamentos.Where(f => f.Id == dado.IdBd.Value).FirstOrDefault();
+
+                    lanc.Documento = dado.Id;
+                    lanc.TipoLancamento = dado.Type;
+                    lanc.Descricao = dado.Description;
+                    lanc.ValorOfx = dado.TransationValue;
+                    lanc.Data = dado.Date;
+                    lanc.LoteLancamentoId = lote.Id;
+                    lanc.ContaCorrenteId = _context.ContasCorrentes
+                      .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id;
+                    lanc.LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id;
+                }
+                else
+                {
+                    _context.OfxLancamentos.Add(new OfxLancamento()
                     {
-                        Competencia = dado.SaldoMensal.Competencia,
-                        Saldo = dado.SaldoMensal.SaldoMensal,
-                        ContaCorrenteId = dado.SaldoMensal.ContaCorrenteId
+                        Documento = dado.Id,
+                        TipoLancamento = dado.Type,
+                        Descricao = dado.Description,
+                        ValorOfx = dado.TransationValue,
+                        Data = dado.Date,
+                        LoteLancamentoId = lote.Id,
+                        ContaCorrenteId = _context.ContasCorrentes
+                      .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id,
+                        LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id
                     });
                 }
 
-                _context.OfxLancamentos.Add(new OfxLancamento()
-                {
-                    Documento = dado.Id,
-                    TipoLancamento = dado.Type,
-                    Descricao = dado.Description,
-                    ValorOfx = dado.TransationValue,
-                    Data = dado.Date,
-                    ContaCorrenteId = _context.ContasCorrentes
-                        .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id,
-                    LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id
-                });
+
                 _context.SaveChanges();
                 var descricao = _context.AutoDescricoes
                     .FirstOrDefault(c => c.Descricao == dado.Description);
@@ -414,11 +726,12 @@ namespace Demonstrativo.Controllers
             ViewBag.Importado = "Arquivo Importado!";
             IniT();
             return View("Index");
+
         }
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)
             => new(lancamentoPadroes.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Descricao}" }), "Codigo", "Descricao");
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
-            => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
+            => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo ", "Razao ");
     }
 }
 //else

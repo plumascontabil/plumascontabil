@@ -1,35 +1,47 @@
 ﻿@model RelatorioViewModel
 @{
-    Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Relatorio";
+	Layout = "_LayoutSemFiltroEmpresa";
+	ViewData["Title"] = "Relatório";
 }
-<div class="row">
-    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
-        <h1>@ViewData["Title"]</h1>
-        <form asp-action="Filtrar" method="post">
-            <h4>Relatório Empresa/Conta</h4>
-            <hr />
-            <div class="form-group">
-                <label>Empresas</label>
-                <select asp-for="@Model.Empresa" asp-items="@Model.Empresas" class="form-control select">
-                <option value="">Selecione</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Contas</label>
-                <select asp-for="@Model.ContaContabil" asp-items="@Model.ContasContabeis" class="form-control select">
-                <option value="">Selecione</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Data Inicial</label>
-                <input asp-for="@Model.DataInicial" class="form-control" type="date"/>
-            </div>
-            <div class="form-group">
-                <label>Data Final</label>
-                <input asp-for="@Model.DataFinal" class="form-control" type="date"/>
-            </div>
-            <button type="submit" class="btn btn-primary">Gerar</button>
-        </form>
-    </div>
+
+<div class="py-4 pl-3 d-flex justify-content-between">
+	<h1 class="page-title">@ViewData["Title"]</h1>
+
 </div>
+
+
+
+<form asp-action="Filtrar" method="post" class="row">
+	<div class="col-md-6">
+		<div class="form-group">
+			<label>Empresa</label>
+			<select asp-for="@Model.Empresa" asp-items="@Model.Empresas" class="form-control select">
+				<option value="">Selecione</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<label>Contas</label>
+			<select asp-for="@Model.ContaContabil" asp-items="@Model.ContasContabeis" class="form-control select">
+				<option value="">Selecione</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<label>Data Inicial</label>
+			<input asp-for="@Model.DataInicial" class="form-control" type="date" />
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<label>Data Final</label>
+			<input asp-for="@Model.DataFinal" class="form-control" type="date" />
+		</div>
+	</div>
+	<div class="col-12">
+		<button type="submit" class="btn btn-plumas-w">Gerar</button>
+	</div>
+</form>
+

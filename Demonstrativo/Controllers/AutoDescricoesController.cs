@@ -53,7 +53,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(autoDescricao);
         }
 
@@ -80,6 +81,8 @@ namespace Demonstrativo.Controllers
                 //await _autoDescricoesDomainService.CreateValidar(autoDescricao);
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
             return View(autoDescricao);
         }
@@ -99,6 +102,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
             return View(autoDescricao);
         }
@@ -110,6 +115,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,LancamentoPadraoId")] AutoDescricao autoDescricao)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id != autoDescricao.Id)
             {
                 return NotFound();
@@ -137,6 +144,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao", autoDescricao.LancamentoPadraoId);
             return View(autoDescricao);
         }
@@ -158,7 +167,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(autoDescricao);
         }
 

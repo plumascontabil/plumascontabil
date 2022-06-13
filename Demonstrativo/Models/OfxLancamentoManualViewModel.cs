@@ -11,8 +11,14 @@ namespace Demonstrativo.Models
         public string TipoSelecionado { get; set; }
         public string Descricao { get; set; }
 
-        [Range(0.0, 10000000000)]
-        public decimal Valor { get; set; }
+        public string ValorInput { get; set; }
+        public decimal Valor
+        {
+            get
+            {
+                return Convert.ToDecimal(ValorInput.Replace("R$", "").Trim());
+            }
+        }
 
         public int ContaCreditar { get; set; }
         public int ContaDebitar { get; set; }

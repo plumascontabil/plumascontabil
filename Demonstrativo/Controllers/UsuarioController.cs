@@ -35,10 +35,11 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
+
             return View(CarregarUsuario());
         }
 
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public IActionResult Register()
         {
             AdicionarCompetenciaMesAtual();
@@ -50,7 +51,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Register(RegistrarViewModel viewModel)
         {
             var role = await _roleManager.FindByIdAsync(viewModel.UserRole);
@@ -79,14 +80,16 @@ namespace Demonstrativo.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             viewModel.UserRoles = _roleManager.Roles.ToList();
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
 
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(string id)
         {
             AdicionarCompetenciaMesAtual();
@@ -96,7 +99,8 @@ namespace Demonstrativo.Controllers
             var nameRole = roles.FirstOrDefault();
 
             var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new EditarViewModel()
             {
                 Id = id,
@@ -107,7 +111,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
             var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
@@ -140,14 +144,17 @@ namespace Demonstrativo.Controllers
                 }
 
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var editarViewModel = new EditarViewModel
             {
                 UserRole = userRole.Id
             };
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("Usuarios", viewModel);
         }
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
         {
             var users = _userManager.Users.ToList();
@@ -167,13 +174,18 @@ namespace Demonstrativo.Controllers
             return View("Usuarios", usuarioViewModel);
         }
         public IActionResult Login()
+
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(new LoginViewModel());
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             viewModel.ReturnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -196,9 +208,11 @@ namespace Demonstrativo.Controllers
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
-        [Authorize(Policy = "roleAdministrador")]
+        //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Logout()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
 
@@ -207,6 +221,8 @@ namespace Demonstrativo.Controllers
 
         public IActionResult AccessDenied()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View("AccessDenied");
         }
 

@@ -1,35 +1,34 @@
 ﻿@model Microsoft.AspNetCore.Identity.IdentityRole
 @{
     Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Cadastro de perfil";
 }
 
+<div class="py-4 pl-3 d-flex justify-content-between">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+   
+</div>
 
-<div class="row form-lancamento">
-    <section class="col-md-4 table-bordered mx-auto rounded-lg bg-light">
-        <div class="text-plumas">
-            <br/>
-            @ViewData["Title"]
-            <br/>
-        </div>
-        <hr />
-        <div class="col-md-4">
-            <form asp-action="Create" >
+
+    <section class="row">
+     
+      
+            <form asp-action="Create" class="col-md-6" >
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
+                    <label asp-for="Name" class="control-label">Nome do perfil</label>
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <input type="submit" value="Cadastrar" class="btn btn-primary" />
                 </div>
             </form>
-        </div>
+       
     </section>
-</div>
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");

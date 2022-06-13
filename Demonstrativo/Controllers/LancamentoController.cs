@@ -95,18 +95,26 @@ namespace Demonstrativo.Controllers
                 lancamentos = _context.Lancamentos.Where(x => x.EmpresaId == empresasId && x.DataCompetencia == competenciasId)
                     .ToList();
             }
+            var contasCorrentesLancamentos = new List<OfxLancamento>();
 
-            foreach (var categoria in categorias)
+            if (empresasId.HasValue)
+            {
+                var ids = contasCorrentes.Select(x => x.Id).ToList();
+
+                contasCorrentesLancamentos = _context.OfxLancamentos.Where(o => ids.Any(x => x == o.ContaCorrenteId) == true).ToList();
+            }
+
+
+            categorias.ForEach(categoria =>
             {
                 var contasViewModel = new List<ContaViewModel>();
-
-                foreach (var conta in contas.Where(c => c.CategoriaId == categoria.Id))
+                contas.Where(c => c.CategoriaId == categoria.Id).ToList().ForEach(conta =>
                 {
                     var lancamentosViewModel = new List<LancamentoViewModel>();
                     decimal valor = 0;
-                    foreach (var contaCorrente in contasCorrentes)
+                    contasCorrentes.ForEach(contaCorrente =>
                     {
-                        var ofxLancamentos = _context.OfxLancamentos.Where(o => o.ContaCorrenteId == contaCorrente.Id);
+                        var ofxLancamentos = contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).ToList();
 
                         if (conta.Codigo == 200)
                         {
@@ -120,17 +128,23 @@ namespace Demonstrativo.Controllers
                                 Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome
                             });
                         }
-                        foreach (var ofxLancamento in ofxLancamentos
-                           .Where(l => l.Data.Year == competenciasId.Value.Year
-                                   && l.Data.Month == competenciasId.Value.Month))
-                        {
-                            var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
-                            if (ofxLancamento != null && contaCodigo == conta.Id && contaCodigo != 200)
-                            {
-                                valor += ofxLancamento.ValorOfx;
-                            }
-                        }
-                    }
+
+                        ofxLancamentos
+                          .Where(l => l.Data.Year == competenciasId.Value.Year
+                                  && l.Data.Month == competenciasId.Value.Month).ToList().ForEach(ofxLancamento =>
+                                  {
+                                      var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
+                                      if (ofxLancamento != null && contaCodigo == conta.Id && contaCodigo != 200)
+                                      {
+                                          valor += ofxLancamento.ValorOfx;
+                                      }
+                                  });
+
+
+
+                    });
+
+
                     if (valor != 0)
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel()
@@ -153,14 +167,16 @@ namespace Demonstrativo.Controllers
                         Lancamentos = lancamentosViewModel
                     });
 
-                }
+                });
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
                 {
                     Descricao = categoria.Descricao,
                     Contas = contasViewModel
                 });
-            }
+            });
+
+
             var trimestre = CarregarTrimestre(competenciasId, empresasId);
             var estorqueVenda = CarregarVenda(competenciasId, empresasId);
 

@@ -32,6 +32,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -44,7 +46,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -63,6 +66,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Codigo,Classificacao,Historico")] ContaContabil contaContabil)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (ModelState.IsValid)
             {
                 //var contaContabil = _contaContabilDomainService.CreateValidar(contaContabil);
@@ -70,6 +75,8 @@ namespace Demonstrativo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -88,6 +95,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -98,6 +107,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Codigo,Classificacao,Historico")] ContaContabil contaContabil)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id != contaContabil.Codigo)
             {
                 return NotFound();
@@ -124,6 +135,8 @@ namespace Demonstrativo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 
@@ -142,7 +155,8 @@ namespace Demonstrativo.Controllers
             {
                 return NotFound();
             }
-
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View(contaContabil);
         }
 

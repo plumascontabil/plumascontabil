@@ -1,83 +1,101 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     padding-top: 70px;
-    padding-bottom:30px;
+    padding-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+    color: #022c5c;
 }
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
 
-.inptable
-{
-    width: 450px !important;
+button {
+    background-color: transparent;
+    border: 0;
+}
+
+
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+.inptable {
+    width: 90%;
+    max-width: 940px !important;
 }
 
 th {
@@ -88,27 +106,29 @@ th {
 td {
     padding: 4px !important;
 }
-input{
+
+input {
     width: 150px;
     margin: auto;
 }
 
-.codigo{
+.codigo {
     width: 20px;
 }
 
-.descricao{
+.descricao {
     width: 270px;
 }
 
-.valor{
-    width:50px;
+.valor {
+    width: 50px;
 }
 
 .container {
-        max-width: 1540px !important;
-        margin-left: auto !important;
+    max-width: 1540px !important;
+    margin-left: auto !important;
 }
+
 .fixed-top-filter {
     position: fixed;
     top: 0;
@@ -148,11 +168,27 @@ input{
     border: none;
 }
 
-.form-lancamento{
+
+.floatBtnDRE {
+    position: fixed;
+    width: 64px;
+    height: 64px;
+    bottom: 199px;
+    right: 40px;
+    background-color: #1b6ec2;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 2;
+    border: none;
+}
+
+.form-lancamento {
     margin-top: 60px;
 }
 
-.btn-check{
+.btn-check {
     width: 50px;
 }
 
@@ -186,11 +222,11 @@ input{
     border-color: #313155;
 }
 
-.btn-plumas-w:hover {
-    color: #fff;
-    background-color: #313155;
-    border-color: #313155;
-}
+    .btn-plumas-w:hover {
+        color: #fff;
+        background-color: #313155;
+        border-color: #313155;
+    }
 
 
 
@@ -200,7 +236,7 @@ input{
     font-size: 40px;
 }
 
-#conta-ofx{
+#conta-ofx {
     width: 50px;
 }
 
@@ -230,45 +266,103 @@ input{
         animation: animate .3s linear forwards;
     }
 
-    @keyframes animate {
-        0% {
-            width: 0;
-        }
-
-        100% {
-            width: 100%;
-        }
+@keyframes animate {
+    0% {
+        width: 0;
     }
 
-.download-txt{
-    font-size:1.5rem;
+    100% {
+        width: 100%;
+    }
+}
+
+.download-txt {
+    font-size: 1.5rem;
 }
 
 .page-title {
     font-weight: bold;
     color: #202020;
-    position:relative;
-}
-.page-title:after {
-    content:'';
-    display:block;
-    position: absolute;
-    left:0;
-    width:70px;
-    height:8px;
-    background-color:#e5e5e5;
-}
-.area-login {
-    border-top: solid 6px #313155 ;
-    width:90%;
-    max-width:500px;
-    padding: 20px ;
+    position: relative;
 }
 
-.cursor-pointer{
-    cursor:pointer;
+    .page-title:after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 70px;
+        height: 8px;
+        background-color: #e5e5e5;
+    }
+
+.area-login {
+    border-top: solid 6px #313155;
+    width: 90%;
+    max-width: 500px;
+    padding: 20px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
 .border-dashed {
     border-style: dashed;
+}
+
+.icon-banco {
+    width: 50px;
+    height: 50px;
+    display: block;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    cursor: pointer;
+    position: relative;
+    opacity: .7;
+    transition: all .3s ease;
+}
+
+.checkado {
+    opacity: 1;
+}
+
+    .checkado:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 100%;
+        border-bottom: solid 4px #202020;
+        left: 0;
+        bottom: -10px;
+        transition: all .3s ease;
+    }
+
+.select {
+    margin-right: 10px !important;
+}
+
+.select2-selection {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px) !important;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff !important;
+    background-clip: padding-box;
+    border: 1px solid #ced4da !important;
+    border-radius: 0.25rem !important;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 6px !important;
+}
+
+th, td {
+    text-align: center;
 }

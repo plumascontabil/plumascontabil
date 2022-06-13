@@ -90,7 +90,7 @@ namespace Demonstrativo.Controllers
 
 
             ViewBag.CompetenciasId = new SelectList(
-                    competencias.Select(
+                    competencias.OrderByDescending(f => f.Data).Select(
                     c => new { Value = c.Data.ToShortDateString(), Text = c.Data.ToString("MM/yyyy") })
                     , "Value", "Text",
                     competenciasId.HasValue ? competenciasId.Value.ToShortDateString() : competenciasId);

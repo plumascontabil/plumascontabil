@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Demonstrativo.Models
 {
@@ -15,7 +16,7 @@ namespace Demonstrativo.Models
         public DbSet<ItemVenda> ItensVendas { get; set; }
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<OfxLancamento> OfxLancamentos { get; set; }
-        public DbSet<OfxLoteLancamento> OfxLoteLancamentos { get; set; }
+        public DbSet<OfxLoteLancamento> OfxLoteLancamento { get; set; }
         public DbSet<ContaContabil> ContasContabeis { get; set; }
         public DbSet<OfxBanco> OfxBancos { get; set; }
         public DbSet<OfxContaCorrente> ContasCorrentes { get; set; }
@@ -42,11 +43,16 @@ namespace Demonstrativo.Models
                            .WithMany(c => c.LancamentoPadraoDebitar)
                            .HasForeignKey(x => x.ContaDebitoId)
                            .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<OfxLoteLancamento>().Property(f => f.Data).HasColumnType("datetime2");
             modelBuilder.Entity<OfxLoteLancamento>()
                 .HasMany(f => f.Lancamentos)
                 .WithOne(x => x.Lote)
                 .HasForeignKey(x => x.LoteLancamentoId);
+
+            modelBuilder.Entity<OfxLoteLancamento>()
+               .HasOne(f => f.Empresa)
+               .WithMany(x => x.Lotes)
+               .HasForeignKey(x => x.EmpresaId);
 
         }
 

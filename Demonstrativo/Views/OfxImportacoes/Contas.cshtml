@@ -43,7 +43,7 @@
         <form asp-controller="Importacao" asp-action="OfxReimportar">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Adicionar Lancamento Manual
+                Adicionar Lançamento Manual
             </button>
             <!-- Modal -->
             <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -68,20 +68,20 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <input type="date" asp-for="@Model.LancamentoManual.Data" />
+                                            <input class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
                                         </td>
                                         <td>
-                                            <select asp-for="@Model.LancamentoManual.TipoSelecionado">
+                                            <select class="form-control select" asp-for="@Model.LancamentoManual.TipoSelecionado">
                                                 <option selected disabled value="">Selecione</option>
                                                 <option style="color:blue" value="CREDIT">CREDIT</option>
                                                 <option style="color:red" value="DEBIT">DEBIT</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" asp-for="@Model.LancamentoManual.Descricao" />
+                                            <input class="form-control" type="text" asp-for="@Model.LancamentoManual.Descricao" />
                                         </td>
                                         <td>
-                                            <input type="text" asp-for="@Model.LancamentoManual.Valor" class="mask-valor" />
+                                            <input class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -96,11 +96,12 @@
             </div>
             <hr />
             <form asp-controller="Importacao" asp-action="OfxSalvar">
-                <select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp">
-                    <option value="">Selecione</option>
-                </select>
+                @*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
+                        <option value="">Selecione</option>
+                    </select>*@
                 <hr />
                 <output>
+                    <H2>@Model.DescricaoLote</H2>
                     @Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
                     <input type="hidden" asp-for="@Model.Banco.Codigo" />
                     <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
@@ -128,6 +129,9 @@
                                 <td>
                                     @ofxs.Id
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
+                                    <input type="hidden" asp-for="@Model.DescricaoLote" />
+                                    <input type="hidden" asp-for="@Model.LoteLancamentoid" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
@@ -165,3 +169,13 @@
         </form>
     </div>
 </div>
+
+@section Scripts{
+    @*<script type="text/javascript">
+            $(".mask-valor").blur(function (event) {
+                var tesxt = $(this).val();
+
+                console.log(tesxt);
+            })
+        </script>*@
+}
