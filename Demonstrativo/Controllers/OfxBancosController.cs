@@ -1,7 +1,10 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,14 +13,16 @@ namespace Demonstrativo.Controllers
     public class OfxBancosController : BaseController
     {
         private readonly Context _context;
+        private readonly IWebHostEnvironment _appEnvironment;
         //private readonly OfxBancosDomainService _ofxBancosDomainService;
 
 
-        public OfxBancosController(Context context
+        public OfxBancosController(Context context, IWebHostEnvironment env
             //OfxBancosDomainService ofxBancosDomainService
             ) : base(context)
         {
             _context = context;
+            _appEnvironment = env;
             //_ofxBancosDomainService = ofxBancosDomainService;
         }
 
@@ -65,10 +70,33 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Codigo,Nome")] OfxBanco ofxBanco)
+        public async Task<IActionResult> Create([Bind("Id,Codigo,Nome")] OfxBanco ofxBanco, IFormFile file)
         {
+            if (file == null)
+            {
+                ViewBag.Message = "Porfavor, Anexe a logo do banco";
+            }
+            else
             if (ModelState.IsValid)
             {
+
+
+                if (file != null)
+                {
+                    if (!Directory.Exists($"{_appEnvironment.WebRootPath}\\Bancos"))
+                    {
+                        Directory.CreateDirectory($"{_appEnvironment.WebRootPath}\\Bancos");
+                    }
+
+                    string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Bancos\\{file.FileName}";
+
+                    using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    ofxBanco.UrlImagem = $"~/Bancos/{caminhoDestinoArquivo.Split("\\").LastOrDefault()}";
+                }
+
                 //var ofxBanco = await _ofxBancosDomainService.CreateValidar(ofxBanco);
                 _context.Add(ofxBanco);
                 await _context.SaveChangesAsync();
@@ -90,6 +118,8 @@ namespace Demonstrativo.Controllers
             }
 
             var ofxBanco = await _context.OfxBancos.FindAsync(id);
+
+            //ofxBanco.UrlImagem = $"~/Bancos/{ofxBanco.UrlImagem.Split("\\").LastOrDefault()}";
             if (ofxBanco == null)
             {
                 return NotFound();
@@ -104,7 +134,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Nome")] OfxBanco ofxBanco)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Nome")] OfxBanco ofxBanco, IFormFile file)
         {
             if (id != ofxBanco.Id)
             {
@@ -115,6 +145,22 @@ namespace Demonstrativo.Controllers
             {
                 try
                 {
+
+                    if (file != null)
+                    {
+                        if (!Directory.Exists($"{_appEnvironment.WebRootPath}\\Bancos"))
+                        {
+                            Directory.CreateDirectory($"{_appEnvironment.WebRootPath}\\Bancos");
+                        }
+
+                        string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Bancos\\{file.FileName}";
+
+                        using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        ofxBanco.UrlImagem = $"~/Bancos/{caminhoDestinoArquivo.Split("\\").LastOrDefault()}";
+                    }
                     //var ofxBanco = await _ofxBancosDomainService.EditValidar(ofxBanco);
 
                     _context.Update(ofxBanco);

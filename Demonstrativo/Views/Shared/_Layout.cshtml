@@ -40,82 +40,82 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 ">
-                        <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index") ? "active":"")">
+                        <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index" || $"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Filtrar") ? "active":"")">
                             <a class="nav-link text-dark"
                                asp-area=""
                                asp-controller="Lancamento"
                                asp-action="Index">Lançamentos</a>
                         </li>
-                       @* @if (User.IsInRole("Administrador"))
-                        {*@
-                            <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Usuario/CarregarUsuario") ? "active":"")">
+                        @* @if (User.IsInRole("Administrador"))
+                            {*@
+                        <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Usuario/CarregarUsuario") ? "active":"")">
+                            <a class="nav-link text-dark"
+                               asp-area=""
+                               asp-controller="Usuario"
+                               asp-action="CarregarUsuario">Usuários</a>
+                        </li>
+                        <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Role/Index") ? "active":"")">
+                            <a class="nav-link text-dark  "
+                               asp-area=""
+                               asp-controller="Role"
+                               asp-action="Index">Perfis</a>
+                        </li>
+                        <li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index" )? "active":"")">
+                            <div class="dropdown show">
                                 <a class="nav-link text-dark"
+                                   asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
+                                    Importações OFX
+                                </a>
+                                @*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
+                                    </div>*@
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown show">
+                                <a class="nav-link text-dark dropdown-toggle"
+                                   role="button"
+                                   id="dropdownMenuLink"
+                                   data-toggle="dropdown"
+                                   aria-haspopup="true"
+                                   aria-expanded="false"
                                    asp-area=""
-                                   asp-controller="Usuario"
-                                   asp-action="CarregarUsuario">Usuários</a>
-                            </li>
-                            <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Role/Index") ? "active":"")">
-                                <a class="nav-link text-dark  "
-                                   asp-area=""
-                                   asp-controller="Role"
-                                   asp-action="Index">Perfis</a>
-                            </li>
-                            <li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index" )? "active":"")">
-                                <div class="dropdown show">
-                                    <a class="nav-link text-dark"
-                                       asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
-                                        Importações OFX
-                                    </a>
-                                    @*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                            <a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
-                                        </div>*@
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <div class="dropdown show">
-                                    <a class="nav-link text-dark dropdown-toggle"
-                                       role="button"
-                                       id="dropdownMenuLink"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true"
-                                       aria-expanded="false"
+                                   asp-controller="Importacao"
+                                   asp-action="Index">
+                                    Cadastros
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item"
+                                       asp-area=""
+                                       asp-controller="AutoDescricoes"
+                                       asp-action="Index">Históricos Banco</a>
+                                    <a class="dropdown-item"
+                                       asp-area=""
+                                       asp-controller="OfxContasCorrentes"
+                                       asp-action="Index">Contas Correntes</a>
+                                    <a class="dropdown-item"
+                                       asp-area=""
+                                       asp-controller="SaldoMensals"
+                                       asp-action="Index">Saldos Contas Correntes</a>
+                                    <a class="dropdown-item"
+                                       asp-area=""
+                                       asp-controller="OfxBancos"
+                                       asp-action="Index">Bancos</a>
+                                    <a class="dropdown-item"
+                                       asp-area=""
+                                       asp-controller="ContasContabeis"
+                                       asp-action="Index">Contas Contábeis</a>
+                                    <a class="dropdown-item"
+                                       asp-area=""
+                                       asp-controller="LancamentosPadroes"
+                                       asp-action="Index">Lançamentos Contábeis</a>
+                                    <a class="dropdown-item"
                                        asp-area=""
                                        asp-controller="Importacao"
-                                       asp-action="Index">
-                                        Cadastros
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="AutoDescricoes"
-                                           asp-action="Index">Históricos Banco</a>
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="OfxContasCorrentes"
-                                           asp-action="Index">Contas Correntes</a>
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="SaldoMensals"
-                                           asp-action="Index">Saldos Contas Correntes</a>
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="OfxBancos"
-                                           asp-action="Index">Bancos</a>
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="ContasContabeis"
-                                           asp-action="Index">Contas Contábeis</a>
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="LancamentosPadroes"
-                                           asp-action="Index">Lançamentos Contábeis</a>
-                                        <a class="dropdown-item"
-                                           asp-area=""
-                                           asp-controller="Importacao"
-                                           asp-action="RelatorioOfx">Relatório</a>
-                                    </div>
+                                       asp-action="RelatorioOfx">Relatório</a>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
                         @*}*@
                     </ul>
                     @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50" }))
@@ -149,7 +149,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery/dist/jquery.mask.js"></script>
+    <script src="~/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @*<script src="~/lib/jquery/dist/jquery.mask.js"></script>*@
@@ -160,14 +160,27 @@
             placeholder: 'Selecione'
         });
 
-        $(".mask-valor").maskMoney({
-            prefix: "R$ ",
-            decimal: ",",
-            thousands: "."
+        //$(".mask-valor").maskMoney({
+        //    prefix: "R$ ",
+        //    decimal: ",",
+        //    thousands: ".",
+        //    allowNegative: false,
+        //    allowEmpty: false,
+        //    affixesStay: true
+        //});
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.mask-valor').inputmask('currency', {
+            "autoUnmask": true,
+            radixPoint: ",",
+            groupSeparator: ".",
+            allowMinus: false,
+            prefix: 'R$ ',
+            digits: 2,
+            digitsOptional: false,
+            rightAlign: true,
+            unmaskAsNumber: true
         });
-      
-        $('[data-toggle="tooltip"]').tooltip()
-        
     </script>
 
     @*<script type="text/javascript">

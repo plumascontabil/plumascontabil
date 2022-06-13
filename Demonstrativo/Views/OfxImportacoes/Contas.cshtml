@@ -129,7 +129,9 @@
                                 <td>
                                     @ofxs.Id
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
                                     <input type="hidden" asp-for="@Model.DescricaoLote" />
+                                    <input type="hidden" asp-for="@Model.LoteLancamentoid" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />

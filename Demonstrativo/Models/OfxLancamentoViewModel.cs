@@ -6,6 +6,7 @@ namespace Demonstrativo.Models
 {
     public class OfxLancamentoViewModel
     {
+        public int? IdBd { get; set; }
         public string Id { get; set; }
         public int HistoricoId { get; set; }
         public string Description { get; set; }

@@ -135,7 +135,7 @@
                 {
 
                     <label>
-                        <span id="Bank_@item.BancoOfxId" class="icon-banco" style="background-image:url(https://macmagazine.com.br/wp-content/uploads/2011/04/18-bradesco_icon.png)"></span>
+                        <span id="Bank_@item.BancoOfxId" class="icon-banco" style="background-image:url(@Url.Content(item.BancoOfx.UrlImagem))"></span>
                         <input type="radio" name="BancosId" value="@item.BancoOfxId" class="sr-only">
                     </label>
                 }
@@ -203,10 +203,12 @@
                         <td class="text-center">@Html.Raw(item.Data.Date.ToString("dd/MM/yyyy"))</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center">
-
-                                <button data-toggle="tooltip" title="Editar Lote">
-                                    <i class="fa fa-edit"></i>
-                                </button>
+                                <form method="post" id="OfxReimportarLote" asp-action="OfxReimportarLote">
+                                    <input type="hidden" name="LoteLancamentoId" id="LoteLancamentoId" value="@item.Id" />
+                                    <button type="submit" data-toggle="tooltip" title="Editar Lote">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </form>
                                 <button data-toggle="tooltip" title="Detalhes do Lote">
                                     <i class="fa fa-info-circle"></i>
                                 </button>

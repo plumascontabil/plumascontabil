@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-   <header class=" bg-light">
+    <header class=" bg-light">
         <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
@@ -34,19 +34,19 @@
 
 
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                            aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1 ">
                             <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index") ? "active":"")">
                                 <a class="nav-link text-dark"
-                               asp-area=""
-                               asp-controller="Lancamento"
-                               asp-action="Index">Lançamentos</a>
+                                   asp-area=""
+                                   asp-controller="Lancamento"
+                                   asp-action="Index">Lançamentos</a>
                             </li>
                             @* @if (User.IsInRole("Administrador"))
-                        {*@
+                                {*@
                             <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Usuario/CarregarUsuario") ? "active":"")">
                                 <a class="nav-link text-dark"
                                    asp-area=""
@@ -151,6 +151,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
     @*<script src="~/lib/jquery/dist/jquery.mask.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
@@ -159,12 +160,24 @@
             placeholder: 'Selecione'
         });
 
-        $(".mask-valor").maskMoney({
-            prefix: "R$ ",
-            decimal: ",",
-            thousands: "."
+        //$(".mask-valor").maskMoney({
+        //    prefix: "R$ ",
+        //    decimal: ",",
+        //    thousands: "."
+        //});
+
+        $('.mask-valor').inputmask('currency', {
+            "autoUnmask": true,
+            radixPoint: ",",
+            groupSeparator: ".",
+            allowMinus: false,
+            prefix: 'R$ ',
+            digits: 2,
+            digitsOptional: false,
+            rightAlign: true,
+            unmaskAsNumber: true
         });
-        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="tooltip"]').tooltip();
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
