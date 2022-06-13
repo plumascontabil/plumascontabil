@@ -43,15 +43,12 @@
                 <span asp-validation-for="UserRole" class="text-danger"></span>
             </div>
          </div>
-         <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="UserRole">Empresa</label>
-                <select asp-for="UserRole" class="form-control  select" asp-items='new SelectList(Model.UserRoles,"Id","Name")'>
+         <div class="form-group">
+                <label asp-for="EmpresasId"></label>
+                <select asp-for="EmpresasId" class="form-control select" multiselect asp-items='ViewBag.EmpresasId'>
                 </select>
-                <span asp-validation-for="UserRole" class="text-danger"></span>
+                <span asp-validation-for="EmpresasId" class="text-danger"></span>
             </div>
-         </div>
-         <div class="col-12">
              <a asp-action="CarregarUsuario" class="btn btn-plumas-w">Voltar</a>
             <button type="submit" class="btn btn-plumas-w">Cadastrar</button>
          </div>
