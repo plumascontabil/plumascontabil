@@ -2,7 +2,7 @@
 
 @{
 	Layout = "_LayoutSemFiltroEmpresa";
-	ViewData["Title"] = "Lançamentos padrões";
+	ViewData["Title"] = "Lançamentos contábeis";
 }
 
 <div class="py-4 pl-3 d-flex justify-content-between">
@@ -10,7 +10,7 @@
 
 	<div>
 		<a class="btn btn-plumas-w btn-nav-link" asp-action="Create">
-			Adicionar lançamento padrão <i class="fa fa-plus ml-2"></i>
+			Adicionar lançamento contábil <i class="fa fa-plus ml-2"></i>
 		</a>
 	</div>
 
@@ -21,11 +21,11 @@
 		<table class="w-100 mx-auto">
 			<thead>
 				<tr>
-					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.Codigo)</td>
-					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.Descricao)</td>
-					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.LancamentoHistorico)</td>
-					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.ContaDebito)</td>
-					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.ContaCredito)</td>
+					<td class="bg-categoria text-white p-2">Código</td>
+					<td class="bg-categoria text-white p-2">Descrição</td>
+					<td class="bg-categoria text-white p-2">Histórico lançamentos</td>
+					<td class="bg-categoria text-white p-2">Débito</td>
+					<td class="bg-categoria text-white p-2">Crédito</td>
 					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.Categoria)</td>
 					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.Tipo)</td>
 					<td class="bg-categoria text-white p-2">Ações</td>

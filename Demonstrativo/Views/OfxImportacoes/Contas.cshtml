@@ -1,181 +1,175 @@
-﻿
-@model ExtratoBancarioViewModel
+﻿@model ExtratoBancarioViewModel
 @using System.Globalization;
 @{
-    Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "ImportaçãoOfx";
+	Layout = "_LayoutSemFiltroEmpresa";
+	ViewData["Title"] = "Importação OFX";
 }
 <style>
-    .blue {
-        color: blue;
-    }
+	.blue {
+		color: blue;
+	}
 
-    .red {
-        color: red;
-    }
+	.red {
+		color: red;
+	}
 </style>
 @if (ViewBag.LancamentoPadraoSelecionadoNotSelect != null)
 {
-    <script type="text/javascript">
-    window.onload = function () {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: '@Html.Raw(ViewBag.LancamentoPadraoSelecionadoNotSelect)',
+	<script type="text/javascript">
+		window.onload = function() {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Oops...',
+				text: '@Html.Raw(ViewBag.LancamentoPadraoSelecionadoNotSelect)',
 
-        })
-    };
-    </script>
+			})
+		};
+	</script>
 }
 
 <div class="py-4 pl-3 d-flex justify-content-between">
-    <h1 class="page-title">@ViewData["Title"]</h1>
+	<h1 class="page-title">@ViewData["Title"]</h1>
+
+	<div>
+		<a class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
+			Adicionar Lançamento Manual<i class="fa fa-plus ml-2"></i>
+		</a>
+	</div>
 
 </div>
 <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
-    <div class="text-plumas">
-        <br />
-        @ViewData["Title"]
-        <br />
-    </div>
-    <hr />
-    <div class="m-auto">
-        <form asp-controller="Importacao" asp-action="OfxReimportar">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Adicionar Lançamento Manual
-            </button>
-            <!-- Modal -->
-            <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
+
+
+	<div class="m-auto">
+		<form asp-controller="Importacao" asp-action="OfxReimportar">
+
+		
+			<!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Lancamento Manual</h5>
+                            Informação do Lote
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <table class="table table-bordered d-lg-table">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Tipo</th>
-                                        <th>Descrição</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <input class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
-                                        </td>
-                                        <td>
-                                            <select class="form-control select" asp-for="@Model.LancamentoManual.TipoSelecionado">
-                                                <option selected disabled value="">Selecione</option>
-                                                <option style="color:blue" value="CREDIT">CREDIT</option>
-                                                <option style="color:red" value="DEBIT">DEBIT</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="text" asp-for="@Model.LancamentoManual.Descricao" />
-                                        </td>
-                                        <td>
-                                            <input class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" asp-action="OfxReimportar">Adicionar</button>
-                        </div>
+						
+								<div class="form-group">
+									<label for="data">Data</label>
+									<input id="data" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
+								</div>
+								<div class="import-lote mb-3">
+									<div><label for="tipo">Tipo</label></div>
+									<select id="tipo" class="form-control select" asp-for="@Model.LancamentoManual.TipoSelecionado">
+										<option selected disabled value="">Selecione</option>
+										<option style="color:blue" value="CREDIT">CREDIT</option>
+										<option style="color:red" value="DEBIT">DEBIT</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="descricao">Descrição</label>
+									<input id="descricao" class="form-control" type="text" asp-for="@Model.LancamentoManual.Descricao" />
+								</div>
+								<div class="form-group">
+									<label for="valor">Valor</label>
+									<input id="valor" class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
+								</div>
+						
+							
+						</div>
+                       <div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+							<button type="submit" class="btn btn-plumas-w" asp-action="OfxReimportar">Adicionar</button>
+						</div>
                     </div>
                 </div>
             </div>
-            <hr />
-            <form asp-controller="Importacao" asp-action="OfxSalvar">
-                @*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
-                        <option value="">Selecione</option>
-                    </select>*@
-                <hr />
-                <output>
-                    <H2>@Model.DescricaoLote</H2>
-                    @Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
-                    <input type="hidden" asp-for="@Model.Banco.Codigo" />
-                    <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
-                </output>
-                <hr />
 
-                <table class="table table-bordered d-lg-table">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Data</th>
-                            <th>Tipo</th>
-                            <th>Descrição</th>
-                            <th>Valor</th>
-                            <th>Lançamento Padrão</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
-                        {
-                            var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
-                            var value = ofxs.TransationValue > 0 ? "blue" : "red";
-                            var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
-                            <tr>
-                                <td>
-                                    @ofxs.Id
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
-                                    <input type="hidden" asp-for="@Model.DescricaoLote" />
-                                    <input type="hidden" asp-for="@Model.LoteLancamentoid" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
-                                </td>
-                                <td>
-                                    @ofxs.Date.Date.ToString("dd/MM/yyyy")
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
-                                </td>
-                                <td>
-                                    @ofxs.Type
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
-                                </td>
-                                <td>
-                                    @ofxs.Description
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
-                                </td>
-                                <td class="@value">
-                                    @*@ofxs.TransationValue*@
+			
+		
+			<form asp-controller="Importacao" asp-action="OfxSalvar">
+				@*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
+				<option value="">Selecione</option>
+				</select>*@
 
-                                    @valor
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
-                                </td>
-                                <td>
-                                    <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
-                                        <option value="">Selecione</option>
-                                    </select>
-                                </td>
-                            </tr>
+				<output>
+					<H2>@Model.DescricaoLote</H2>
+					@Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
+					<input type="hidden" asp-for="@Model.Banco.Codigo" />
+					<input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
+				</output>
 
-                        }
-                    </tbody>
-                </table>
-                <input type="submit" asp-action="OfxSalvar" />
-            </form>
-        </form>
-    </div>
+				<table class="table table-bordered d-lg-table">
+					<thead>
+						<tr>
+							<th class="bg-categoria text-white p-2">Id</th>
+							<th class="bg-categoria text-white p-2">Data</th>
+							<th class="bg-categoria text-white p-2">Tipo</th>
+							<th class="bg-categoria text-white p-2">Descrição</th>
+							<th class="bg-categoria text-white p-2">Valor</th>
+							<th class="bg-categoria text-white p-2">Lançamento contábil</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
+						{
+							var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
+							var value = ofxs.TransationValue > 0 ? "blue" : "red";
+							var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
+							<tr>
+								<td>
+									@ofxs.Id
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
+									<input type="hidden" asp-for="@Model.DescricaoLote" />
+									<input type="hidden" asp-for="@Model.LoteLancamentoid" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
+								</td>
+								<td>
+									@ofxs.Date.Date.ToString("dd/MM/yyyy")
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
+								</td>
+								<td>
+									@ofxs.Type
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
+								</td>
+								<td>
+									@ofxs.Description
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
+								</td>
+								<td class="@value">
+									@*@ofxs.TransationValue*@
+
+									@valor
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
+								</td>
+								<td>
+									<select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
+										<option value="">Selecione</option>
+									</select>
+								</td>
+							</tr>
+
+						}
+					</tbody>
+				</table>
+				<button class="btn btn-plumas-w" data-goBack="voltar">Voltar</button>
+				<input type="submit" class="btn btn-plumas-w" asp-action="OfxSalvar" />
+			</form>
+		</form>
+	</div>
 </div>
 
 @section Scripts{
-    @*<script type="text/javascript">
+	@*<script type="text/javascript">
             $(".mask-valor").blur(function (event) {
                 var tesxt = $(this).val();
 
                 console.log(tesxt);
             })
         </script>*@
-}
+	}
