@@ -154,7 +154,10 @@ namespace Demonstrativo.Controllers
             //If Leitura arquivo não nulo
             if (ofxArquivo != null)
             {
-
+                if (!Directory.Exists($"{_appEnvironment.WebRootPath}\\Temp"))
+                {
+                    Directory.CreateDirectory($"{_appEnvironment.WebRootPath}\\Temp");
+                }
                 //Caminho para salvar arquivo no servidor
                 string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
 
@@ -168,7 +171,7 @@ namespace Demonstrativo.Controllers
                 {
                     var documento = new OFXDocumentParser();
                     var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
-                    saldo = dadoDocumento.Balance.LedgerBalance;
+                    //saldo = dadoDocumento.Balance.LedgerBalance;
                 }
 
                 var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == extratoBancario.BankAccount.AccountCode);
@@ -176,8 +179,8 @@ namespace Demonstrativo.Controllers
                 {
                     saldoMensalViewModel = new SaldoMensalViewModel()
                     {
-                        SaldoMensal = saldo,
-                        Competencia = extratoBancario.InitialDate,
+                        SaldoMensal = 0,
+                        Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),
                         ContaCorrenteId = dadosContaCorrente.Id,
                     };
                 }
@@ -187,7 +190,12 @@ namespace Demonstrativo.Controllers
                     ViewBag.ContaCorrenteNaoEncontrada = true;
                     return View("Index");
                 }
+                extratoBancario.Transactions.ToList().ForEach(el =>
+                {
+                    saldo += Convert.ToDecimal(el.TransactionValue);
+                });
 
+                saldoMensalViewModel.SaldoMensal = saldo;
 
                 //varrendo arquivo e adicionado as ViewsModel
                 foreach (var dados in extratoBancario.Transactions)
@@ -213,6 +221,7 @@ namespace Demonstrativo.Controllers
                         Codigo = banco.Codigo,
                         Nome = banco.Nome
                     };
+
 
                     if (_context.OfxLancamentos.ToList().Any(c => c.Documento == dados.Id) == false)
                     {
@@ -304,6 +313,8 @@ namespace Demonstrativo.Controllers
             var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
             var extratoBancarioViewModel = new ExtratoBancarioViewModel();
 
+
+
             foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
                 var lancamentoPadrao = lancamentosPadroes
@@ -381,6 +392,29 @@ namespace Demonstrativo.Controllers
 
                 });
             }
+            decimal saldo = 0;
+            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            {
+                saldo += el.TransationValue;
+            });
+
+            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            {
+                if (el.SaldoMensal != null)
+                {
+                    el.SaldoMensal.SaldoMensal = saldo;
+                }
+                else
+                {
+                    el.SaldoMensal = new SaldoMensalViewModel()
+                    {
+                        SaldoMensal = saldo
+                    };
+                }
+
+            });
+
+
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
@@ -569,6 +603,26 @@ namespace Demonstrativo.Controllers
             }
 
 
+
+            var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+            var data = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+            var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == data
+                                                                    && s.ContaCorrenteId == contaCorrente.Id);
+            if (saldoMensalId == null)
+            {
+                _context.SaldoMensal.Add(new SaldoMensal()
+                {
+                    Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
+                    Saldo = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal == 0 ? lote.Valor : dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal,
+                    ContaCorrenteId = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.ContaCorrenteId
+                });
+            }
+            else
+            {
+                //saldoMensalId.Saldo += dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal;
+            }
+
+
             foreach (var dado in dados.ContasCorrentes.OfxLancamentos)
             {
                 var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
@@ -591,23 +645,23 @@ namespace Demonstrativo.Controllers
                     _context.SaveChanges();
                 }
 
-                var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+                //var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
 
-                var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == Convert.ToDateTime(dado.Date.ToString("yyyy/MM"))
-                                                                        && s.ContaCorrenteId == contaCorrente.Id);
-                if (saldoMensalId == null)
-                {
-                    _context.SaldoMensal.Add(new SaldoMensal()
-                    {
-                        Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
-                        Saldo = dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal,
-                        ContaCorrenteId = dado.SaldoMensal.ContaCorrenteId
-                    });
-                }
-                else
-                {
-                    saldoMensalId.Saldo += dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal;
-                }
+                //var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == Convert.ToDateTime(dado.Date.ToString("yyyy/MM"))
+                //                                                        && s.ContaCorrenteId == contaCorrente.Id);
+                //if (saldoMensalId == null)
+                //{
+                //    _context.SaldoMensal.Add(new SaldoMensal()
+                //    {
+                //        Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
+                //        Saldo = dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal,
+                //        ContaCorrenteId = dado.SaldoMensal.ContaCorrenteId
+                //    });
+                //}
+                //else
+                //{
+                //    //saldoMensalId.Saldo += dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal;
+                //}
 
                 if (dado.IdBd.HasValue)
                 {
@@ -672,11 +726,12 @@ namespace Demonstrativo.Controllers
             ViewBag.Importado = "Arquivo Importado!";
             IniT();
             return View("Index");
+
         }
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)
             => new(lancamentoPadroes.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Descricao}" }), "Codigo", "Descricao");
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
-            => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo", "Razao");
+            => new(empresas.Select(e => new { e.Codigo, Razao = $"{e.Codigo} - {e.RazaoSocial}" }), "Codigo ", "Razao ");
     }
 }
 //else
