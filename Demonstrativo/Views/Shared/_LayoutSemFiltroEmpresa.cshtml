@@ -2,7 +2,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 @{
-    var actualAction = ViewContext.RouteData.Values["action"].ToString(); 
+    var actualAction = ViewContext.RouteData.Values["action"].ToString();
 
 }
 <!DOCTYPE html>
@@ -47,18 +47,12 @@
                             </li>
                             @* @if (User.IsInRole("Administrador"))
                                 {*@
-                            <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Usuario/CarregarUsuario") ? "active":"")">
-                                <a class="nav-link text-dark"
-                                   asp-area=""
-                                   asp-controller="Usuario"
-                                   asp-action="CarregarUsuario">Usuários</a>
-                            </li>
-                            <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Role/Index") ? "active":"")">
-                                <a class="nav-link text-dark  "
-                                   asp-area=""
-                                   asp-controller="Role"
-                                   asp-action="Index">Perfis</a>
-                            </li>
+                            @*<li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Usuario/CarregarUsuario") ? "active":"")">
+
+                                </li>*@
+                            @* <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Role/Index") ? "active":"")">
+
+                                </li>*@
                             <li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index" )? "active":"")">
                                 <div class="dropdown show">
                                     <a class="nav-link text-dark"
@@ -84,6 +78,14 @@
                                         Cadastros
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="Usuario"
+                                           asp-action="CarregarUsuario">Usuários</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="Role"
+                                           asp-action="Index">Perfis</a>
                                         <a class="dropdown-item"
                                            asp-area=""
                                            asp-controller="AutoDescricoes"
