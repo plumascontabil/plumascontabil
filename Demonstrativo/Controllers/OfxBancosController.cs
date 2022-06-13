@@ -32,6 +32,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -52,6 +54,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View();
         }
 
@@ -75,6 +79,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -128,6 +134,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxBancos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

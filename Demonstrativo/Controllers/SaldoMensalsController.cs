@@ -36,6 +36,8 @@ namespace Demonstrativo.Controllers
         // GET: SaldoMensals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -56,6 +58,8 @@ namespace Demonstrativo.Controllers
         // GET: SaldoMensals/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["ContaCorrenteId"] = new SelectList(_context.ContasCorrentes, "Id", "Id");
             return View();
         }
@@ -81,6 +85,8 @@ namespace Demonstrativo.Controllers
         // GET: SaldoMensals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -135,6 +141,8 @@ namespace Demonstrativo.Controllers
         // GET: SaldoMensals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

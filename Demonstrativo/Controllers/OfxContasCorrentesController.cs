@@ -34,6 +34,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxContasCorrentes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -55,6 +57,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxContasCorrentes/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id");
             ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido");
             return View();
@@ -82,6 +86,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxContasCorrentes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -139,6 +145,8 @@ namespace Demonstrativo.Controllers
         // GET: OfxContasCorrentes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

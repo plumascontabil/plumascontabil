@@ -16,19 +16,21 @@ namespace Demonstrativo.Controllers
         private readonly ILogger<UsuarioController> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ContextIdentity _contextIdentity;
+        private readonly Context _context;
 
         public UsuarioController(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<UsuarioController> logger,
             RoleManager<IdentityRole> roleManager,
-            ContextIdentity contextIdentity, Context context) : base(context)
+        ContextIdentity contextIdentity, Context context) : base(context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _roleManager = roleManager;
             _contextIdentity = contextIdentity;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -61,6 +63,14 @@ namespace Demonstrativo.Controllers
 
                 if (result.Succeeded)
                 {
+                    foreach (var id in viewModel.EmpresasId)
+                    {
+                        var usuarioEmpresa = new UsuarioEmpresa();
+                        usuarioEmpresa.EmpresaId = id;
+                        usuarioEmpresa.UsuarioId = user.Id;
+                        _context.UsuarioEmpresa.Add(usuarioEmpresa);
+                        _context.SaveChanges();
+                    }
                     await _userManager.AddToRoleAsync(user, role.Name);
                     return LocalRedirect(viewModel.ReturnUrl);
                 }

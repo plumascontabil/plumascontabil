@@ -38,6 +38,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -58,6 +60,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["LancamentoPadraoId"] = new SelectList(_context.LancamentosPadroes, "Id", "Descricao");
             return View();
         }
@@ -83,6 +87,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -138,6 +144,8 @@ namespace Demonstrativo.Controllers
         // GET: AutoDescricoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

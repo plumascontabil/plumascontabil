@@ -51,6 +51,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             return View();
         }
 
@@ -74,6 +76,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -126,6 +130,8 @@ namespace Demonstrativo.Controllers
         // GET: ContasContabeis/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

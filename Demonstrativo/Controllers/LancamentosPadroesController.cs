@@ -33,6 +33,8 @@ namespace Demonstrativo.Controllers
         // GET: LancamentosPadroes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -56,6 +58,8 @@ namespace Demonstrativo.Controllers
         // GET: LancamentosPadroes/Create
         public IActionResult Create()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao");
             ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo");
             ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo");
@@ -88,6 +92,8 @@ namespace Demonstrativo.Controllers
         // GET: LancamentosPadroes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();
@@ -149,6 +155,8 @@ namespace Demonstrativo.Controllers
         // GET: LancamentosPadroes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             if (id == null)
             {
                 return NotFound();

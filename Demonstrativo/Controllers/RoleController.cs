@@ -51,6 +51,8 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public void CarregarRoles()
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             List<IdentityRole> roles = new();
 
             var registrarViewModel = new RegistrarViewModel();
