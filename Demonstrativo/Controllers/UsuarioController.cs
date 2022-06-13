@@ -124,6 +124,23 @@ namespace Demonstrativo.Controllers
                 user.Email = viewModel.Email;
 
                 var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);                    
+                    foreach (var empresa in empresas)
+                    {
+                        _context.UsuarioEmpresa.Remove(empresa);
+                        _context.SaveChanges();
+                    }
+                    foreach (var id in viewModel.EmpresasId)
+                    {
+                        var usuarioEmpresa = new UsuarioEmpresa();
+                        usuarioEmpresa.EmpresaId = id;
+                        usuarioEmpresa.UsuarioId = user.Id;
+                        _context.UsuarioEmpresa.Add(usuarioEmpresa);
+                        _context.SaveChanges();
+                    }
+                }
 
                 var roles = await _userManager.GetRolesAsync(user);
 

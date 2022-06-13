@@ -19,6 +19,10 @@ namespace Demonstrativo.Models
         public List<IdentityRole> UserRoles { get; set; }
 
         [Required]
+        [Display(Name = "Empresas")]
+        public List<int> EmpresasId { get; set; }
+
+        [Required]
         public string UserRole { get; set; }
     }
 }
