@@ -1,5 +1,6 @@
 ﻿using Demonstrativo.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -231,6 +232,9 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
+
+            HttpContext.Session.Remove("empresaId");
+            HttpContext.Session.Remove("competenciasId");
             _logger.LogInformation("User logged out.");
 
             return View("Login");
