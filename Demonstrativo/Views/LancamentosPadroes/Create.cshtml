@@ -12,7 +12,7 @@
 
 
 <form asp-action="Create" class="row">
-  
+
     <div class="col-md-4">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
@@ -38,25 +38,33 @@
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="ContaDebitoId" class="control-label">Conta de débito</label>
-            <select asp-for="ContaDebitoId" class="form-control select" asp-items="ViewBag.ContaDebitoId"></select>
+            <select asp-for="ContaDebitoId" class="form-control select" asp-items="ViewBag.ContaDebitoId">
+                <option disabled selected value="">Selecione</option>
+            </select>
         </div>
     </div>
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="ContaCreditoId" class="control-label">Conta de crédito</label>
-            <select asp-for="ContaCreditoId" class="form-control select" asp-items="ViewBag.ContaCreditoId"></select>
+            <select asp-for="ContaCreditoId" class="form-control select" asp-items="ViewBag.ContaCreditoId">
+                <option disabled selected value="">Selecione</option>
+            </select>
         </div>
     </div>
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="CategoriaId" class="control-label">Categoria</label>
-            <select asp-for="CategoriaId" class="form-control select" asp-items="ViewBag.CategoriaId"></select>
+            <select asp-for="CategoriaId" class="form-control select" asp-items="ViewBag.CategoriaId">
+                <option disabled selected value="">Selecione</option>
+            </select>
         </div>
     </div>
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="TipoContaId" class="control-label">Tipo de conta</label>
-            <select asp-for="TipoContaId" class="form-control select" asp-items="ViewBag.TipoContaId"></select>
+            <select asp-for="TipoContaId" class="form-control select" asp-items="ViewBag.TipoContaId">
+                <option disabled selected value="">Selecione</option>
+            </select>
         </div>
     </div>
     <div class="col-md-4">
