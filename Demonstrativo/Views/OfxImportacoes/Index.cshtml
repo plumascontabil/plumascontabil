@@ -6,14 +6,14 @@
 @if (ViewBag.Message != null)
 {
     <script type="text/javascript">
-        window.onload = function () {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: '@Html.Raw(ViewBag.Message)',
+		window.onload = function() {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Oops...',
+				text: '@Html.Raw(ViewBag.Message)',
 
-            })
-        };
+			})
+		};
     </script>
 }
 @if (ViewBag.Sucesso != null)
@@ -22,13 +22,13 @@
 		window.onload = function() {
 
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Sucesso...',
-                text: "@Html.Raw(ViewBag.Sucesso)",
+			Swal.fire({
+				icon: 'success',
+				title: 'Sucesso...',
+				text: "@Html.Raw(ViewBag.Sucesso)",
 
 
-            });
+			});
 		};
     </script>
 }
@@ -128,7 +128,17 @@
             }
             else
             {
-                <h2 class="text-center mt-2"> Selecione uma empresa e uma Competência</h2>
+                if (ViewBag.EmpresaSeleciodaId == null)
+                {
+
+
+                    <h2 class="text-center mt-2"> Selecione uma empresa e uma Competência</h2>
+                }
+                else
+                {
+                    <h2 class="text-center mt-2"> Está empresa não tem nenhuma Conta Corrente cadastrada</h2>
+                }
+
             }
             <div class="d-flex justify-content-center flex-wrap py-3" style="gap: 10px">
                 @foreach (var item in ViewBag.BancosId)
@@ -157,6 +167,76 @@
             }
 
             <!-- Modal -->
+            <div class="modal fade" id="modalDetalhe" data-backdrop="static" tabindex="-2" role="dialog" aria-labelledby="modalDetalhe" aria-hidden="true">
+                <div class="modal-dialog  modal-xl modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Informação do Lote
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <table class="table table-bordered d-lg-table">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-categoria text-white p-2">Id</th>
+                                        <th class="bg-categoria text-white p-2">Data</th>
+                                        <th class="bg-categoria text-white p-2">Tipo</th>
+                                        <th class="bg-categoria text-white p-2">Descrição</th>
+                                        <th class="bg-categoria text-white p-2">Valor</th>
+                                        <th class="bg-categoria text-white p-2">Lançamento contábil</th>
+                                        <th class="bg-categoria text-white p-2">Banco</th>
+                                        <th class="bg-categoria text-white p-2">Lote</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*
+                                        @for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
+                                        {
+                                    *@
+
+                                    <tr>
+                                        <td>
+                                            01
+                                        </td>
+                                        <td>
+                                            16/06/2022
+                                        </td>
+                                        <td>
+                                            Tipo
+                                        </td>
+                                        <td>
+                                            Descrição
+                                        </td>
+                                        <td>
+                                            18,00
+                                        </td>
+                                        <td>
+                                            lançamento
+                                        </td>
+                                        <td>
+                                            Inter
+                                        </td>
+                                        <td>
+                                            lote
+                                        </td>
+
+                                    </tr>
+
+                                    @*}*@
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -209,7 +289,7 @@
                                         <i class="fa fa-edit"></i>
                                     </button>
                                 </form>
-                                <button data-toggle="tooltip" title="Detalhes do Lote">
+                                <button data-toggle-tooltip="tooltip" data-toggle="modal" title="Detalhes do Lote" data-target="#modalDetalhe">
                                     <i class="fa fa-info-circle"></i>
                                 </button>
                                 <form method="post" id="OfxLoteDelete" asp-action="OfxLoteDelete">

@@ -181,6 +181,10 @@
             rightAlign: true,
             unmaskAsNumber: true
         });
+        $('[data-goBack="voltar"]').click(function(e) {
+			e.preventDefault()
+			window.history.back()
+		});
 
         $(".mask-decimal").inputmask({
             'alias': 'decimal',
