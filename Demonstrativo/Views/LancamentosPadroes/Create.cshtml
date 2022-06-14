@@ -1,69 +1,90 @@
 ﻿@model Demonstrativo.Models.LancamentoPadrao
 
 @{
-	Layout = "_LayoutSemFiltroEmpresa";
-	ViewData["Title"] = "Lançamento padrão";
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Lançamento Contábil";
 }
 
 <div class="py-4 pl-3 d-flex justify-content-between">
-	<h1 class="page-title">@ViewData["Title"]</h1>
+    <h1 class="page-title">@ViewData["Title"]</h1>
 </div>
 
 
 
 <form asp-action="Create" class="row">
-	<div class="col-md-4">
-		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-		<div class="form-group">
-			<label asp-for="Codigo" class="control-label">Código</label>
-			<input asp-for="Codigo" class="form-control" />
-			<span asp-validation-for="Codigo" class="text-danger"></span>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="form-group">
-			<label asp-for="Descricao" class="control-label">Descrição</label>
-			<input asp-for="Descricao" class="form-control" />
-			<span asp-validation-for="Descricao" class="text-danger"></span>
-		</div>
-	</div class="col-md-4">
-	<div class="col-md-4">
-		<div class="form-group">
-			<label asp-for="LancamentoHistorico" class="control-label"> Histórico lançamento</label>
-			<input asp-for="LancamentoHistorico" class="form-control" />
-			<span asp-validation-for="LancamentoHistorico" class="text-danger"></span>
-		</div>
-	</div >
-	<div class="col-md-4">
-		<div class="form-group">
-			<label asp-for="ContaDebitoId" class="control-label">Conta de débito</label>
-			<select asp-for="ContaDebitoId" class="form-control select" asp-items="ViewBag.ContaDebitoId"></select>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="form-group">
-			<label asp-for="ContaCreditoId" class="control-label">Conta de crédito</label>
-			<select asp-for="ContaCreditoId" class="form-control select" asp-items="ViewBag.ContaCreditoId"></select>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="form-group">
-			<label asp-for="CategoriaId" class="control-label">Categoria</label>
-			<select asp-for="CategoriaId" class="form-control select" asp-items="ViewBag.CategoriaId"></select>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="form-group">
-			<label asp-for="TipoContaId" class="control-label">Tipo de conta</label>
-			<select asp-for="TipoContaId" class="form-control select" asp-items="ViewBag.TipoContaId"></select>
-		</div>
-	</div>
-	<div class="col-12">
-		<div class="form-group">
-			<a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
-			<input type="submit" value="Create" class="btn btn-plumas-w" />
-		</div>
-	</div>
+  
+    <div class="col-md-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Codigo" class="control-label">Código</label>
+            <input asp-for="Codigo" class="form-control" />
+            <span asp-validation-for="Codigo" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="Descricao" class="control-label">Descrição</label>
+            <input asp-for="Descricao" class="form-control" />
+            <span asp-validation-for="Descricao" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="LancamentoHistorico" class="control-label"> Histórico lançamento</label>
+            <input asp-for="LancamentoHistorico" class="form-control" />
+            <span asp-validation-for="LancamentoHistorico" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="ContaDebitoId" class="control-label">Conta de débito</label>
+            <select asp-for="ContaDebitoId" class="form-control select" asp-items="ViewBag.ContaDebitoId"></select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="ContaCreditoId" class="control-label">Conta de crédito</label>
+            <select asp-for="ContaCreditoId" class="form-control select" asp-items="ViewBag.ContaCreditoId"></select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="CategoriaId" class="control-label">Categoria</label>
+            <select asp-for="CategoriaId" class="form-control select" asp-items="ViewBag.CategoriaId"></select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="TipoContaId" class="control-label">Tipo de conta</label>
+            <select asp-for="TipoContaId" class="form-control select" asp-items="ViewBag.TipoContaId"></select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="TipoLancamento" class="control-label">Tipo de Lançamento</label>
+            <select asp-for="TipoLancamento" class="form-control select">
+                <option disabled selected value="">Selecione</option>
+                <option value="C">Calculado</option>
+                <option value="L">Lançado</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="TipoConta" class="control-label">Tipo</label>
+            <select asp-for="TipoConta" class="form-control select">
+                <option disabled selected value="">Selecione</option>
+                <option value="DEBIT">DEBIT</option>
+                <option value="CREDIT">CREDIT</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
+            <input type="submit" value="Salvar" class="btn btn-plumas-w" />
+        </div>
+    </div>
 </form>
 
 
@@ -71,7 +92,7 @@
 
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
-	}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

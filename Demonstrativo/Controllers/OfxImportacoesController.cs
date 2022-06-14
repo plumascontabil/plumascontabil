@@ -251,7 +251,7 @@ namespace Demonstrativo.Controllers
                                 Type = dados.Type,
                                 SaldoMensal = saldoMensalViewModel,
                                 LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                                LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
+                                //LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
                             });
                         }
 
@@ -377,7 +377,7 @@ namespace Demonstrativo.Controllers
 
             if (extratoViewModel.LancamentoManual != null)
             {
-                var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
+                //var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
                     TransationValue = extratoViewModel.LancamentoManual.Valor,
@@ -388,7 +388,7 @@ namespace Demonstrativo.Controllers
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     SaldoMensal = new SaldoMensalViewModel(),
 
-                    Id = ids
+                    Id = "MANUAL"
 
                 });
             }
@@ -570,6 +570,14 @@ namespace Demonstrativo.Controllers
                 ViewBag.LancamentoPadraoSelecionadoNotSelect = "Selecione a empresa";
                 return View("Contas", dados);
             }
+
+            if (dados.ContasCorrentes.OfxLancamentos.Any(f => f.LancamentoPadraoSelecionado == 0))
+            {
+                ViewBag.LancamentoPadraoSelecionadoNotSelect = "É necessário realizar todos os lançamentos Contábeis para prossegui!";
+                return View("Contas", dados);
+            }
+
+
 
             decimal saldoMensalTotal = 0;
             var lote = new OfxLoteLancamento();

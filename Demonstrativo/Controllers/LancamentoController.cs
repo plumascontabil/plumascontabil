@@ -164,6 +164,7 @@ namespace Demonstrativo.Controllers
                         Id = conta.Id,
                         Codigo = conta.Codigo,
                         Descricao = conta.Descricao,
+                        TipoLancamento = conta.TipoLancamento,
                         Lancamentos = lancamentosViewModel
                     });
 

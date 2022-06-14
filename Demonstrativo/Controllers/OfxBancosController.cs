@@ -136,6 +136,8 @@ namespace Demonstrativo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Nome")] OfxBanco ofxBanco, IFormFile file)
         {
+            var bank = _context.OfxBancos.SingleOrDefault(f => f.Id == id);
+
             if (id != ofxBanco.Id)
             {
                 return NotFound();
@@ -160,6 +162,10 @@ namespace Demonstrativo.Controllers
                             await file.CopyToAsync(stream);
                         }
                         ofxBanco.UrlImagem = $"~/Bancos/{caminhoDestinoArquivo.Split("\\").LastOrDefault()}";
+                    }
+                    else
+                    {
+                        ofxBanco.UrlImagem = bank.UrlImagem;
                     }
                     //var ofxBanco = await _ofxBancosDomainService.EditValidar(ofxBanco);
 
