@@ -81,7 +81,7 @@ namespace Demonstrativo.Controllers
             // var trimestreViewModel = await _lancamentoDomainService.CarregarCategorias(empresasId, competenciasId);
 
             var trimestreViewModel = new TrimestreViewModel();
-
+            trimestreViewModel.CompetenciaSelecionadaId = ReturnCompetenciaMesAtual();
             var contas = _context.LancamentosPadroes.ToList();
             var categorias = _context.Categorias.ToList();
             var contasCorrentes = _context.ContasCorrentes.Where(c => c.EmpresaId == empresasId).ToList();
@@ -203,6 +203,14 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
+
+            if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
+            {
+                AdicionarCompetenciaMesAtual();
+                CarregarEmpresasCompetencias();
+                ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
+                return View("Index", CarregarCategorias());
+            }
             DateTime competencia = ViewBag.CompetenciasSelecionadaId;
 
             //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
@@ -214,8 +222,8 @@ namespace Demonstrativo.Controllers
             {
                 var insertEstoqueVendas = new Venda()
                 {
-                    DataCompetencia = (DateTime)estoqueVendas.Data,
-                    EmpresaId = (int)estoqueVendas.Empresa,
+                    DataCompetencia = ViewBag.CompetenciasSelecionadaId,
+                    EmpresaId = ViewBag.EmpresaSeleciodaId,
                     Observacao = estoqueVendas.Observacao
                 };
 
@@ -606,6 +614,13 @@ namespace Demonstrativo.Controllers
 
         public IActionResult GerarArquivo(int? empresaId = null, DateTime? competenciasId = null)
         {
+            if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
+            {
+                AdicionarCompetenciaMesAtual();
+                CarregarEmpresasCompetencias();
+                ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
+                return View("Index", CarregarCategorias());
+            }
             var contas = _context.LancamentosPadroes.ToList();
             var lancamentos = _context.Lancamentos.Where(l => l.DataCompetencia == competenciasId &&
                                                                  l.EmpresaId == empresaId).ToList();
