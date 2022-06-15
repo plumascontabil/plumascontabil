@@ -33,7 +33,8 @@ namespace Demonstrativo.Controllers
         {
             DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
 
-            if (_context.Competencias.Any(c => c.Data == competenciaAtual))
+            var existe = _context.Competencias.Where(c => c.Data == competenciaAtual).FirstOrDefault();
+            if (existe != null)
             {
                 return;
             }
@@ -43,8 +44,31 @@ namespace Demonstrativo.Controllers
                 Data = competenciaAtual
             };
 
-            _context.Competencias.Add(competencia);
+            var result = _context.Competencias.Add(competencia);
+            
             _context.SaveChanges();
+        }
+
+        protected DateTime ReturnCompetenciaMesAtual()
+        {
+            DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
+
+            var existe = _context.Competencias.Where(c => c.Data == competenciaAtual).FirstOrDefault();
+            if (existe != null)
+            {
+                return existe.Data;
+            }
+
+            var competencia = new Competencia()
+            {
+                Data = competenciaAtual
+            };
+
+            var result = _context.Competencias.Add(competencia);
+
+            _context.SaveChanges();
+
+            return result.Entity.Data;
         }
 
         protected async void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)

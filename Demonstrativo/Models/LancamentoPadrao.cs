@@ -30,6 +30,10 @@ namespace Demonstrativo.Models
         [ForeignKey("TipoContaId")]
         public TipoConta Tipo { get; set; }
         public int? TipoContaId { get; set; }
+
+        public string TipoLancamento { get; set; }
+        public string TipoConta { get; set; }
+
         public List<AutoDescricao> AutoDescricoes { get; set; }
         public List<OfxLancamento> OfxLancamentos { get; set; }
         public List<Lancamento> Lancamentos { get; set; }

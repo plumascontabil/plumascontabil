@@ -1,11 +1,11 @@
 ﻿@{
-	Layout = "_LayoutSemFiltroEmpresa";
-	ViewData["Title"] = "Importar";
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Importar";
 }
 
 @if (ViewBag.Message != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 			Swal.fire({
 				icon: 'warning',
@@ -14,11 +14,11 @@
 
 			})
 		};
-	</script>
+    </script>
 }
 @if (ViewBag.Sucesso != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 
@@ -30,11 +30,11 @@
 
 			});
 		};
-	</script>
+    </script>
 }
 @if (ViewBag.Importado != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 
@@ -48,11 +48,11 @@
 				window.location.href = '/Lancamento';
 			})
 		};
-	</script>
+    </script>
 }
 @if (ViewBag.AdicionarBanco != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 			Swal.fire({
@@ -62,26 +62,26 @@
 
 			})
 		};
-	</script>
+    </script>
 }
 @if (ViewBag.ContaCorrenteNaoEncontrada != null)
 {
-	<script type="text/javascript">
-		window.onload = function() {
+    <script type="text/javascript">
+        window.onload = function () {
 
-			Swal.fire({
-				icon: 'warning',
-				title: 'Ops...',
-				text: "Conta Corrente não encontrada, baseado no OFX",
+            Swal.fire({
+                icon: 'warning',
+                title: 'Ops...',
+                text: "Conta Corrente não encontrada, baseado no OFX",
 
-			})
-		};
-	</script>
+            })
+        };
+    </script>
 }
 
 @if (ViewBag.SemArquivo != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 			Swal.fire({
@@ -91,11 +91,11 @@
 
 			})
 		};
-	</script>
+    </script>
 }
 @if (ViewBag.SemBanco != null)
 {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		window.onload = function() {
 
 			Swal.fire({
@@ -105,237 +105,247 @@
 
 			})
 		};
-	</script>
+    </script>
 }
 
 <div class="py-4 pl-3 d-flex justify-content-between">
-	<h1 class="page-title">@ViewData["Title"]</h1>
+    <h1 class="page-title">@ViewData["Title"]</h1>
 
 </div>
 <div class="row import-ofx">
-	<div class="col-12 border-0 table-bordered">
+    <div class="col-12 border-0 table-bordered">
 
-		<form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
-			@*
-			<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
-			<h6 class="display px-3 text-muted">Bancos</h6>
-			@Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
-			</label>
-			*@
-			@if (ViewBag.BancosId.Count != 0)
-			{
-				<h2 class="text-center mt-2">Selecione o banco</h2>
-			}
-			else
-			{
-				<h2 class="text-center mt-2"> Selecione uma empresa e uma Competência</h2>
-			}
-			<div class="d-flex justify-content-center flex-wrap py-3" style="gap: 10px">
-				@foreach (var item in ViewBag.BancosId)
-				{
-
-					<label>
-						<span id="Bank_@item.BancoOfxId" class="icon-banco" style="background-image:url(@Url.Content(item.BancoOfx.UrlImagem))"></span>
-						<input type="radio" name="BancosId" value="@item.BancoOfxId" class="sr-only">
-					</label>
-				}
-
-			</div>
-			@if (ViewBag.BancosId.Count != 0)
-			{
-				<h2 class="text-center">Selecione o arquivo</h2>
-				<label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed col-6">
-
-					<input type="file" name="ofxArquivo" class="btn form-control-file" accept=".ofx">
-				</label>
-
-				<div class="d-flex justify-content-center">
-					<button type="button" class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
-						Enviar arquivo
-					</button>
-				</div>
-			}
-
-			<!-- Modal -->
-			<div class="modal fade" id="modalDetalhe" data-backdrop="static" tabindex="-2" role="dialog" aria-labelledby="modalDetalhe" aria-hidden="true">
-				<div class="modal-dialog  modal-xl modal-dialog-centered" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							Informação do Lote
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-
-							<table class="table table-bordered d-lg-table">
-								<thead>
-									<tr>
-										<th class="bg-categoria text-white p-2">Id</th>
-										<th class="bg-categoria text-white p-2">Data</th>
-										<th class="bg-categoria text-white p-2">Tipo</th>
-										<th class="bg-categoria text-white p-2">Descrição</th>
-										<th class="bg-categoria text-white p-2">Valor</th>
-										<th class="bg-categoria text-white p-2">Lançamento contábil</th>
-										<th class="bg-categoria text-white p-2">Banco</th>
-										<th class="bg-categoria text-white p-2">Lote</th>
-									</tr>
-								</thead>
-								<tbody>
-									@*
-									@for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
-									{
-									*@
-
-									<tr>
-										<td>
-											01
-										</td>
-										<td>
-											16/06/2022
-										</td>
-										<td>
-											Tipo
-										</td>
-										<td>
-											Descrição
-										</td>
-										<td>
-											18,00
-										</td>
-										<td>
-											lançamento
-										</td>
-										<td>
-											Inter
-										</td>
-										<td>
-											lote
-										</td>
-
-									</tr>
-
-									@*}*@
-								</tbody>
-							</table>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-					
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							Informação do Lote
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div class="form-group">
-								<label for="nomeArquivo">Descrição</label>
-								<input id="DescricaoLote" name="DescricaoLote" type="text" class="form-control text-uppercase" maxlength="70" />
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-							<button type="submit" class="btn btn-plumas-w">Enviar arquivo</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
+        <form asp-action="OfxImportar" method="post" enctype="multipart/form-data" class="mt-5">
+            @*
+                <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed">
+                <h6 class="display px-3 text-muted">Bancos</h6>
+                @Html.DropDownList("BancosId", null, "Bancos", new { @name = "idBanco", @class = "form-control my-2 mr-sm-2 w-50 select" })
+                </label>
+            *@
+            @if (ViewBag.BancosId.Count != 0)
+            {
+                <h2 class="text-center mt-2">Selecione o banco</h2>
+            }
+            else
+            {
+                if (ViewBag.EmpresaSeleciodaId == null)
+                {
 
 
+                    <h2 class="text-center mt-2"> Selecione uma empresa e uma Competência</h2>
+                }
+                else
+                {
+                    <h2 class="text-center mt-2"> Está empresa não tem nenhuma Conta Corrente cadastrada</h2>
+                }
+
+            }
+            <div class="d-flex justify-content-center flex-wrap py-3" style="gap: 10px">
+                @foreach (var item in ViewBag.BancosId)
+                {
+
+                    <label>
+                        <span id="Bank_@item.BancoOfxId" class="icon-banco" style="background-image:url(@Url.Content(item.BancoOfx.UrlImagem))"></span>
+                        <input type="radio" name="BancosId" value="@item.BancoOfxId" class="sr-only">
+                    </label>
+                }
+
+            </div>
+            @if (ViewBag.BancosId.Count != 0)
+            {
+                <h2 class="text-center">Selecione o arquivo</h2>
+                <label class="table-bordered border-dark mx-auto rounded-lg bg-light py-3 d-block cursor-pointer border-dashed col-6">
+
+                    <input type="file" name="ofxArquivo" class="btn form-control-file" accept=".ofx">
+                </label>
+
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
+                        Enviar arquivo
+                    </button>
+                </div>
+            }
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalDetalhe" data-backdrop="static" tabindex="-2" role="dialog" aria-labelledby="modalDetalhe" aria-hidden="true">
+                <div class="modal-dialog  modal-xl modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Informação do Lote
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <table class="table table-bordered d-lg-table">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-categoria text-white p-2">Id</th>
+                                        <th class="bg-categoria text-white p-2">Data</th>
+                                        <th class="bg-categoria text-white p-2">Tipo</th>
+                                        <th class="bg-categoria text-white p-2">Descrição</th>
+                                        <th class="bg-categoria text-white p-2">Valor</th>
+                                        <th class="bg-categoria text-white p-2">Lançamento contábil</th>
+                                        <th class="bg-categoria text-white p-2">Banco</th>
+                                        <th class="bg-categoria text-white p-2">Lote</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @*
+                                        @for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
+                                        {
+                                    *@
+
+                                    <tr>
+                                        <td>
+                                            01
+                                        </td>
+                                        <td>
+                                            16/06/2022
+                                        </td>
+                                        <td>
+                                            Tipo
+                                        </td>
+                                        <td>
+                                            Descrição
+                                        </td>
+                                        <td>
+                                            18,00
+                                        </td>
+                                        <td>
+                                            lançamento
+                                        </td>
+                                        <td>
+                                            Inter
+                                        </td>
+                                        <td>
+                                            lote
+                                        </td>
+
+                                    </tr>
+
+                                    @*}*@
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Informação do Lote
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="nomeArquivo">Descrição</label>
+                                <input id="DescricaoLote" name="DescricaoLote" type="text" class="form-control text-uppercase" maxlength="70" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-plumas-w">Enviar arquivo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
 
-		<h2 class="text-center mt-5">Lista de arquivos</h2>
-		<table class="w-100 mx-auto">
-			<thead>
-				<tr>
-					<th class="bg-categoria text-white p-2">ID</th>
-					<th class="bg-categoria text-white p-2">Nome</th>
-					<th class="bg-categoria text-white p-2">Data de inclusão</th>
-					<th class="bg-categoria text-white p-2">Ações</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in ViewBag.Lotes)
-				{
-					<tr>
-						<td class="text-center">@Html.Raw(item.Id)</td>
-						<td class="text-center">@Html.Raw(item.Descricao)</td>
-						<td class="text-center">@Html.Raw(item.Data.Date.ToString("dd/MM/yyyy"))</td>
-						<td class="text-center">
-							<div class="d-flex justify-content-center">
-								<form method="post" id="OfxReimportarLote" asp-action="OfxReimportarLote">
-									<input type="hidden" name="LoteLancamentoId" id="LoteLancamentoId" value="@item.Id" />
-									<button type="submit" data-toggle="tooltip" title="Editar Lote">
-										<i class="fa fa-edit"></i>
-									</button>
-								</form>
-								<button data-toggle-tooltip="tooltip" data-toggle="modal" title="Detalhes do Lote" data-target="#modalDetalhe">
-									<i class="fa fa-info-circle"></i>
-								</button>
-								<form method="post" id="OfxLoteDelete" asp-action="OfxLoteDelete">
-									<input type="hidden" name="LoteLancamentoId" id="LoteLancamentoId" value="@item.Id" />
-									<button type="submit" data-toggle="tooltip" title="Excluir Lote">
-										<i class="fa fa-trash"></i>
-									</button>
-								</form>
 
-							</div>
-						</td>
-					</tr>
-				}
-				@if (ViewBag.Lotes.Count == 0)
-				{
-					<tr>
-						<td colspan="4" class="text-center">Não Há Dados</td>
-					</tr>
-				}
-			</tbody>
-		</table>
 
-	</div>
+        <h2 class="text-center mt-5">Lista de arquivos</h2>
+        <table class="w-100 mx-auto">
+            <thead>
+                <tr>
+                    <th class="bg-categoria text-white p-2">ID</th>
+                    <th class="bg-categoria text-white p-2">Nome</th>
+                    <th class="bg-categoria text-white p-2">Data de inclusão</th>
+                    <th class="bg-categoria text-white p-2">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Lotes)
+                {
+                    <tr>
+                        <td class="text-center">@Html.Raw(item.Id)</td>
+                        <td class="text-center">@Html.Raw(item.Descricao)</td>
+                        <td class="text-center">@Html.Raw(item.Data.Date.ToString("dd/MM/yyyy"))</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center">
+                                <form method="post" id="OfxReimportarLote" asp-action="OfxReimportarLote">
+                                    <input type="hidden" name="LoteLancamentoId" id="LoteLancamentoId" value="@item.Id" />
+                                    <button type="submit" data-toggle="tooltip" title="Editar Lote">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </form>
+                                <button data-toggle-tooltip="tooltip" data-toggle="modal" title="Detalhes do Lote" data-target="#modalDetalhe">
+                                    <i class="fa fa-info-circle"></i>
+                                </button>
+                                <form method="post" id="OfxLoteDelete" asp-action="OfxLoteDelete">
+                                    <input type="hidden" name="LoteLancamentoId" id="LoteLancamentoId" value="@item.Id" />
+                                    <button type="submit" data-toggle="tooltip" title="Excluir Lote">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (ViewBag.Lotes.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">Não Há Dados</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
 </div>
 @section Scripts{
-	<script type="text/javascript">
-		$(':radio[name=BancosId]').change(function() {
-			var value = $(this).val();
-			$("span[id*=Bank]").each(function() {
-				$(this).removeClass("checkado");
-			});
-			$("#Bank_" + value).addClass("checkado");
-		});
+    <script type="text/javascript">
+        $(':radio[name=BancosId]').change(function () {
+            var value = $(this).val();
+            $("span[id*=Bank]").each(function () {
+                $(this).removeClass("checkado");
+            });
+            $("#Bank_" + value).addClass("checkado");
+        });
 
-		$("#OfxLoteDelete").submit(function(event) {
-			event.preventDefault();
-			Swal.fire({
-				icon: 'question',
-				title: 'Atenção',
-				text: "Deseja realmente excluir este lote?",
-				showConfirmButton: true,
-				confirmButtonText: 'Excluir',
-				showCancelButton: true,
-				cancelButtonText: 'Cancelar',
-			}).then(f => {
-				if (f.isConfirmed) {
-					event.currentTarget.submit();
-				}
-			})
-
-
+        $("#OfxLoteDelete").submit(function (event) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'question',
+                title: 'Atenção',
+                text: "Deseja realmente excluir este lote?",
+                showConfirmButton: true,
+                confirmButtonText: 'Excluir',
+                showCancelButton: true,
+                cancelButtonText: 'Cancelar',
+            }).then(f => {
+                if (f.isConfirmed) {
+                    event.currentTarget.submit();
+                }
+            })
 
 
-		});
 
-	</script>
+
+        });
+
+    </script>
 
 
 

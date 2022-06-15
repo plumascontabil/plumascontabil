@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 
 namespace Demonstrativo.Models
@@ -16,5 +17,7 @@ namespace Demonstrativo.Models
         public int EmpresaSelecionada { get; set; }
         public SelectList Competencias { get; set; }
         public int CompetenciaSelecionada { get; set; }
+        public DateTime CompetenciaSelecionadaId { get; set; }
+
     }
 }

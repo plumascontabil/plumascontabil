@@ -4,13 +4,27 @@
     ViewData["Title"] = "Lançamentos";
 }
 @using System.Globalization;
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: '@Html.Raw(ViewBag.Message)',
+
+            })
+        };
+    </script>
+}
+
 @using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post, new { @class = "form-lancamento" }))
 
 
 {
     <div>
         <input type="hidden" name="empresaId" value="@ViewBag.EmpresaSeleciodaId" />
-        <input type="hidden" name="competenciasId" value="@ViewBag.CompetenciasSelecionadaId" />
+        @Html.HiddenFor(x => x.CompetenciaSelecionadaId)
         <button type="submit" value="Enviar" class="floatBtnLancamento btn btn-plumas" data-toggle="tooltip" data-placement="top" title="Salvar campos manual">
             @*           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
@@ -89,7 +103,7 @@
                                         </td>
                                         <td class="valor">
                                             <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
-                                            @if (conta.Codigo.HasValue)
+                                            @if (conta.TipoLancamento == "C")
                                             {
                                                 <input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
                                             }
@@ -513,26 +527,17 @@
                             <tr>
                                 <th>
                                     @produtos.Nome<input type="hidden" name="EstoqueVendas.Data" value="@ViewBag.CompetenciasSelecionadaId" />
+
                                     <input type="hidden" name="EstoqueVendas.Empresa" value="@ViewBag.EmpresaSeleciodaId" />
                                 </th>
-                                <td><input type="text" name="EstoqueVendas.ItensVendas[@j].Quantidade" value="@itemVenda?.Quantidade" /></td>
+                                <td><input type="text" id="qtdProd_@j" class="mask-decimal" name="EstoqueVendas.ItensVendas[@j].Quantidade" value="@itemVenda?.Quantidade" /></td>
                                 <td>
-                                    <input type="text" name="EstoqueVendas.ItensVendas[@j].Preco" value="@itemVenda?.Preco" />
+                                    <input type="text" id="vlrProd_@j" class="mask-valor" name="EstoqueVendas.ItensVendas[@j].Preco" value="@itemVenda?.Preco" />
                                     <input type="hidden" name="EstoqueVendas.ItensVendas[@j].ProdutoId" value="@produtos.Id" />
                                     <input type="hidden" name="EstoqueVendas.ItensVendas[@j].Id" value="@itemVenda?.Id" />
                                     <input type="hidden" name="EstoqueVendas.Id" value="@Model.EstoqueVendas.Id" />
                                 </td>
-                                <td>
-                                    @{
-                                        decimal totalEstoque = 0;
-                                        var quantidade = itemVenda?.Quantidade;
-                                        var preco = itemVenda?.Preco;
-                                        if (quantidade != null && preco != null)
-                                        {
-                                            totalEstoque = Convert.ToDecimal(quantidade * preco);
-                                        }
-                                    }
-                                    @totalEstoque
+                                <td id="vlr_@j" class="mask-valor text-center">
                                 </td>
                             </tr>
                         }
@@ -548,4 +553,26 @@
             </div>
         </div>
     </div>
+}
+@section Scripts {
+    <script type="text/javascript">
+        $("input[id*='qtdProd']").change((event) => {
+            const valor = event.target.value;
+            let ids = '#vlrProd_' + event.target.id.split('_')[1];
+            const qtd = $(ids).val();
+            if (qtd && valor) {
+                const real = qtd * valor;
+                $("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
+            }
+        });
+        $("input[id*='vlrProd']").change((event) => {
+            const valor = event.target.value;
+            let ids = '#qtdProd_' + event.target.id.split('_')[1];
+            const qtd = $(ids).val();
+            if (qtd && valor) {
+                const real = qtd * valor;
+                $("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
+            }
+        });
+    </script>
 }

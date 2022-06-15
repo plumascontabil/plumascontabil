@@ -206,32 +206,43 @@
             //    affixesStay: true
             //});
 
-            $('[data-toggle="tooltip"]').tooltip();
-            $('.mask-valor').inputmask('currency', {
-                "autoUnmask": true,
-                radixPoint: ",",
-                groupSeparator: ".",
-                allowMinus: false,
-                prefix: 'R$ ',
-                digits: 2,
-                digitsOptional: false,
-                rightAlign: true,
-                unmaskAsNumber: true
-            });
-            $('[data-goBack="voltar"]').click(function(e) {
-                e.preventDefault()
-                window.history.back()
-            });
-        </script>
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.mask-valor').inputmask('currency', {
+            "autoUnmask": true,
+            radixPoint: ",",
+            groupSeparator: ".",
+            allowMinus: false,
+            prefix: 'R$ ',
+            digits: 2,
+            digitsOptional: false,
+            rightAlign: true,
+            unmaskAsNumber: true
+        });
+        $('[data-goBack="voltar"]').click(function(e) {
+			e.preventDefault()
+			window.history.back()
+		});
 
-                                        @*<script type="text/javascript">
+        $(".mask-decimal").inputmask({
+            'alias': 'decimal',
+            rightAlign: true,
+            'groupSeparator': '.',
+            radixPoint: ",",
+            'autoGroup': true,
+            digits: 2,
+            digitsOptional: true,
+        });
+
+    </script>
+
+    @*<script type="text/javascript">
     $(document).ready(function () {
     $('.mask-valor').mask(' 000.000.000,00', { reverse: true });
     $('.mask-valorDecimal').mask('00,00', { reverse: false });
     });
     </script>*@
 
-                                        @*<script type="text/javascript">
+    @*<script type="text/javascript">
     $(document).ready(function () {
     $(".mask-valor").maskMoney({
     prefix: "R$:",

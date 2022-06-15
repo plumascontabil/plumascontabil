@@ -1,4 +1,6 @@
 ﻿using Demonstrativo.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -55,7 +57,7 @@ namespace Demonstrativo.Controllers
         //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Register(RegistrarViewModel viewModel)
         {
-            var role = await _roleManager.FindByIdAsync("7f0c44b7-9962-44e1-8acf-0f39b22074e8");
+            var role = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -232,8 +234,6 @@ namespace Demonstrativo.Controllers
         {
             var users = _userManager.Users.Where(x => x.Email == viewModel.Email).FirstOrDefault();
 
-            var ximba = _userManager.GetRolesAsync(users).Result;
-
             var role = _userManager.GetRolesAsync(users).Result.FirstOrDefault();
 
 
@@ -258,6 +258,9 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
+
+            HttpContext.Session.Remove("empresaId");
+            HttpContext.Session.Remove("competenciasId");
             _logger.LogInformation("User logged out.");
             await HttpContext.SignOutAsync();
             return View("Login");

@@ -1,57 +1,57 @@
 ﻿@model IEnumerable<Demonstrativo.Models.ContaContabil>
 
 @{
-	Layout = "_LayoutSemFiltroEmpresa";
-	ViewData["Title"] = "Contas contábeis";
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Contas contábeis";
 }
 
 <div class="py-4 pl-3 d-flex justify-content-between">
-	<h1 class="page-title">@ViewData["Title"]</h1>
+    <h1 class="page-title">@ViewData["Title"]</h1>
 
-	<div>
-		<a class="btn btn-plumas-w btn-nav-link" asp-action="Create">
-			Adicionar saldo mensal <i class="fa fa-plus ml-2"></i>
-		</a>
-	</div>
+    <div>
+        <a class="btn btn-plumas-w btn-nav-link" asp-action="Create">
+            Adicionar conta contábel <i class="fa fa-plus ml-2"></i>
+        </a>
+    </div>
 
 </div>
 
 <div class="row">
-	<section class="col-12 border-0 table-bordered">
-		<table class="w-100 mx-auto">
-			<thead>
-				<tr>
-					<td class="bg-categoria text-white p-2">Classificação</td>
-					<td class="bg-categoria text-white p-2">Histórico</td>
-					<td class="bg-categoria text-white p-2">Ações</td>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model)
-				{
-					<tr>
-						<td>
-							@Html.DisplayFor(modelItem => item.Classificacao)
-						</td>
-						<td>
-							@Html.DisplayFor(modelItem => item.Historico)
-						</td>
-					
-						<td>
+    <section class="col-12 border-0 table-bordered">
+        <table class="w-100 mx-auto">
+            <thead>
+                <tr>
+                    <td class="bg-categoria text-white p-2">Classificação</td>
+                    <td class="bg-categoria text-white p-2">Histórico</td>
+                    <td class="bg-categoria text-white p-2">Ações</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Classificacao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Historico)
+                        </td>
 
-@*							<button data-toggle="tooltip" title="Editar" asp-action="Edit" asp-route-id="@item.Codigo"> <i class="fa fa-edit"></i></button>
-							<button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Codigo"><i class="fa fa-info-circle"></i></button>
-							<button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Codigo"> <i class="fa fa-trash"></i></button>
-*@
-							<button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-edit"></i></button>
+                        <td>
+
+                            @*							<button data-toggle="tooltip" title="Editar" asp-action="Edit" asp-route-id="@item.Codigo"> <i class="fa fa-edit"></i></button>
+                                <button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Codigo"><i class="fa fa-info-circle"></i></button>
+                                <button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Codigo"> <i class="fa fa-trash"></i></button>
+                            *@
+                            <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-edit"></i></button>
                             <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "ContasContabeis",new { id = item.Codigo })'"><i class="fa fa-info-circle"></i></button>
                             <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-trash"></i></button>
 
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</section>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 </div>
 
