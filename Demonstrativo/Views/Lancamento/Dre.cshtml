@@ -1,0 +1,761 @@
+﻿@{
+	ViewData["Title"] = "DRE";
+}
+@model TrimestreViewModel
+@using System.Globalization;
+
+<div class="py-4 pl-3 d-flex justify-content-between">
+	<h1 class="page-title">@ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">IMPOSTOS FEDERAIS E CONTRIBUIÇÕES</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">DESPESAS GERAIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">PROVISÕES SALÁRIOS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">ENCARGOS SOCIAIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">ALUGUÉIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">PROVISÕES DE ALUGUÉIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">PROVISOES PIS/COFINS/ISS/SIMPLES</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">OUTRAS DESPESAS OPERACIONAIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">38 - DESPESAS DIVERSAS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">DESP. COM SINDICATO PATRONAL</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">OUTRAS DESPESAS OPERACIONAIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">ADIÇÕES NO LALUR</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">36 - DESPESAS SERVIÇOS PRESTADOS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">CONTAS RESULTADOS </th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">RECEITAS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">IMOBILIZADO</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">IMPOSTOS E TAXAS MUNICIPAIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">IMPOSTOS E TAXAS ESTADUAIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">EMPRÉSTIMOS FINANCEIROS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">CONTAS A RECEBER</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">CONTAS A PAGAR</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">SALDO FINAL EM BANCOS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+	<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">NÃO DEDUTÍVEIS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+		<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">1 - DISTRIBUIÇÃO DE LUCROS</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+
+		<div class="col-12">
+		<table class="table table-bordered inptable mx-auto">
+			<thead>
+				<tr>
+					<th colspan="3" class="bg-categoria text-white p-2">NUMERÁRIOS A DEPOSITAR</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				@*  @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+				{
+				*@
+				<tr>
+					<td class="codigo">
+						046
+					</td>
+					<td class="descricao">
+						Descrição
+					</td>
+					<td class="valor">
+						<input type="text" disabled class="mask-valor" />
+					</td>
+				</tr>
+				@* }*@
+			</tbody>
+
+		</table>
+	</div>
+</div>

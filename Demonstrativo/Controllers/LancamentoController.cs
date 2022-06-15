@@ -27,7 +27,14 @@ namespace Demonstrativo.Controllers
             _context = context;
             //_lancamentoDomainService = LancamentoDomainService;
         }
+        public IActionResult Dre()
+        {
+            AdicionarCompetenciaMesAtual();
 
+            CarregarEmpresasCompetencias();
+
+            return View("Dre", CarregarCategorias());
+        }
         public IActionResult Index()
         {
             ViewBag.Qualquer = 10;
