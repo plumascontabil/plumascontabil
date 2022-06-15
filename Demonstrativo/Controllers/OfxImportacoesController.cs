@@ -13,6 +13,8 @@ using OFXParser.Entities;
 using OFXSharp;
 using Microsoft.EntityFrameworkCore;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Demonstrativo.Controllers
 {
@@ -24,9 +26,7 @@ namespace Demonstrativo.Controllers
 
 
         public OfxImportacoesController(Context context,
-            IWebHostEnvironment env
-            //OfxImportacoesDomainService ofxImportacoesDomainService
-            ) : base(context)
+            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;

@@ -1,5 +1,7 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +15,9 @@ namespace Demonstrativo.Controllers
         private readonly Context _context;
         //private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
-        public LancamentosPadroesController(Context context
-            //LancamentoPadroesDomainService lancamentoPadroesDomainService
-            ) : base(context)
+        public LancamentosPadroesController(Context context,
+            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
+
         {
             _context = context;
             //_lancamentoPadroesDomainService = lancamentoPadroesDomainService;

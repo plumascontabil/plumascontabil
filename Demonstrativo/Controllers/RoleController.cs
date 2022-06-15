@@ -14,21 +14,22 @@ namespace Demonstrativo.Controllers
     public class RoleController : BaseController
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly Context _context;
         //private readonly RoleDomainService _roleDomainService;
 
 
-        public RoleController(RoleManager<IdentityRole> roleManager, Context context
-            //RoleDomainService roleDomainService
-            ) : base(context)
+        public RoleController(RoleManager<IdentityRole> roleManager, Context context,
+        //RoleDomainService roleDomainService
+        UserManager<IdentityUser> userManager) : base(context, roleManager)
         {
             _roleManager = roleManager;
+            _context = context;
             //_roleDomainService = roleDomainService;
         }
 
         public IActionResult Index()
         {
-            AdicionarCompetenciaMesAtual();
-            CarregarEmpresasCompetencias();
+            Init();
             var roles = _roleManager.Roles.ToList();
             CarregarRoles();
             return View(roles);
@@ -36,23 +37,41 @@ namespace Demonstrativo.Controllers
         [Authorize(Policy = "roleAdministrador")]
         public IActionResult Create()
         {
+            Init();
+            return View(new RegistrarRoleTelaViewModel());
+        }
+
+        private void Init()
+        {
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            return View(new IdentityRole());
+            ViewBag.TelaId = _context.Telas.ToList();
         }
 
         [HttpPost]
         [Authorize(Policy = "roleAdministrador")]
-        public async Task<IActionResult> Create(IdentityRole role)
+        public async Task<IActionResult> Create(RegistrarRoleTelaViewModel data)
         {
-            await _roleManager.CreateAsync(role);
+
+            var newRole = new IdentityRole();
+            newRole.Name = data.Role;
+            await _roleManager.CreateAsync(newRole);
+            var role = _roleManager.GetRoleIdAsync(newRole);
+            foreach (var id in data.TelaId)
+            {
+                var roleTela = new RoleTela();
+                roleTela.TelaId = id;
+                roleTela.RoleId = role.Result;
+                _context.RoleTelas.Add(roleTela);
+            }
+            _context.SaveChanges();
+
             return RedirectToAction("Index");
         }
         [Authorize(Policy = "roleAdministrador")]
         public void CarregarRoles()
         {
-            AdicionarCompetenciaMesAtual();
-            CarregarEmpresasCompetencias();
+
             List<IdentityRole> roles = new();
 
             var registrarViewModel = new RegistrarViewModel();
@@ -73,9 +92,16 @@ namespace Demonstrativo.Controllers
             try
             {
 
+
                 var role = await _roleManager.FindByIdAsync(id);
+                var roleTela = _context.RoleTelas.ToList().Where(r => r.RoleId == id);
                 if (role != null)
                 {
+                    foreach (var rt in roleTela)
+                    {
+                        _context.RoleTelas.Remove(rt);
+                    }
+                    _context.SaveChanges();
                     await _roleManager.DeleteAsync(role);
                     ViewBag.Excluido = true;
                     var roles = _roleManager.Roles.ToList();

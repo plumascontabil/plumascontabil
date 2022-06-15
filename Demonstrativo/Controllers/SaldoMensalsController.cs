@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
 
 namespace Demonstrativo.Controllers
 {
@@ -15,9 +16,8 @@ namespace Demonstrativo.Controllers
         private readonly Context _context;
         //private readonly SaldoMensalsDomainService _saldoMensalsDomainService;
 
-        public SaldoMensalsController(Context context
-            //SaldoMensalsDomainService saldoMensalsDomainService
-            ) : base(context)
+        public SaldoMensalsController(Context context,
+            RoleManager<IdentityRole> roleManager) : base(context,roleManager)
 
         {
             _context = context;

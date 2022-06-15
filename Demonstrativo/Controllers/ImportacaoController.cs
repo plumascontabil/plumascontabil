@@ -3,6 +3,8 @@ using Demonstrativo.Models;
 using DomainService;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +28,10 @@ namespace Demonstrativo.Controllers
 
         public ImportacaoController(
             Context context,
-            IWebHostEnvironment env
+            IWebHostEnvironment env,
             //ImportacaoDomainService importacaoDomainService
-            ) : base(context)
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;

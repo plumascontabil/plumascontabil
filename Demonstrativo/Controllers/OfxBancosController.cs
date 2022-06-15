@@ -1,5 +1,7 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +19,8 @@ namespace Demonstrativo.Controllers
         //private readonly OfxBancosDomainService _ofxBancosDomainService;
 
 
-        public OfxBancosController(Context context, IWebHostEnvironment env
-            //OfxBancosDomainService ofxBancosDomainService
-            ) : base(context)
+        public OfxBancosController(Context context, IWebHostEnvironment env,
+            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;

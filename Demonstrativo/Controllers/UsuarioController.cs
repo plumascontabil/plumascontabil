@@ -1,11 +1,13 @@
 ﻿using Demonstrativo.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Demonstrativo.Controllers
 {
@@ -23,7 +25,7 @@ namespace Demonstrativo.Controllers
             SignInManager<IdentityUser> signInManager,
             ILogger<UsuarioController> logger,
             RoleManager<IdentityRole> roleManager,
-        ContextIdentity contextIdentity, Context context) : base(context)
+        ContextIdentity contextIdentity, Context context) : base(context, roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -35,7 +37,6 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
-
             return View(CarregarUsuario());
         }
 
@@ -54,7 +55,7 @@ namespace Demonstrativo.Controllers
         //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Register(RegistrarViewModel viewModel)
         {
-            var role = await _roleManager.FindByIdAsync(viewModel.UserRole);
+            var role = await _roleManager.FindByIdAsync("7f0c44b7-9962-44e1-8acf-0f39b22074e8");
             viewModel.ReturnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
@@ -126,7 +127,7 @@ namespace Demonstrativo.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);                    
+                    var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);
                     foreach (var empresa in empresas)
                     {
                         _context.UsuarioEmpresa.Remove(empresa);
@@ -212,6 +213,7 @@ namespace Demonstrativo.Controllers
                 var result = await _signInManager.PasswordSignInAsync(viewModel.Email, viewModel.Password, viewModel.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    this.MetodClaim(viewModel);
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(viewModel.ReturnUrl);
                 }
@@ -225,6 +227,31 @@ namespace Demonstrativo.Controllers
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
+
+        private void MetodClaim(LoginViewModel viewModel)
+        {
+            var users = _userManager.Users.Where(x => x.Email == viewModel.Email).FirstOrDefault();
+
+            var ximba = _userManager.GetRolesAsync(users).Result;
+
+            var role = _userManager.GetRolesAsync(users).Result.FirstOrDefault();
+
+
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, users.Id));
+            claims.Add(new Claim(ClaimTypes.Name, users.UserName));
+            if (role != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+                var apx = _roleManager.Roles.Where(f => f.Name == role).FirstOrDefault().Id;
+                claims.Add(new Claim(ClaimTypes.Rsa, apx));
+            }
+
+            var minhaIdentity = new ClaimsIdentity(claims, "Usuario");
+            var userPrincipal = new ClaimsPrincipal(new[] { minhaIdentity });
+            HttpContext.SignInAsync(userPrincipal);
+        }
+
         //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Logout()
         {
@@ -232,7 +259,7 @@ namespace Demonstrativo.Controllers
             CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-
+            await HttpContext.SignOutAsync();
             return View("Login");
         }
 

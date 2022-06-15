@@ -1,5 +1,7 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,9 +22,10 @@ namespace Demonstrativo.Controllers
         readonly Context _context;
         //private readonly LancamentoDomainService _lancamentoDomainService;
 
-        public LancamentoController(Context context
+        public LancamentoController(Context context,
             //LancamentoDomainService LancamentoDomainService
-            ) : base(context)
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             //_lancamentoDomainService = LancamentoDomainService;

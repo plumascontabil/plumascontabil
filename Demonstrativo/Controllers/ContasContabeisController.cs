@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Demonstrativo.Controllers
 {
@@ -13,7 +15,9 @@ namespace Demonstrativo.Controllers
         //private readonly ContasContabeisDomainService _contaContabilDomainService;
 
 
-        public ContasContabeisController(Context context) : base(context)
+        public ContasContabeisController(Context context, 
+            UserManager<IdentityUser> userManager, 
+            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         //ContasContabeisDomainService contaContabilDomainService)
         {
             _context = context;

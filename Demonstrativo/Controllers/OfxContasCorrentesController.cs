@@ -1,5 +1,7 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +16,8 @@ namespace Demonstrativo.Controllers
         //private readonly OfxContasCorrentesDomainService _ofxContasCorrentesDomainService;
 
 
-        public OfxContasCorrentesController(Context context
-           // OfxContasCorrentesDomainService ofxContasCorrentesDomainService
-           ) : base(context)
+        public OfxContasCorrentesController(Context context,
+            RoleManager<IdentityRole> roleManager) : base(context,roleManager)
         {
             _context = context;
             //_ofxContasCorrentesDomainService = ofxContasCorrentesDomainService;

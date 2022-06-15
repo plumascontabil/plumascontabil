@@ -1,4 +1,4 @@
-﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+﻿@model RegistrarRoleTelaViewModel
 @{
     Layout = "_LayoutSemFiltroEmpresa";
     ViewData["Title"] = "Cadastro de perfil";
@@ -6,31 +6,42 @@
 
 <div class="py-4 pl-3 d-flex justify-content-between">
     <h1 class="page-title">@ViewData["Title"]</h1>
-   
+
 </div>
 
 
-    <section class="row">
-     
-      
-            <form asp-action="Create" class="col-md-6" >
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label">Nome do perfil</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Cadastrar" class="btn btn-primary" />
-                </div>
-            </form>
-       
-    </section>
+<section class="row">
 
-<div>
-    <a asp-action="Index">Voltar</a>
+
+    <form asp-action="Create" class="col-md-6">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Role" class="control-label">Nome do perfil</label>
+            <input asp-for="Role" class="form-control" />
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TelaId">Telas</label>
+            <select asp-for="TelaId" class="form-control select" multiselect asp-items='new SelectList(ViewBag.TelaId,"Id","Nome")'>
+            </select>
+            <span asp-validation-for="TelaId" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group">
+            <a class="btn btn-plumas-w" asp-action="Index">Voltar</a>
+            <input type="submit" value="Cadastrar" class="btn btn-primary" />
+        </div>
+
+    </form>
+
+</section>
+
+
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }

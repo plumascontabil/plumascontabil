@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
 
 namespace Demonstrativo.Controllers
 {
@@ -17,9 +18,12 @@ namespace Demonstrativo.Controllers
 
 
         public AutoDescricoesController(
-            Context context
+            Context context,
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager
+
             //AutoDescricoesDomainService autoDescricoesDomainService
-            ) : base(context)
+            ) : base(context, roleManager)
         {
             _context = context;
             //_autoDescricoesDomainService = autoDescricoesDomainService;
