@@ -45,7 +45,7 @@ namespace Demonstrativo.Controllers
             };
 
             var result = _context.Competencias.Add(competencia);
-            
+
             _context.SaveChanges();
         }
 
@@ -120,10 +120,17 @@ namespace Demonstrativo.Controllers
 
             if (userId != null)
             {
+                if (roleName != null)
+                {
+                    var role = _roleManager.FindByNameAsync(roleName).Result;
+                    if (role != null)
+                        ViewBag.TelasPermitidas = _context.RoleTelas.Include(f => f.Tela).Where(rt => rt.RoleId == role.Id).ToList();
+                }
+                else
+                {
+                    ViewBag.TelasPermitidas = new List<RoleTela>();
+                }
 
-                var role = _roleManager.FindByNameAsync(roleName).Result;
-                if (role != null)
-                    ViewBag.TelasPermitidas = _context.RoleTelas.Include(f => f.Tela).Where(rt => rt.RoleId == role.Id).ToList();
             }
 
 

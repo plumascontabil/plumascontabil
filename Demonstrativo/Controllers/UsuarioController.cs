@@ -103,14 +103,12 @@ namespace Demonstrativo.Controllers
             var nameRole = roles.FirstOrDefault();
 
             var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
-            AdicionarCompetenciaMesAtual();
-            CarregarEmpresasCompetencias();
             return View(new EditarViewModel()
             {
                 Id = id,
                 Email = user.Email,
                 UserRoles = _roleManager.Roles.ToList(),
-                UserRole = role?.Id,
+                UserRole = role?.Id
             });
         }
 
@@ -118,6 +116,8 @@ namespace Demonstrativo.Controllers
         //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 
@@ -126,26 +126,29 @@ namespace Demonstrativo.Controllers
                 var user = await _userManager.FindByIdAsync(viewModel.Id);
 
                 user.Email = viewModel.Email;
+                var role = _userManager.GetRolesAsync(user).Result; ;
+                await _userManager.RemoveFromRolesAsync(user, role);
 
+                await _userManager.AddToRoleAsync(user, userRole.Name);
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(((int)EEventLog.Put), "User {email} edited.", user.Email);
 
                     var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);
-                    foreach (var empresa in empresas)
-                    {
-                        _context.UsuarioEmpresa.Remove(empresa);
-                        _context.SaveChanges();
-                    }
-                    foreach (var id in viewModel.EmpresasId)
-                    {
-                        var usuarioEmpresa = new UsuarioEmpresa();
-                        usuarioEmpresa.EmpresaId = id;
-                        usuarioEmpresa.UsuarioId = user.Id;
-                        _context.UsuarioEmpresa.Add(usuarioEmpresa);
-                        _context.SaveChanges();
-                    }
+                    //foreach (var empresa in empresas)
+                    //{
+                    //    _context.UsuarioEmpresa.Remove(empresa);
+                    //    _context.SaveChanges();
+                    //}
+                    //foreach (var id in viewModel.EmpresasId)
+                    //{
+                    //    var usuarioEmpresa = new UsuarioEmpresa();
+                    //    usuarioEmpresa.EmpresaId = id;
+                    //    usuarioEmpresa.UsuarioId = user.Id;
+                    //    _context.UsuarioEmpresa.Add(usuarioEmpresa);
+                    //    _context.SaveChanges();
+                    //}
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);
@@ -158,7 +161,8 @@ namespace Demonstrativo.Controllers
 
                 if (result.Succeeded)
                 {
-                    return LocalRedirect(viewModel.ReturnUrl);
+                    return RedirectToAction("Usuarios");
+                    //return LocalRedirect(viewModel.ReturnUrl);
                 }
 
                 foreach (var error in result.Errors)
@@ -167,15 +171,14 @@ namespace Demonstrativo.Controllers
                 }
 
             }
-            AdicionarCompetenciaMesAtual();
-            CarregarEmpresasCompetencias();
+
             var editarViewModel = new EditarViewModel
             {
                 UserRole = userRole.Id
             };
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            return View("Usuarios", viewModel);
+            return RedirectToAction("Usuarios");
         }
         //[Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
