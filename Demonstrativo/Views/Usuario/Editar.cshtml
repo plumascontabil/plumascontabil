@@ -1,34 +1,41 @@
 ﻿@model EditarViewModel
 @{
     Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Editar";
+    ViewData["Title"] = "Edição de usuário";
 }
 
-  <div class="py-4 pl-3 d-flex justify-content-between">
+<div class="py-4 pl-3 d-flex justify-content-between">
     <h1 class="page-title">@ViewData["Title"]</h1>
- 
+
 </div>
- 
-<div class="row">
-    <div class="col-md-6 table-bordered mx-auto rounded-lg bg-light mt-5 py-3">
-        <h1>@ViewData["Title"]</h1>
-        <form asp-for="@Model.ReturnUrl" method="post">
-            <input type="hidden" asp-for="Id"/>
-            <h4>Editar um usuário.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserRole"></label>
-                <select asp-for="UserRole" class="form-control select" asp-items='new SelectList(@Model.UserRoles,"Id","Name",@Model.UserRole)'>
-                </select>
-                <span asp-validation-for="UserRole" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Editar</button>
-        </form>
+
+
+<form asp-route-returnUrl="@Model.ReturnUrl" method="post" asp-action="Editar" class="row">
+
+    <div class="col-md-6">
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="UserRole">Perfil do usuário</label>
+            <select asp-for="UserRole" class="form-control  select" asp-items='new SelectList(Model.UserRoles,"Id","Name")'>
+                <option selected disabled value="">Selecione</option>
+            </select>
+            <span asp-validation-for="UserRole" class="text-danger"></span>
+        </div>
+    </div>
+    <a asp-action="CarregarUsuario" class="btn btn-plumas-w">Voltar</a>
+    <button type="submit" class="btn btn-plumas-w">Editar</button>
+    </div>
+</form>
+<div>
+
 </div>
+
+

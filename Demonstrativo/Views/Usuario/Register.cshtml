@@ -39,6 +39,7 @@
             <div class="form-group">
                 <label asp-for="UserRole">Perfil do usuário</label>
                 <select asp-for="UserRole" class="form-control  select" asp-items='new SelectList(Model.UserRoles,"Id","Name")'>
+                    <option selected disabled value="">Selecione</option>
                 </select>
                 <span asp-validation-for="UserRole" class="text-danger"></span>
             </div>

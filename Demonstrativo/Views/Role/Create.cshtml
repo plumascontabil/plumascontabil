@@ -24,6 +24,7 @@
         <div class="form-group">
             <label asp-for="TelaId">Telas</label>
             <select asp-for="TelaId" class="form-control select" multiselect asp-items='new SelectList(ViewBag.TelaId,"Id","Nome")'>
+                <option selected disabled value="">Selecione</option>
             </select>
             <span asp-validation-for="TelaId" class="text-danger"></span>
         </div>
