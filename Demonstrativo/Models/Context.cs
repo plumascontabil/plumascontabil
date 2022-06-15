@@ -23,6 +23,8 @@ namespace Demonstrativo.Models
         public DbSet<AutoDescricao> AutoDescricoes { get; set; }
         public DbSet<SaldoMensal> SaldoMensal { get; set; }
         public DbSet<UsuarioEmpresa> UsuarioEmpresa { get; set; }
+        public DbSet<Tela> Telas { get; set; }
+        public DbSet<RoleTela> RoleTelas { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options)
@@ -53,7 +55,7 @@ namespace Demonstrativo.Models
                .HasOne(f => f.Empresa)
                .WithMany(x => x.Lotes)
                .HasForeignKey(x => x.EmpresaId);
-
+            modelBuilder.Entity<RoleTela>().HasOne(x => x.Tela).WithMany(x => x.Roles).HasForeignKey(f => f.TelaId);
         }
 
     }

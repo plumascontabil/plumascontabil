@@ -8,51 +8,52 @@
     <h1 class="page-title">@ViewData["Title"]</h1>
 
     <div>
-         <a class="btn btn-plumas-w btn-nav-link" asp-action="Create">Adicionar Função<i class="fa fa-plus ml-2"></i>
-           
-         </a>
+        <a class="btn btn-plumas-w btn-nav-link" href="@Url.Action("Create","Role")">
+            Adicionar Função<i class="fa fa-plus ml-2"></i>
+
+        </a>
     </div>
 
 </div>
 
 <div class="row ">
-    <section class="col-12 border-0 table-bordered">     
-      
-      
-             <table class="w-100 mx-auto">
-                <thead>
+    <section class="col-12 border-0 table-bordered">
+
+
+        <table class="w-100 mx-auto">
+            <thead>
+                <tr>
+                    <td class="bg-categoria text-white p-2">Id</td>
+                    <td class="bg-categoria text-white p-2" bg-categoria text-white p-2>Nome</td>
+                    <td class="bg-categoria text-white p-2" bg-categoria text-white p-2>Ações</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in Model)
+                {
                     <tr>
-                        <td class="bg-categoria text-white p-2">Id</td>
-                        <td class="bg-categoria text-white p-2" bg-categoria text-white p-2>Nome</td>
-                        <td class="bg-categoria text-white p-2" bg-categoria text-white p-2>Ações</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var role in Model)
-                    {
-                        <tr>
-                            <td>@role.Id</td>
-                            <td>@role.Name</td>
-                            <td class=" ">
-                                <div class="d-flex justify-content-center">
+                        <td>@role.Id</td>
+                        <td>@role.Name</td>
+                        <td class=" ">
+                            <div class="d-flex justify-content-center">
                                 <form asp-action="DeletarRole" asp-route-id="@role.Id">
                                     <button data-toggle="tooltip" title="Excluir"> <i class="fa fa-trash"></i></button>
                                 </form>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-      
-     
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
     </section>
 </div>
 @section Scripts{
     @if (ViewBag.Excluido != null)
     {
         <script type="text/javascript">
-            window.onload = function () {
+            window.onload = function() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Sucesso',

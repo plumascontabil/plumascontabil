@@ -1,8 +1,11 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,13 +14,16 @@ namespace Demonstrativo.Controllers
     public class LancamentosPadroesController : BaseController
     {
         private readonly Context _context;
+        private readonly ILogger<LancamentoPadrao> _logger;
         //private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
-        public LancamentosPadroesController(Context context
-            //LancamentoPadroesDomainService lancamentoPadroesDomainService
-            ) : base(context)
+        public LancamentosPadroesController(Context context,
+            RoleManager<IdentityRole> roleManager,
+            ILogger<LancamentoPadrao> logger) : base(context, roleManager)
+
         {
             _context = context;
+            _logger = logger;
             //_lancamentoPadroesDomainService = lancamentoPadroesDomainService;
         }
 
@@ -62,9 +68,9 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao");
-            ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo");
-            ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo");
-            ViewData["TipoContaId"] = new SelectList(_context.TiposContas, "Id", "Id");
+            ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Historico");
+            ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Historico");
+            ViewData["TipoContaId"] = new SelectList(_context.TiposContas, "Id", "Descricao");
             return View();
         }
 
@@ -80,15 +86,16 @@ namespace Demonstrativo.Controllers
                 //await _lancamentoPadroesDomainService.Adicionar(lancamentoPadrao);
 
                 _context.Add(lancamentoPadrao);
+                _logger.LogInformation(((int)EEventLog.Post), "lancamento Padrao Id {Id} created.", lancamentoPadrao.Id);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao", lancamentoPadrao.CategoriaId);
-            ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaCreditoId);
-            ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaDebitoId);
-            ViewData["TipoContaId"] = new SelectList(_context.TiposContas, "Id", "Id", lancamentoPadrao.TipoContaId);
+            ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Historico", lancamentoPadrao.ContaCreditoId);
+            ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Historico", lancamentoPadrao.ContaDebitoId);
+            ViewData["TipoContaId"] = new SelectList(_context.TiposContas, "Id", "Descricao", lancamentoPadrao.TipoContaId);
             return View(lancamentoPadrao);
         }
 
@@ -110,9 +117,9 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Descricao", lancamentoPadrao.CategoriaId);
-            ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaCreditoId);
-            ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Codigo", lancamentoPadrao.ContaDebitoId);
-            ViewData["TipoContaId"] = new SelectList(_context.TiposContas, "Id", "Id", lancamentoPadrao.TipoContaId);
+            ViewData["ContaCreditoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Historico", lancamentoPadrao.ContaCreditoId);
+            ViewData["ContaDebitoId"] = new SelectList(_context.ContasContabeis, "Codigo", "Historico", lancamentoPadrao.ContaDebitoId);
+            ViewData["TipoContaId"] = new SelectList(_context.TiposContas, "Id", "Descricao", lancamentoPadrao.TipoContaId);
             return View(lancamentoPadrao);
         }
 
@@ -135,6 +142,7 @@ namespace Demonstrativo.Controllers
                     //await _lancamentoPadroesDomainService.EditValidar(lancamentoPadrao);
 
                     _context.Update(lancamentoPadrao);
+                    _logger.LogInformation(((int)EEventLog.Put), "lancamento Padrao Id {Id} edited.", lancamentoPadrao.Id);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -193,6 +201,8 @@ namespace Demonstrativo.Controllers
 
             var lancamentoPadrao = await _context.LancamentosPadroes.FindAsync(id);
             _context.LancamentosPadroes.Remove(lancamentoPadrao);
+            _logger.LogInformation(((int)EEventLog.Delete), "lancamento Padrao Id {Id} deleted.", lancamentoPadrao.Id);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

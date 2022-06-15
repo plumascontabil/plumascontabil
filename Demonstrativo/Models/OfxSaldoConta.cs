@@ -9,6 +9,8 @@ namespace Demonstrativo.Models
         [Key]
         public int Id { get; set; }
         public DateTime DataFim { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Saldo { get; set; }
         [Required]
         public int ContaContabilId { get; set; }

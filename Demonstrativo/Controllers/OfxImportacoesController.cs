@@ -13,6 +13,8 @@ using OFXParser.Entities;
 using OFXSharp;
 using Microsoft.EntityFrameworkCore;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
@@ -20,13 +22,12 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
+        private readonly ILogger _logger;
         // private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
 
 
         public OfxImportacoesController(Context context,
-            IWebHostEnvironment env
-            //OfxImportacoesDomainService ofxImportacoesDomainService
-            ) : base(context)
+            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;
@@ -85,6 +86,8 @@ namespace Demonstrativo.Controllers
             _context.Remove(lote);
             _context.SaveChanges();
             ViewBag.Sucesso = "Lote Deletado com Sucesso";
+            _logger.LogInformation(((int)EEventLog.Post), "Lote Id: {lote} deleted.", lote.Id);
+
             IniT();
             return View("Index");
         }
@@ -251,7 +254,7 @@ namespace Demonstrativo.Controllers
                                 Type = dados.Type,
                                 SaldoMensal = saldoMensalViewModel,
                                 LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                                LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
+                                //LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
                             });
                         }
 
@@ -287,6 +290,8 @@ namespace Demonstrativo.Controllers
                 System.IO.File.Delete(caminhoDestinoArquivo);
                 System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
             }
+            _logger.LogInformation(((int)EEventLog.Post), "Import created.");
+
             if (extratoBancarioViewModel.Banco == null)
             {
                 // IniT();
@@ -377,7 +382,7 @@ namespace Demonstrativo.Controllers
 
             if (extratoViewModel.LancamentoManual != null)
             {
-                var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
+                //var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
                     TransationValue = extratoViewModel.LancamentoManual.Valor,
@@ -388,7 +393,7 @@ namespace Demonstrativo.Controllers
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     SaldoMensal = new SaldoMensalViewModel(),
 
-                    Id = ids
+                    Id = "MANUAL"
 
                 });
             }
@@ -414,6 +419,7 @@ namespace Demonstrativo.Controllers
 
             });
 
+            _logger.LogInformation(((int)EEventLog.Post), "ReImport created.");
 
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
             AdicionarCompetenciaMesAtual();
@@ -544,6 +550,8 @@ namespace Demonstrativo.Controllers
 
                 });
             }
+            _logger.LogInformation(((int)EEventLog.Post), "ReImport Lote created.");
+
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
@@ -570,6 +578,14 @@ namespace Demonstrativo.Controllers
                 ViewBag.LancamentoPadraoSelecionadoNotSelect = "Selecione a empresa";
                 return View("Contas", dados);
             }
+
+            if (dados.ContasCorrentes.OfxLancamentos.Any(f => f.LancamentoPadraoSelecionado == 0))
+            {
+                ViewBag.LancamentoPadraoSelecionadoNotSelect = "É necessário realizar todos os lançamentos Contábeis para prossegui!";
+                return View("Contas", dados);
+            }
+
+
 
             decimal saldoMensalTotal = 0;
             var lote = new OfxLoteLancamento();

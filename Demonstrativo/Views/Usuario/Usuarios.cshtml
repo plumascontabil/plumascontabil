@@ -6,49 +6,50 @@
     ViewData["Title"] = "Usuários";
 }
 
-    <div class="py-4 pl-3 d-flex justify-content-between">
+<div class="py-4 pl-3 d-flex justify-content-between">
     <h1 class="page-title">@ViewData["Title"]</h1>
-      @*@if(User.IsInRole("Administrador"))*@
-                    @*{*@
-                        <div>
-                        <a class="btn btn-plumas-w btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Register">Registrar Usuário
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
-                              <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                              <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
-                            </svg>
-                        </a>
-                        </div>
-                    @*}*@
+    @*@if(User.IsInRole("Administrador"))*@
+    @*{*@
+    <div>
+        <a class="btn btn-plumas-w btn-nav-link" asp-area="" asp-controller="Usuario" asp-action="Register">
+            Registrar Usuário
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+            </svg>
+        </a>
+    </div>
+    @*}*@
 </div>
-    <div class="row mt-0 form-lancamento">
-        <section class="col-12 border-0 table-bordered">       
-       
-            <table class="w-100 mx-auto">
-                <thead>
+<div class="row mt-0 form-lancamento">
+    <section class="col-12 border-0 table-bordered">
+
+        <table class="w-100 mx-auto">
+            <thead>
+                <tr>
+                    <th class="bg-categoria text-white p-2">Usuário</th>
+                    <th class="bg-categoria text-white p-2">Email</th>
+                    <th class="bg-categoria text-white p-2">Perfil</th>
+                    <th class="bg-categoria text-white p-2">Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
                     <tr>
-                        <th class="bg-categoria text-white p-2">Usuário</th>
-                        <th class="bg-categoria text-white p-2">Email</th>
-                        <th class="bg-categoria text-white p-2">Perfil</th>
-                        <th class="bg-categoria text-white p-2">Editar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var user in Model)
-                    {
-                        <tr>
-                            <td class="text-center">@user.Usuario</td>
-                            <td class="text-center">@user.Email</td>
-                            <td class="text-center">@user.UserRole</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center">
-                                <button data-toggle="tooltip" title="Editar" href="@Url.Action("Editar",new {id = user.Id})">
+                        <td class="text-center">@user.Usuario</td>
+                        <td class="text-center">@user.Email</td>
+                        <td class="text-center">@user.UserRole</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center">
+                                <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Editar",new { id = user.Id })'">
                                     <i class="fa fa-edit"></i>
                                 </button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</div>

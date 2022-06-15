@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Demonstrativo.Controllers
 {
@@ -24,7 +27,7 @@ namespace Demonstrativo.Controllers
             SignInManager<IdentityUser> signInManager,
             ILogger<UsuarioController> logger,
             RoleManager<IdentityRole> roleManager,
-        ContextIdentity contextIdentity, Context context) : base(context)
+        ContextIdentity contextIdentity, Context context) : base(context, roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -36,7 +39,6 @@ namespace Demonstrativo.Controllers
 
         public IActionResult Index()
         {
-
             return View(CarregarUsuario());
         }
 
@@ -65,6 +67,7 @@ namespace Demonstrativo.Controllers
 
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation(((int)EEventLog.Post), "User {email} created.", viewModel.Email);
                     foreach (var id in viewModel.EmpresasId)
                     {
                         var usuarioEmpresa = new UsuarioEmpresa();
@@ -100,14 +103,12 @@ namespace Demonstrativo.Controllers
             var nameRole = roles.FirstOrDefault();
 
             var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
-            AdicionarCompetenciaMesAtual();
-            CarregarEmpresasCompetencias();
             return View(new EditarViewModel()
             {
                 Id = id,
                 Email = user.Email,
                 UserRoles = _roleManager.Roles.ToList(),
-                UserRole = role?.Id,
+                UserRole = role?.Id
             });
         }
 
@@ -115,6 +116,8 @@ namespace Demonstrativo.Controllers
         //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Editar(EditarViewModel viewModel)
         {
+            AdicionarCompetenciaMesAtual();
+            CarregarEmpresasCompetencias();
             var userRole = await _roleManager.FindByIdAsync(viewModel.UserRole);
             viewModel.ReturnUrl ??= Url.Content("~/");
 
@@ -123,24 +126,29 @@ namespace Demonstrativo.Controllers
                 var user = await _userManager.FindByIdAsync(viewModel.Id);
 
                 user.Email = viewModel.Email;
+                var role = _userManager.GetRolesAsync(user).Result; ;
+                await _userManager.RemoveFromRolesAsync(user, role);
 
+                await _userManager.AddToRoleAsync(user, userRole.Name);
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);                    
-                    foreach (var empresa in empresas)
-                    {
-                        _context.UsuarioEmpresa.Remove(empresa);
-                        _context.SaveChanges();
-                    }
-                    foreach (var id in viewModel.EmpresasId)
-                    {
-                        var usuarioEmpresa = new UsuarioEmpresa();
-                        usuarioEmpresa.EmpresaId = id;
-                        usuarioEmpresa.UsuarioId = user.Id;
-                        _context.UsuarioEmpresa.Add(usuarioEmpresa);
-                        _context.SaveChanges();
-                    }
+                    _logger.LogInformation(((int)EEventLog.Put), "User {email} edited.", user.Email);
+
+                    var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);
+                    //foreach (var empresa in empresas)
+                    //{
+                    //    _context.UsuarioEmpresa.Remove(empresa);
+                    //    _context.SaveChanges();
+                    //}
+                    //foreach (var id in viewModel.EmpresasId)
+                    //{
+                    //    var usuarioEmpresa = new UsuarioEmpresa();
+                    //    usuarioEmpresa.EmpresaId = id;
+                    //    usuarioEmpresa.UsuarioId = user.Id;
+                    //    _context.UsuarioEmpresa.Add(usuarioEmpresa);
+                    //    _context.SaveChanges();
+                    //}
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);
@@ -153,7 +161,8 @@ namespace Demonstrativo.Controllers
 
                 if (result.Succeeded)
                 {
-                    return LocalRedirect(viewModel.ReturnUrl);
+                    return RedirectToAction("Usuarios");
+                    //return LocalRedirect(viewModel.ReturnUrl);
                 }
 
                 foreach (var error in result.Errors)
@@ -162,15 +171,14 @@ namespace Demonstrativo.Controllers
                 }
 
             }
-            AdicionarCompetenciaMesAtual();
-            CarregarEmpresasCompetencias();
+
             var editarViewModel = new EditarViewModel
             {
                 UserRole = userRole.Id
             };
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            return View("Usuarios", viewModel);
+            return RedirectToAction("Usuarios");
         }
         //[Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
@@ -213,7 +221,9 @@ namespace Demonstrativo.Controllers
                 var result = await _signInManager.PasswordSignInAsync(viewModel.Email, viewModel.Password, viewModel.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    this.MetodClaim(viewModel);
+                    _logger.LogInformation(((int)EEventLog.Post), "User {email} logged in.", viewModel.Email);
+
                     return LocalRedirect(viewModel.ReturnUrl);
                 }
                 else
@@ -226,17 +236,39 @@ namespace Demonstrativo.Controllers
             // If we got this far, something failed, redisplay form
             return View(viewModel);
         }
+
+        private void MetodClaim(LoginViewModel viewModel)
+        {
+            var users = _userManager.Users.Where(x => x.Email == viewModel.Email).FirstOrDefault();
+
+            var role = _userManager.GetRolesAsync(users).Result.FirstOrDefault();
+
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, users.Id));
+            claims.Add(new Claim(ClaimTypes.Name, users.UserName));
+            if (role != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+                var apx = _roleManager.Roles.Where(f => f.Name == role).FirstOrDefault().Id;
+                claims.Add(new Claim(ClaimTypes.Rsa, apx));
+            }
+
+            var minhaIdentity = new ClaimsIdentity(claims, "Usuario");
+            var userPrincipal = new ClaimsPrincipal(new[] { minhaIdentity });
+            HttpContext.SignInAsync(userPrincipal);
+        }
+
         //[Authorize(Policy = "roleAdministrador")]
         public async Task<IActionResult> Logout()
         {
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
+            _logger.LogInformation(((int)EEventLog.Get), "User logged out.");
 
             HttpContext.Session.Remove("empresaId");
             HttpContext.Session.Remove("competenciasId");
-            _logger.LogInformation("User logged out.");
-
+            await HttpContext.SignOutAsync();
             return View("Login");
         }
 

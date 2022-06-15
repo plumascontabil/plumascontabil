@@ -1,5 +1,6 @@
 ﻿using Demonstrativo.Models;
 using DomainService;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,25 +10,31 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using System.Threading;
 
 namespace Demonstrativo.Controllers
 {
     public class BaseController : Controller
     {
         readonly Context _context;
+        readonly RoleManager<IdentityRole> _roleManager;
 
-        public BaseController(Context context)
+        public BaseController(Context context, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _roleManager = roleManager;
         }
 
         protected void AdicionarCompetenciaMesAtual()
         {
             DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
 
-            if (_context.Competencias.Any(c => c.Data == competenciaAtual))
+            var existe = _context.Competencias.Where(c => c.Data == competenciaAtual).FirstOrDefault();
+            if (existe != null)
             {
                 return;
             }
@@ -37,11 +44,34 @@ namespace Demonstrativo.Controllers
                 Data = competenciaAtual
             };
 
-            _context.Competencias.Add(competencia);
+            var result = _context.Competencias.Add(competencia);
+
             _context.SaveChanges();
         }
 
-        protected void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
+        protected DateTime ReturnCompetenciaMesAtual()
+        {
+            DateTime competenciaAtual = new(DateTime.Now.Year, DateTime.Now.Month, 01);
+
+            var existe = _context.Competencias.Where(c => c.Data == competenciaAtual).FirstOrDefault();
+            if (existe != null)
+            {
+                return existe.Data;
+            }
+
+            var competencia = new Competencia()
+            {
+                Data = competenciaAtual
+            };
+
+            var result = _context.Competencias.Add(competencia);
+
+            _context.SaveChanges();
+
+            return result.Entity.Data;
+        }
+
+        protected async void CarregarEmpresasCompetencias(int? empresaId = null, DateTime? competenciasId = null)
         {
 
             if (empresaId.HasValue)
@@ -84,8 +114,36 @@ namespace Demonstrativo.Controllers
                 }
             }
 
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var roleName = User.FindFirstValue(ClaimTypes.Role);
             List<Empresa> empresas = _context.Empresas.ToList();
+
+            if (userId != null)
+            {
+                if (roleName != null)
+                {
+                    var role = _roleManager.FindByNameAsync(roleName).Result;
+                    if (role != null)
+                        ViewBag.TelasPermitidas = _context.RoleTelas.Include(f => f.Tela).Where(rt => rt.RoleId == role.Id).ToList();
+                }
+                else
+                {
+                    ViewBag.TelasPermitidas = new List<RoleTela>();
+                }
+
+            }
+
+
+
+            if (userId != null)
+            {
+                var usuarioEmpresas = _context.UsuarioEmpresa.ToList().Where(x => x.UsuarioId == userId);
+                empresas = empresas.Where(e => usuarioEmpresas.Any(u => u.EmpresaId == e.Codigo)).ToList();
+
+            }
+
+
+
             List<Competencia> competencias = _context.Competencias.ToList();
 
 
