@@ -8,19 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
 using DomainService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
     public class SaldoMensalsController : BaseController
     {
         private readonly Context _context;
+        private readonly ILogger<SaldoMensal> _logger;
         //private readonly SaldoMensalsDomainService _saldoMensalsDomainService;
 
         public SaldoMensalsController(Context context,
-            RoleManager<IdentityRole> roleManager) : base(context,roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ILogger<SaldoMensal> logger) : base(context,roleManager)
 
         {
             _context = context;
+            _logger = logger;
             //_saldoMensalsDomainService = saldoMensalsDomainService;
         }
 
@@ -76,6 +80,7 @@ namespace Demonstrativo.Controllers
             {
                 //var saldoMensal = await _saldoMensalsDomainService.CreateValidar(saldoMensal);
                 _context.Add(saldoMensal);
+                _logger.LogInformation(((int)EEventLog.Post), "Saldo Mensal Id: {id} created.", saldoMensal.Id);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -124,6 +129,7 @@ namespace Demonstrativo.Controllers
                 {
                     //var saldoMensal = await _saldoMensalsDomainService.EditValidar(saldoMensal);
                     _context.Update(saldoMensal);
+                    _logger.LogInformation(((int)EEventLog.Put), "Saldo Mensal Id: {id} edited.", saldoMensal.Id);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -176,6 +182,7 @@ namespace Demonstrativo.Controllers
 
             var saldoMensal = await _context.SaldoMensal.FindAsync(id);
             _context.SaldoMensal.Remove(saldoMensal);
+            _logger.LogInformation(((int)EEventLog.Put), "Saldo Mensal Id: {id} deleted.", saldoMensal.Id);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

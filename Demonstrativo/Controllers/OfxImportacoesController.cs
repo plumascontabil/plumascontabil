@@ -14,7 +14,7 @@ using OFXSharp;
 using Microsoft.EntityFrameworkCore;
 using DomainService;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
@@ -22,6 +22,7 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
+        private readonly ILogger _logger;
         // private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
 
 
@@ -85,6 +86,8 @@ namespace Demonstrativo.Controllers
             _context.Remove(lote);
             _context.SaveChanges();
             ViewBag.Sucesso = "Lote Deletado com Sucesso";
+            _logger.LogInformation(((int)EEventLog.Post), "Lote Id: {lote} deleted.", lote.Id);
+
             IniT();
             return View("Index");
         }
@@ -287,6 +290,8 @@ namespace Demonstrativo.Controllers
                 System.IO.File.Delete(caminhoDestinoArquivo);
                 System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
             }
+            _logger.LogInformation(((int)EEventLog.Post), "Import created.");
+
             if (extratoBancarioViewModel.Banco == null)
             {
                 // IniT();
@@ -414,6 +419,7 @@ namespace Demonstrativo.Controllers
 
             });
 
+            _logger.LogInformation(((int)EEventLog.Post), "ReImport created.");
 
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
             AdicionarCompetenciaMesAtual();
@@ -544,6 +550,8 @@ namespace Demonstrativo.Controllers
 
                 });
             }
+            _logger.LogInformation(((int)EEventLog.Post), "ReImport Lote created.");
+
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();

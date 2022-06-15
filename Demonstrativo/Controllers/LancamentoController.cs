@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
@@ -20,14 +21,18 @@ namespace Demonstrativo.Controllers
     public class LancamentoController : BaseController
     {
         readonly Context _context;
+        private readonly ILogger<Lancamento> _logger;
+
         //private readonly LancamentoDomainService _lancamentoDomainService;
 
         public LancamentoController(Context context,
             //LancamentoDomainService LancamentoDomainService
             UserManager<IdentityUser> userManager,
+            ILogger<Lancamento> logger,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
+            _logger = logger;
             //_lancamentoDomainService = LancamentoDomainService;
         }
 
@@ -397,6 +402,8 @@ namespace Demonstrativo.Controllers
             }
 
             var primeiroLancamento = lancamentos.FirstOrDefault();
+            _logger.LogInformation(((int)EEventLog.Post), "Lançamento Id: {lancamento} created.", primeiroLancamento.Id);
+
 
             if (primeiroLancamento != null)
                 return Filtrar(primeiroLancamento.EmpresaId, primeiroLancamento.DataCompetencia);

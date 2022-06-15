@@ -16,6 +16,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
@@ -24,17 +25,20 @@ namespace Demonstrativo.Controllers
         readonly static BaseFont fonteBase = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, false);
         readonly Context _context;
         readonly IWebHostEnvironment _appEnvironment;
+        private readonly ILogger _logger;
         //private readonly ImportacaoDomainService _importacaoDomainService;
 
         public ImportacaoController(
             Context context,
             IWebHostEnvironment env,
+            ILogger<AutoDescricao> logger,
             //ImportacaoDomainService importacaoDomainService
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;
+            _logger = logger;
             //_importacaoDomainService = importacaoDomainService;
         }
         public IActionResult Index()
@@ -69,6 +73,7 @@ namespace Demonstrativo.Controllers
                     _context.SaveChanges();
                 }
             }
+            _logger.LogInformation(((int)EEventLog.Post), "Import created.");
 
             //await _importacaoDomainService.Importar(file);
             AdicionarCompetenciaMesAtual();
@@ -100,7 +105,7 @@ namespace Demonstrativo.Controllers
                 }
                 _context.SaveChanges();
             }
-
+            _logger.LogInformation(((int)EEventLog.Post), "Import Conta Contabil created.");
             //await _importacaoDomainService.ImportarContasContabeis(file);
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
@@ -138,7 +143,7 @@ namespace Demonstrativo.Controllers
                 }
             }
             //var relatorioDadosViewModel = await _importacaoDomainService.Filtrar(relatorioViewModel);
-
+            _logger.LogInformation(((int)EEventLog.Post), "filtered report displayed.");
             GerarRelatorioRazao(relatorioViewModel);
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,13 +14,17 @@ namespace Demonstrativo.Controllers
     public class OfxContasCorrentesController : BaseController
     {
         private readonly Context _context;
+        private readonly ILogger<OfxContaCorrente> _logger;
+
         //private readonly OfxContasCorrentesDomainService _ofxContasCorrentesDomainService;
 
 
         public OfxContasCorrentesController(Context context,
-            RoleManager<IdentityRole> roleManager) : base(context,roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ILogger<OfxContaCorrente> logger) : base(context,roleManager)
         {
             _context = context;
+            _logger = logger;
             //_ofxContasCorrentesDomainService = ofxContasCorrentesDomainService;
         }
 
@@ -77,6 +82,7 @@ namespace Demonstrativo.Controllers
             {
                 //var ofxContaCorrente = await _OfxContasCorrentesDomainService.CreateValidar(ofxContaCorrente);
                 _context.Add(ofxContaCorrente);
+                _logger.LogInformation(((int)EEventLog.Post), "Conta Corrente Id: {contaCorrente} created.", ofxContaCorrente.Id);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -128,6 +134,8 @@ namespace Demonstrativo.Controllers
                     //var ofxContaCorrente = await _OfxContasCorrentesDomainService.EditValidar(ofxContaCorrente);
 
                     _context.Update(ofxContaCorrente);
+                    _logger.LogInformation(((int)EEventLog.Put), "Conta Corrente Id: {contaCorrente} edited.", ofxContaCorrente.Id);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -182,6 +190,7 @@ namespace Demonstrativo.Controllers
 
             var ofxContaCorrente = await _context.ContasCorrentes.FindAsync(id);
             _context.ContasCorrentes.Remove(ofxContaCorrente);
+            _logger.LogInformation(((int)EEventLog.Put), "Conta Corrente Id: {contaCorrente} deleted.", ofxContaCorrente.Id);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

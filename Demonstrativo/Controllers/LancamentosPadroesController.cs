@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,13 +14,16 @@ namespace Demonstrativo.Controllers
     public class LancamentosPadroesController : BaseController
     {
         private readonly Context _context;
+        private readonly ILogger<LancamentoPadrao> _logger;
         //private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
         public LancamentosPadroesController(Context context,
-            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ILogger<LancamentoPadrao> logger) : base(context, roleManager)
 
         {
             _context = context;
+            _logger = logger;
             //_lancamentoPadroesDomainService = lancamentoPadroesDomainService;
         }
 
@@ -82,6 +86,7 @@ namespace Demonstrativo.Controllers
                 //await _lancamentoPadroesDomainService.Adicionar(lancamentoPadrao);
 
                 _context.Add(lancamentoPadrao);
+                _logger.LogInformation(((int)EEventLog.Post), "lancamento Padrao Id {Id} created.", lancamentoPadrao.Id);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -137,6 +142,7 @@ namespace Demonstrativo.Controllers
                     //await _lancamentoPadroesDomainService.EditValidar(lancamentoPadrao);
 
                     _context.Update(lancamentoPadrao);
+                    _logger.LogInformation(((int)EEventLog.Put), "lancamento Padrao Id {Id} edited.", lancamentoPadrao.Id);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -195,6 +201,8 @@ namespace Demonstrativo.Controllers
 
             var lancamentoPadrao = await _context.LancamentosPadroes.FindAsync(id);
             _context.LancamentosPadroes.Remove(lancamentoPadrao);
+            _logger.LogInformation(((int)EEventLog.Delete), "lancamento Padrao Id {Id} deleted.", lancamentoPadrao.Id);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

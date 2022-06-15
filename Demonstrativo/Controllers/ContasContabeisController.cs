@@ -5,22 +5,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using DomainService;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
     public class ContasContabeisController : BaseController
     {
         private readonly Context _context;
+        private readonly ILogger<ContaContabil> _logger;
         //private readonly ContasContabeisDomainService _contaContabilDomainService;
 
 
         public ContasContabeisController(Context context, 
-            UserManager<IdentityUser> userManager, 
+            UserManager<IdentityUser> userManager,
+            ILogger<ContaContabil> logger,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         //ContasContabeisDomainService contaContabilDomainService)
         {
             _context = context;
+            _logger = logger;
             //_contaContabilDomainService = contaContabilDomainService;
         }
 
@@ -77,6 +80,7 @@ namespace Demonstrativo.Controllers
                 //var contaContabil = _contaContabilDomainService.CreateValidar(contaContabil);
                 _context.Add(contaContabil);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation(((int)EEventLog.Post), "Conta Contabil Codigo: {codigo} created.", contaContabil.Codigo);
                 return RedirectToAction(nameof(Index));
             }
             AdicionarCompetenciaMesAtual();
@@ -124,6 +128,7 @@ namespace Demonstrativo.Controllers
                 {
                     //var contaContabil = _contaContabilDomainService.EditValidar(contaContabil);
                     _context.Update(contaContabil);
+                    _logger.LogInformation(((int)EEventLog.Put), "Conta Contabil Codigo: {codigo} edited.", contaContabil.Codigo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -172,6 +177,7 @@ namespace Demonstrativo.Controllers
             //var contaContabil = _contaContabilDomainService.DeleteConfirmado(id);
             var contaContabil = await _context.ContasContabeis.FindAsync(id);
             _context.ContasContabeis.Remove(contaContabil);
+            _logger.LogInformation(((int)EEventLog.Delete), "Conta Contabil Codigo: {codigo} deleted.", contaContabil.Codigo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

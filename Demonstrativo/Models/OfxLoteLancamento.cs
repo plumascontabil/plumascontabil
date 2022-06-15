@@ -12,6 +12,7 @@ namespace Demonstrativo.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Valor { get; set; }
 
         [Required]

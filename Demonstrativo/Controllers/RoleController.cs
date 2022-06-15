@@ -3,6 +3,7 @@ using DomainService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,19 @@ namespace Demonstrativo.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly Context _context;
+        private readonly ILogger<RoleManager<IdentityRole>> _logger;
+
         //private readonly RoleDomainService _roleDomainService;
 
 
         public RoleController(RoleManager<IdentityRole> roleManager, Context context,
         //RoleDomainService roleDomainService
-        UserManager<IdentityUser> userManager) : base(context, roleManager)
+        UserManager<IdentityUser> userManager,
+        ILogger<RoleManager<IdentityRole>> logger) : base(context, roleManager)
         {
             _roleManager = roleManager;
             _context = context;
+            _logger = logger;
             //_roleDomainService = roleDomainService;
         }
 
@@ -64,6 +69,7 @@ namespace Demonstrativo.Controllers
                 roleTela.RoleId = role.Result;
                 _context.RoleTelas.Add(roleTela);
             }
+            _logger.LogInformation(((int)EEventLog.Post), "Role Id: {role} created.", role.Result);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -101,8 +107,9 @@ namespace Demonstrativo.Controllers
                     {
                         _context.RoleTelas.Remove(rt);
                     }
-                    _context.SaveChanges();
                     await _roleManager.DeleteAsync(role);
+                    _logger.LogInformation(((int)EEventLog.Delete), "Role Id: {role} created.", id);
+                    _context.SaveChanges();
                     ViewBag.Excluido = true;
                     var roles = _roleManager.Roles.ToList();
                     CarregarRoles();

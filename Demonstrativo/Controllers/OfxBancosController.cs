@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
@@ -16,14 +17,18 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
+        private readonly ILogger<OfxBanco> _logger;
+
         //private readonly OfxBancosDomainService _ofxBancosDomainService;
 
 
         public OfxBancosController(Context context, IWebHostEnvironment env,
-            RoleManager<IdentityRole> roleManager) : base(context, roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ILogger<OfxBanco> logger) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;
+            _logger = logger;
             //_ofxBancosDomainService = ofxBancosDomainService;
         }
 
@@ -100,6 +105,8 @@ namespace Demonstrativo.Controllers
 
                 //var ofxBanco = await _ofxBancosDomainService.CreateValidar(ofxBanco);
                 _context.Add(ofxBanco);
+                _logger.LogInformation(((int)EEventLog.Post), "Ofx Banco {ofxBanco} created.", ofxBanco.Id);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -171,6 +178,7 @@ namespace Demonstrativo.Controllers
                     //var ofxBanco = await _ofxBancosDomainService.EditValidar(ofxBanco);
 
                     _context.Update(ofxBanco);
+                    _logger.LogInformation(((int)EEventLog.Put), "Ofx Banco {ofxBanco} edited.", ofxBanco.Id);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -221,6 +229,7 @@ namespace Demonstrativo.Controllers
 
             var ofxBanco = await _context.OfxBancos.FindAsync(id);
             _context.OfxBancos.Remove(ofxBanco);
+            _logger.LogInformation(((int)EEventLog.Delete), "Ofx Banco {ofxBanco} deleted.", ofxBanco.Id);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

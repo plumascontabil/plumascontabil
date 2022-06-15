@@ -8,24 +8,29 @@ using Microsoft.EntityFrameworkCore;
 using Demonstrativo.Models;
 using DomainService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Demonstrativo.Controllers
 {
     public class AutoDescricoesController : BaseController
     {
         private readonly Context _context;
+        private readonly ILogger<AutoDescricao> _logger;
         //private readonly AutoDescricoesDomainService _autoDescricoesDomainService;
 
 
         public AutoDescricoesController(
             Context context,
             UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            ILogger<AutoDescricao> logger
+
 
             //AutoDescricoesDomainService autoDescricoesDomainService
             ) : base(context, roleManager)
         {
             _context = context;
+            _logger = logger;
             //_autoDescricoesDomainService = autoDescricoesDomainService;
         }
 
@@ -82,6 +87,7 @@ namespace Demonstrativo.Controllers
             {
                 _context.Add(autoDescricao);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation(((int)EEventLog.Post), "Auto descricao Id: {ID} created.", autoDescricao.Id);
                 //await _autoDescricoesDomainService.CreateValidar(autoDescricao);
                 return RedirectToAction(nameof(Index));
             }
@@ -132,6 +138,7 @@ namespace Demonstrativo.Controllers
                 {
                     _context.Update(autoDescricao);
                     await _context.SaveChangesAsync();
+                    _logger.LogInformation(((int)EEventLog.Put), "Auto descricao Id: {ID} edited.", autoDescricao.Id);
                     //await _autoDescricoesDomainService.EditValidar(autoDescricao);
 
                 }
@@ -184,6 +191,8 @@ namespace Demonstrativo.Controllers
             var autoDescricao = await _context.AutoDescricoes.FindAsync(id);
             _context.AutoDescricoes.Remove(autoDescricao);
             await _context.SaveChangesAsync();
+            _logger.LogInformation(((int)EEventLog.Delete), "Auto descricao Id: {ID} deleted.", id);
+
             //_autoDescricoesDomainService.DeleteConfirmado(id);
             return RedirectToAction(nameof(Index));
         }

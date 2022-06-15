@@ -67,6 +67,7 @@ namespace Demonstrativo.Controllers
 
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation(((int)EEventLog.Post), "User {email} created.", viewModel.Email);
                     foreach (var id in viewModel.EmpresasId)
                     {
                         var usuarioEmpresa = new UsuarioEmpresa();
@@ -129,6 +130,8 @@ namespace Demonstrativo.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation(((int)EEventLog.Put), "User {email} edited.", user.Email);
+
                     var empresas = _context.UsuarioEmpresa.ToList().Where(e => e.UsuarioId == user.Id);
                     foreach (var empresa in empresas)
                     {
@@ -216,7 +219,8 @@ namespace Demonstrativo.Controllers
                 if (result.Succeeded)
                 {
                     this.MetodClaim(viewModel);
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation(((int)EEventLog.Post), "User {email} logged in.", viewModel.Email);
+
                     return LocalRedirect(viewModel.ReturnUrl);
                 }
                 else
@@ -235,7 +239,6 @@ namespace Demonstrativo.Controllers
             var users = _userManager.Users.Where(x => x.Email == viewModel.Email).FirstOrDefault();
 
             var role = _userManager.GetRolesAsync(users).Result.FirstOrDefault();
-
 
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.NameIdentifier, users.Id));
@@ -258,10 +261,10 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             await _signInManager.SignOutAsync();
+            _logger.LogInformation(((int)EEventLog.Get), "User logged out.");
 
             HttpContext.Session.Remove("empresaId");
             HttpContext.Session.Remove("competenciasId");
-            _logger.LogInformation("User logged out.");
             await HttpContext.SignOutAsync();
             return View("Login");
         }
