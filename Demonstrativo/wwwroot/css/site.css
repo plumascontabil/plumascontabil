@@ -375,3 +375,8 @@ th, td {
     width: 200px;
     height: 200px;
 }
+
+.text-small{
+    font-size: 10px!important; 
+}
+
