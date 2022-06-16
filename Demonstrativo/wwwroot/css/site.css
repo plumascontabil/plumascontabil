@@ -379,4 +379,15 @@ th, td {
 .text-small{
     font-size: 10px!important; 
 }
+#dre .table-bordered {
+    border: 1px solid black !important;
+    color: black !important;
+}
+#dre .table thead th {
+    
+    border-bottom: 1px solid black !important;
+}
+#dre .table-bordered td, .table-bordered th {
+    border: 1px solid black !important;
+}
 
