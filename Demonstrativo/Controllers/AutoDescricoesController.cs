@@ -21,7 +21,6 @@ namespace Demonstrativo.Controllers
 
         public AutoDescricoesController(
             Context context,
-            UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ILogger<AutoDescricao> logger
 

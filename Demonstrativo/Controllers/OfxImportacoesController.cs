@@ -27,10 +27,11 @@ namespace Demonstrativo.Controllers
 
 
         public OfxImportacoesController(Context context,
-            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager) : base(context, roleManager)
+            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, ILogger logger) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;
+            _logger = logger;
             //_ofxImportacoesDomainService = ofxImportacoesDomainService;
         }
 
@@ -296,7 +297,16 @@ namespace Demonstrativo.Controllers
                 System.IO.File.Delete(caminhoDestinoArquivo);
                 System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
             }
-            _logger.LogInformation(((int)EEventLog.Post), "Import created.");
+            try
+            {
+                _logger.LogInformation(((int)EEventLog.Post), "Import created.");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
 
             if (extratoBancarioViewModel.Banco == null)
             {
