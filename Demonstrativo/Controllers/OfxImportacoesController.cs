@@ -22,12 +22,12 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
-        private readonly ILogger _logger;
+        private readonly ILogger<object> _logger;
         // private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
 
 
         public OfxImportacoesController(Context context,
-            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, ILogger logger) : base(context, roleManager)
+            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, ILogger<object> logger) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;
