@@ -72,11 +72,17 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> OfxLoteDelete(int LoteLancamentoId)
         {
-            IniT();
+            //  IniT();
             var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
             var lancamentos = _context.OfxLancamentos.Where(f => f.LoteLancamentoId == lote.Id).ToList();
-            var saldo = _context.SaldoMensal.Where(f => f.Competencia == lote.CompetenciaId && f.ContaCorrenteId == lancamentos.FirstOrDefault().ContaCorrenteId).FirstOrDefault();
-            saldo.Saldo -= lote.Valor;
+
+            if (lancamentos.Count > 0)
+            {
+                var cin = lancamentos.FirstOrDefault().ContaCorrenteId;
+                var saldo = _context.SaldoMensal.Where(f => f.Competencia == lote.CompetenciaId && f.ContaCorrenteId == cin).FirstOrDefault();
+                saldo.Saldo -= lote.Valor;
+            }
+
 
             lancamentos.ForEach(el =>
             {
