@@ -17,7 +17,6 @@ namespace Demonstrativo.Controllers
 
 
         public ContasContabeisController(Context context, 
-            UserManager<IdentityUser> userManager,
             ILogger<ContaContabil> logger,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         //ContasContabeisDomainService contaContabilDomainService)

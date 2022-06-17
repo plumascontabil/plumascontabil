@@ -22,9 +22,7 @@ namespace Demonstrativo.Controllers
 
 
         public RoleController(RoleManager<IdentityRole> roleManager, Context context,
-        //RoleDomainService roleDomainService
-        UserManager<IdentityUser> userManager,
-        ILogger<RoleManager<IdentityRole>> logger) : base(context, roleManager)
+               ILogger<RoleManager<IdentityRole>> logger) : base(context, roleManager)
         {
             _roleManager = roleManager;
             _context = context;
