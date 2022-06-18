@@ -407,4 +407,5 @@ th, td {
 
 #dre td {
     height: 23.5px;
+    text-align: center !important;
 }
