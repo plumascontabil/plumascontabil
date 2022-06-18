@@ -121,7 +121,7 @@ input {
 }
 
 .valor {
-    width: 50px;
+    width: 190px;
 }
 
 .container {
@@ -369,6 +369,10 @@ input {
 
 th, td {
     text-align: center;
+    text-transform: uppercase;
+}
+.col-result{
+    width:190px;
 }
 
 .area-img-banco {
@@ -395,7 +399,6 @@ th, td {
 
 #dre .table thead th {
     font-weight: 400 !important;
-    
 }
 
 #dre th, #dre td {

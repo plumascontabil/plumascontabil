@@ -217,9 +217,10 @@
 		$('[data-toggle="tooltip"]').tooltip();
 		$('.mask-valor').inputmask('currency', {
 			"autoUnmask": true,
+			allowPlus: true,
+    allowMinus: true,
 			radixPoint: ",",
-			groupSeparator: ".",
-			allowMinus: false,
+			groupSeparator: ".",		
 			prefix: 'R$ ',
 			digits: 2,
 			digitsOptional: false,
@@ -255,6 +256,8 @@
 	@*<script type="text/javascript">
 	$(document).ready(function () {
 	$(".mask-valor").maskMoney({
+		allowNegative:true,
+		affixesStay: false,
 	prefix: "R$:",
 	decimal: ",",
 	thousands: "."
