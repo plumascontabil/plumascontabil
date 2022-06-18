@@ -151,6 +151,10 @@ namespace Demonstrativo.Controllers
                 return NotFound();
             }
 
+
+            bank.Id = ofxBanco.Id;
+            bank.Codigo = ofxBanco.Codigo;
+            bank.Nome = ofxBanco.Nome;
             if (ModelState.IsValid)
             {
                 try
@@ -169,15 +173,15 @@ namespace Demonstrativo.Controllers
                         {
                             await file.CopyToAsync(stream);
                         }
-                        ofxBanco.UrlImagem = $"~/Bancos/{caminhoDestinoArquivo.Split("\\").LastOrDefault()}";
+                        bank.UrlImagem = $"~/Bancos/{caminhoDestinoArquivo.Split("\\").LastOrDefault()}";
                     }
                     else
                     {
-                        ofxBanco.UrlImagem = bank.UrlImagem;
+                        bank.UrlImagem = bank.UrlImagem;
                     }
                     //var ofxBanco = await _ofxBancosDomainService.EditValidar(ofxBanco);
 
-                    _context.Update(ofxBanco);
+                    _context.Update(bank);
                     _logger.LogInformation(((int)EEventLog.Put), "Ofx Banco {ofxBanco} edited.", ofxBanco.Id);
                     await _context.SaveChangesAsync();
                 }
