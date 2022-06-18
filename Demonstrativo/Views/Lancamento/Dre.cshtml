@@ -1,532 +1,520 @@
 ﻿@{
-	ViewData["Title"] = "Imprimir DRE";
+    ViewData["Title"] = "Imprimir DRE";
 }
 @model TrimestreViewModel
 @using System.Globalization;
 
 <div class="py-4 pl-3 d-flex justify-content-between mt-3 print-none">
-	<h1 class="page-title">@ViewData["Title"]</h1>
+    <h1 class="page-title">@ViewData["Title"]</h1>
 </div>
 
 <button onclick="handlePrint(event)" id="btnPrint" class="floatBtnLancamento btn btn-plumas" data-toggle="tooltip" data-placement="top" title="Imprimir">
 
-	<i class="fa-solid fa-print fa-2x"></i>
+    <i class="fa-solid fa-print fa-2x"></i>
 </button>
 @{
-	var numeroSkip = 0;
-	var numeroTake = 9;
-	var indexCategoria = 0;
+    var numeroSkip = 0;
+    var numeroTake = 9;
+    var indexCategoria = 0;
 
 
-	var caraDaMorte01 = Model.Categorias.Where(f => f.Descricao == "DESPESAS MENSAIS FIXAS").FirstOrDefault();
-	var caraDaMorte02 = Model.Categorias.Where(f => f.Descricao == "OUTRAS DESPESAS OPERACIONAIS").FirstOrDefault();
-	var caraDaMorte = Model.Categorias.Where(f => f.Descricao == "CONTAS A RECEBER").FirstOrDefault();
-	var categorias = Model.Categorias.Where(f => f.Descricao != "CONTAS A RECEBER" && f.Descricao != "OUTRAS DESPESAS OPERACIONAIS" && f.Descricao != "DESPESAS MENSAIS FIXAS").ToList();
-	categorias.Add(caraDaMorte);
-	categorias.Add(caraDaMorte01);
-	categorias.Add(caraDaMorte02);
-	var emp = Model.Empresas.FirstOrDefault(f => Convert.ToInt32(f.Value) == Model.EmpresaSelecionada);
+    var caraDaMorte01 = Model.Categorias.Where(f => f.Descricao == "DESPESAS MENSAIS FIXAS").FirstOrDefault();
+    var caraDaMorte02 = Model.Categorias.Where(f => f.Descricao == "OUTRAS DESPESAS OPERACIONAIS").FirstOrDefault();
+    var caraDaMorte = Model.Categorias.Where(f => f.Descricao == "CONTAS A RECEBER").FirstOrDefault();
+    var categorias = Model.Categorias.Where(f => f.Descricao != "CONTAS A RECEBER" && f.Descricao != "OUTRAS DESPESAS OPERACIONAIS" && f.Descricao != "DESPESAS MENSAIS FIXAS").ToList();
+    categorias.Add(caraDaMorte);
+    categorias.Add(caraDaMorte01);
+    categorias.Add(caraDaMorte02);
+    var emp = Model.Empresas.FirstOrDefault(f => Convert.ToInt32(f.Value) == Model.EmpresaSelecionada);
 
-	decimal totalTrimestre = 0;
-	decimal estoqueInicial = 0;
-	decimal estoqueFinal = 0;
-	decimal lucroBruto = 0;
-	decimal custoMercadoriaVendida = 0;
-	decimal somaReceitaTrimestre = 0;
-	decimal somaCompraTrimestre = 0;
-	foreach (var trimestre in Model.Trimestre)
-	{
+    decimal totalTrimestre = 0;
+    decimal estoqueInicial = 0;
+    decimal estoqueFinal = 0;
+    decimal lucroBruto = 0;
+    decimal custoMercadoriaVendida = 0;
+    decimal somaReceitaTrimestre = 0;
+    decimal somaCompraTrimestre = 0;
+    decimal somaDespesaTrimestre = 0;
+    foreach (var trimestre in Model.Trimestre)
+    {
 
-		decimal somaReceita = 0;
-		foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
-		{
-			somaReceita += receita.Valor;
-		}
-		somaReceitaTrimestre += somaReceita;
+        decimal somaReceita = 0;
+        foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
+        {
+            somaReceita += receita.Valor;
+        }
+        somaReceitaTrimestre += somaReceita;
 
-	}
-	if (Model.LancamentosCompra != null)
-	{
-		foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
-		{
-			estoqueFinal += compra.Valor;
-		}
-		foreach (var trimestre in Model.Trimestre)
-		{
-			decimal somaCompra = 0;
-			foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
-			{
-				somaCompra += compra.Valor;
-			}
-			somaCompraTrimestre += somaCompra;
+    }
+    if (Model.LancamentosCompra != null)
+    {
+        foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
+        {
+            estoqueFinal += compra.Valor;
+        }
+        foreach (var trimestre in Model.Trimestre)
+        {
+            decimal somaCompra = 0;
+            foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
+            {
+                somaCompra += compra.Valor;
+            }
+            somaCompraTrimestre += somaCompra;
 
-		}
+        }
 
-	}
+    }
+    if (Model.LancamentosDespesa != null)
+    {
+        foreach (var trimestre in Model.Trimestre)
+        {
+            decimal somaDespesa = 0;
+            foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
+            {
+                somaDespesa += despesa.Valor;
+            }
 
-	custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
-	lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
+            somaDespesaTrimestre += somaDespesa;
+        }
+    }
+    custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
+    lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
 
-	var csll = lucroBruto - somaDespesaTrimestre - Model.ProvisoesDepreciacoes.DecimoTerceiro - Model.ProvisoesDepreciacoes.Ferias - Model.ProvisoesDepreciacoes.Depreciacao - Model.ProvisoesDepreciacoes.SaldoPrejuizo;
-	double contribuicaoSocial = 0;
-	double impostoRenda = 0;
-	double adcionalIr = 0;
-	if (Model.ProvisoesDepreciacoes.Apurar)
-	{
-		contribuicaoSocial = (double)csll * 0.09;
-		impostoRenda = (double)csll * 0.15;
-		if (csll > 60000)
-		{
-			adcionalIr = (double)csll * 0.10;
-		}
-	}
+    var csll = lucroBruto - somaDespesaTrimestre - Model.ProvisoesDepreciacoes.DecimoTerceiro - Model.ProvisoesDepreciacoes.Ferias - Model.ProvisoesDepreciacoes.Depreciacao - Model.ProvisoesDepreciacoes.SaldoPrejuizo;
+    double contribuicaoSocial = 0;
+    double impostoRenda = 0;
+    double adcionalIr = 0;
+    if (Model.ProvisoesDepreciacoes.Apurar)
+    {
+        contribuicaoSocial = (double)csll * 0.09;
+        impostoRenda = (double)csll * 0.15;
+        if (csll > 60000)
+        {
+            adcionalIr = (double)csll * 0.10;
+        }
+    }
 }
 
 <div id="dre" class="row text-small mx-auto">
-	<div class="col-12 px-5 mb-3">
-		<div class="d-flex justify-content-between align-items-center">
-			<img width="250"
-				 src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png" />
-			<div>
-				Demonstrativo de Pré-Fechamento Contábil(@Model.CompetenciaSelecionadaId.ToString("MMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))
-				<p>@emp.Text</p>
-			</div>
-		</div>
-	</div>
+    <div class="col-12 px-5 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <img width="250"
+                 src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png" />
+            <div>
+                Demonstrativo de Pré-Fechamento Contábil(@Model.CompetenciaSelecionadaId.ToString("MMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))
+                <p>@emp.Text</p>
+            </div>
+        </div>
+    </div>
 
-	@while (numeroSkip < categorias.Count)
-	{
-
-
-		<div class="col-4">
-			<table class="table table-bordered mx-auto">
-				@foreach (var categoria in categorias.Skip(numeroSkip).Take(numeroTake))
-				{
-					<thead>
-						<tr>
-							<th colspan="3">@categoria.Descricao</th>
-						</tr>
-					</thead>
-
-					@for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
-					{
-						var conta = categoria.Contas[indexConta];
-						<tbody>
-							@for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
-							{
-								var lancamento = conta.Lancamentos[indexLancamento];
-								var valorLanc = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", lancamento.Valor);
-								<tr>
-									<td class="codigo">
-										@conta.Codigo
-									</td>
-									<td class="descricao">
-										@if (lancamento.PodeDigitarDescricao)
-										{
-											@lancamento.Descricao
-										}
-										else
-										{
-											if (lancamento.Descricao != null)
-											{
-												@lancamento.Descricao
-											}
-											else
-											{
-												@conta.Descricao
-
-											}
-										}
-									</td>
-									<td class="px-1 mask-valor">
-										@valorLanc
-									</td>
-								</tr>
-							}
-						</tbody>
-					}
-					indexCategoria++;
-				}
-			</table>
-		</div>
+    @while (numeroSkip < categorias.Count)
+    {
 
 
-		numeroSkip += numeroTake;
-	}
+        <div class="col-4">
+            <table class="table table-bordered mx-auto">
+                @foreach (var categoria in categorias.Skip(numeroSkip).Take(numeroTake))
+                {
+                    <thead>
+                        <tr>
+                            <th colspan="3">@categoria.Descricao</th>
+                        </tr>
+                    </thead>
+
+                    @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
+                    {
+                        var conta = categoria.Contas[indexConta];
+                        <tbody>
+                            @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+                            {
+                                var lancamento = conta.Lancamentos[indexLancamento];
+                                var valorLanc = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", lancamento.Valor);
+                                <tr>
+                                    <td class="codigo">
+                                        @conta.Codigo
+                                    </td>
+                                    <td class="descricao">
+                                        @if (lancamento.PodeDigitarDescricao)
+                                        {
+                                            @lancamento.Descricao
+                                        }
+                                        else
+                                        {
+                                            if (lancamento.Descricao != null)
+                                            {
+                                                @lancamento.Descricao
+                                            }
+                                            else
+                                            {
+                                                @conta.Descricao
+
+                                            }
+                                        }
+                                    </td>
+                                    <td class="px-1 mask-valor">
+                                        @valorLanc
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                    indexCategoria++;
+                }
+            </table>
+        </div>
 
 
-	<div class="col-12">
-		<div class="row">
-			<div class="col-6">
-				<p class="mb-0">
-					Plumas Assessoria <br />
-					Contábilplumas@plumascontabil.com.br<br />
-					Tel.: (11) 2023-9999
-				</p>
-			</div>
-			<div class="col-6">
-				<p class="text-right mb-0">
-					Demonstrativo de Pré-Fechamento Contábil<br />
-					por Centro de Custo(@Model.CompetenciaSelecionadaId.ToString("MMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))<br />
+        numeroSkip += numeroTake;
+    }
 
-					@emp.Text
-				</p>
-			</div>
-		</div>
-	</div>
 
-	<div class="col-12">
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th colspan="2"></th>
-					<th>IMPOSTOS FEDERAIS E CONTRIBUIÇÕES</th>
-				</tr>
-			</thead>
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <p class="mb-0">
+                    Plumas Assessoria <br />
+                    Contábilplumas@plumascontabil.com.br<br />
+                    Tel.: (11) 2023-9999
+                </p>
+            </div>
+            <div class="col-6">
+                <p class="text-right mb-0">
+                    Demonstrativo de Pré-Fechamento Contábil<br />
+                    por Centro de Custo(@Model.CompetenciaSelecionadaId.ToString("MMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))<br />
 
-			<tbody>
-				<tr>
-					<td class="descricao" style="border-right-color: transparent">
-						Descrição
-					</td>
-					<td></td>
-					<td class="valor">9.00</td>
-				</tr>
+                    @emp.Text
+                </p>
+            </div>
+        </div>
+    </div>
 
-				<tr>
-					<th rowspan="5">
-						<div style="margin-top: 44px; margin-left: 63px" class="d-flex">
-							<input style="width: 43px !important; margin: 0"
-								   id="apurar"
-								   type="checkbox" />
-							<label for="apurar">Apurar imposto</label>
-						</div>
-					</th>
-					<td>( - ) Contribuição Social - 9%</td>
-					<td>0.00</td>
-				</tr>
-				<tr>
-					<td class="py-2"></td>
-					<td class="py-2"></td>
-				</tr>
-				<tr>
-					<td>( - ) Imposto de Renda - 15%</td>
-					<td>9.99</td>
-				</tr>
-				<tr>
-					<td class="py-2"></td>
-					<td class="py-2"></td>
-				</tr>
-				<tr>
-					<td>
-						( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
-						lucro)
-					</td>
-					<td>9.99</td>
-				</tr>
-				<tr>
-					<td style="border-right-color: transparent">
-						( = ) Prejuízo Real
-					</td>
-					<td></td>
-					<td>0.00</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+    <div class="col-12">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="2"></th>
+                    <th>IMPOSTOS FEDERAIS E CONTRIBUIÇÕES</th>
+                </tr>
+            </thead>
 
-	<div class="col-12" style="font-size: 15px">
-		<div class="row">
-			<div class="col-6"><h3>Escrita Fiscal</h3></div>
-			<div class="col-6"><h3>Verificação</h3></div>
-		</div>
-		<div class="row">
-			<div class="col-6">
-				<div class="d-flex align-items-center justify-content-between ass-area">
-					<p class="m-0">Responsável</p>
-					<div class="ml-3">
-						<span class="d-inline-block"
-							  style="
+            <tbody>
+                <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                        @*Descrição*@
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                </tr>
+
+                <tr>
+                    <th rowspan="5">
+                        <div style="margin-top: 44px; margin-left: 63px" class="d-flex">
+                            <input style="width: 43px !important; margin: 0"
+                                   id="apurar" disabled
+                                   type="checkbox" asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
+                            <label for="apurar">Apurar imposto</label>
+                        </div>
+                    </th>
+                    <td>( - ) Contribuição Social - 9%</td>
+                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", contribuicaoSocial)</td>
+                </tr>
+                <tr>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+                </tr>
+                <tr>
+                    <td>( - ) Imposto de Renda - 15%</td>
+                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", impostoRenda)</td>
+                </tr>
+                <tr>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+                </tr>
+                <tr>
+                    <td>
+                        ( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
+                        lucro)
+                    </td>
+                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", adcionalIr)</td>
+                </tr>
+                <tr>
+                    <td style="border-right-color: transparent">
+                        ( = ) Prejuízo Real
+                    </td>
+                    <td></td>
+                    <td class="mask-valor">0.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-12" style="font-size: 15px">
+        <div class="row">
+            <div class="col-6"><h3>Escrita Fiscal</h3></div>
+            <div class="col-6"><h3>Verificação</h3></div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Responsável</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 60px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-						<span class="d-inline-block ml-2"
-							  style="
+                        <span class="d-inline-block ml-2"
+                              style="
                     width: 220px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-					</div>
-				</div>
-				<div class="d-flex align-items-center justify-content-between ass-area">
-					<p class="m-0">Líder</p>
-					<div class="ml-3">
-						<span class="d-inline-block"
-							  style="
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Líder</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 60px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-						<span class="d-inline-block ml-2"
-							  style="
+                        <span class="d-inline-block ml-2"
+                              style="
                     width: 220px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-					</div>
-				</div>
-			</div>
-			<div class="col-6">
-				<div class="d-flex align-items-center justify-content-between ass-area">
-					<p class="m-0">Fernando</p>
-					<div class="ml-3">
-						<span class="d-inline-block"
-							  style="
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Fernando</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 60px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-						<span class="d-inline-block ml-2"
-							  style="
+                        <span class="d-inline-block ml-2"
+                              style="
                     width: 220px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-					</div>
-				</div>
-				<div class="d-flex align-items-center justify-content-between ass-area">
-					<p class="m-0">Luiz</p>
-					<div class="ml-3">
-						<span class="d-inline-block"
-							  style="
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Luiz</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 60px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-						<span class="d-inline-block ml-2"
-							  style="
+                        <span class="d-inline-block ml-2"
+                              style="
                     width: 220px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-					</div>
-				</div>
-				<div class="d-flex align-items-center justify-content-between ass-area">
-					<p class="m-0">Fabiana</p>
-					<div class="ml-3">
-						<span class="d-inline-block"
-							  style="
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Fabiana</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 35px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-																		   style="
+                                                                           style="
                     width: 60px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-						<span class="d-inline-block ml-2"
-							  style="
+                        <span class="d-inline-block ml-2"
+                              style="
                     width: 220px;
                     height: 24px;
                     border-bottom: solid 1px black;
                   "></span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="col-12">
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>Combustíveis</th>
-					<th>Estoque Final (LT)</th>
-					<th>Valor Unitário(R$)</th>
-					<th>Estoque Final(R$)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Gasolina Comum</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>Gasolina Aditivada</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>Gasolina Premium</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>Etanol</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>Etanol Aditivado</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>S10</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>S10 Aditivado</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
-				<tr>
-					<td>Mercadorias</td>
-					<td>12770</td>
-					<td>5,709027</td>
-					<td>72.904,27</td>
-				</tr>
+    <div class="col-12">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Combustíveis</th>
+                    <th>Estoque Final (LT)</th>
+                    <th>Valor Unitário (R$)</th>
+                    <th>Estoque Final</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    for (int j = 0; j < Model.EstoqueVendas.Produtos.Count; j++)
+                    {
+                        var produtos = Model.EstoqueVendas.Produtos[j];
 
-				<tr colspan="4">
-					<td colspan="4"
-						style="border-right: transparent; border-bottom: transparent">
-						<p class="text-left mb-0 mt-5">Observações</p>
-						<div class="w-100">
-							<textarea rows="5" class="w-100"></textarea>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<small>
-			Obs.: As informações deste demonstrativo são apenas para análise e
-			tomada de decisões. <br />Os valoes de CSSL e IRPJ podem sofrer
-			alterações.
-		</small>
-		<div class="d-flex justify-content-end pb-1 border-bottom border-dark">
-			<p>16/06/2022</p>
-		</div>
-		<div class="row">
-			<div class="col-6 text-center">
-				<p class="mb-0">Maria do Carmo</p>
-				<h5>ASSINATURA DO CLIENTE</h5>
-			</div>
-			<div class="col-6 text-center">
-				<p class="mb-0">David Pinheiro</p>
-				<p>Última exportação(Contábil): 09/02/2022 11:37:27</p>
-			</div>
-		</div>
-	</div>
+                        var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
+
+                        <tr>
+                            <th>
+                                @produtos.Nome
+                            </th>
+                            <td class="mask-decimal">
+                                @itemVenda?.Quantidade
+                            </td>
+                            <td class="mask-valor">
+                                @itemVenda?.Preco
+                            </td>
+                            <td class="mask-valor text-center">
+                                @itemVenda?.Quantidade * itemVenda?.Preco
+                            </td>
+                        </tr>
+                    }
+                }
+
+                <tr colspan="4">
+                    <td colspan="4"
+                        style="border-right: transparent; border-bottom: transparent">
+                        <p class="text-left mb-0 mt-5">Observações</p>
+                        <div class="w-100">
+                            <textarea rows="5" disabled class="w-100">@Model.EstoqueVendas.Observacao</textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <small>
+            Obs.: As informações deste demonstrativo são apenas para análise e
+            tomada de decisões. <br />Os valoes de CSSL e IRPJ podem sofrer
+            alterações.
+        </small>
+        <div class="d-flex justify-content-end pb-1 border-bottom border-dark">
+            <p>@DateTime.Now.ToString("dd/MM/yyyy")</p>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-0">Maria do Carmo</p>
+                <h5>ASSINATURA DO CLIENTE</h5>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-0">David Pinheiro</p>
+                <p>Última exportação(Contábil): 09/02/2022 11:37:27</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-	<script type="text/javascript">
-		function handlePrint(event) {
-			event.preventDefault();
-			let container = document.querySelectorAll(".container");
-			let teste = document.querySelectorAll(".print-none");
-			const btnPrint = document.getElementById("btnPrint");
-			// let textSize = document.querySelector(".text-small");
-			// let areaAssinatura = document.querySelectorAll(".ass-area");
+    <script type="text/javascript">
+        function handlePrint(event) {
+            event.preventDefault();
+            let container = document.querySelectorAll(".container");
+            let teste = document.querySelectorAll(".print-none");
+            const btnPrint = document.getElementById("btnPrint");
+            // let textSize = document.querySelector(".text-small");
+            // let areaAssinatura = document.querySelectorAll(".ass-area");
 
-			// areaAssinatura.forEach((ass) => {
-			//   ass.style.fontSize = "25px";
-			// });
+            // areaAssinatura.forEach((ass) => {
+            //   ass.style.fontSize = "25px";
+            // });
 
-			// textSize.classList.remove("text-small");
-			// textSize.style.fontSize = "30px";
+            // textSize.classList.remove("text-small");
+            // textSize.style.fontSize = "30px";
 
-			container.classList = 'container-fluid'
+            container.classList = 'container-fluid'
 
-			btnPrint.classList.add("d-none");
-			teste.forEach((item) => {
-				item.classList.remove("d-flex");
-				item.classList.add("d-none");
-			});
+            btnPrint.classList.add("d-none");
+            teste.forEach((item) => {
+                item.classList.remove("d-flex");
+                item.classList.add("d-none");
+            });
 
-			var css = '@@page { size: landscape; }',
-				head = document.head || document.getElementsByTagName('head')[0],
-				style = document.createElement('style');
+            var css = '@@page { size: landscape; }',
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
 
-			style.type = 'text/css';
-			style.media = 'print';
+            style.type = 'text/css';
+            style.media = 'print';
 
-			if (style.styleSheet) {
-				style.styleSheet.cssText = css;
-			} else {
-				style.appendChild(document.createTextNode(css));
-			}
+            if (style.styleSheet) {
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
 
-			head.appendChild(style);
+            head.appendChild(style);
 
-			window.print();
+            window.print();
 
-			teste.forEach((item) => {
-				item.classList.remove("d-none");
-				item.classList.add("d-flex");
-			});
-			btnPrint.classList.remove("d-none");
-			container.classList = 'container'
-			// textSize.classList.add("text-small");
-			// areaAssinatura.forEach((ass) => {
-			//   ass.style.fontSize = "15px";
-			// });
-		}
-	</script>
+            teste.forEach((item) => {
+                item.classList.remove("d-none");
+                item.classList.add("d-flex");
+            });
+            btnPrint.classList.remove("d-none");
+            container.classList = 'container'
+            // textSize.classList.add("text-small");
+            // areaAssinatura.forEach((ass) => {
+            //   ass.style.fontSize = "15px";
+            // });
+        }
+    </script>
 }
