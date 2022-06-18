@@ -1,4 +1,5 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,400&display=swap');
@@ -113,11 +114,10 @@ input {
 }
 
 .codigo {
-    width: 20px;
+    width: 40px;
 }
 
 .descricao {
-    width: 270px;
 }
 
 .valor {
@@ -376,18 +376,32 @@ th, td {
     height: 200px;
 }
 
-.text-small{
-    font-size: 10px!important; 
+#dre .text-small {
+    font-size: 15px !important;
 }
+
 #dre .table-bordered {
     border: 1px solid black !important;
     color: black !important;
 }
+
 #dre .table thead th {
-    
     border-bottom: 1px solid black !important;
 }
+
 #dre .table-bordered td, .table-bordered th {
     border: 1px solid black !important;
 }
 
+#dre .table thead th {
+    font-weight: 400 !important;
+    
+}
+
+#dre th, #dre td {
+    padding: 0px !important;
+}
+
+#dre td {
+    height: 23.5px;
+}
