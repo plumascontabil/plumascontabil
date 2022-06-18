@@ -38,8 +38,14 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
 
             CarregarEmpresasCompetencias();
+            if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
+            {
+                ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
+                return View("Index", CarregarCategorias());
+            }
+            var date = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
 
-            return View("Dre", CarregarCategorias());
+            return View("Dre", CarregarCategorias((int?)ViewBag.EmpresaSeleciodaId, (DateTime?)date));
         }
         public IActionResult Index()
         {
@@ -47,8 +53,14 @@ namespace Demonstrativo.Controllers
             AdicionarCompetenciaMesAtual();
 
             CarregarEmpresasCompetencias();
+            var date = (DateTime?)null;
 
-            return View(CarregarCategorias());
+            if (ViewBag.CompetenciasSelecionadaId != null)
+            {
+                date = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
+            }
+
+            return View(CarregarCategorias((int?)ViewBag.EmpresaSeleciodaId, (DateTime?)date));
         }
 
         //private void AdicionarCompetenciaMesAtual()
@@ -99,6 +111,12 @@ namespace Demonstrativo.Controllers
             var categorias = _context.Categorias.ToList();
             var contasCorrentes = _context.ContasCorrentes.Where(c => c.EmpresaId == empresasId).ToList();
             var autoDescricao = _context.AutoDescricoes.ToList();
+
+            trimestreViewModel.EmpresaSelecionada = ViewBag.EmpresaSeleciodaId ?? 0;
+            trimestreViewModel.Empresas = ViewBag.EmpresasId;
+            if (ViewBag.CompetenciaSelecionadaId != null)
+                trimestreViewModel.CompetenciaSelecionadaId = ViewBag.CompetenciaSelecionadaId ?? null;
+            trimestreViewModel.Competencias = ViewBag.CompetenciasId;
 
 
             var lancamentos = new List<Lancamento>();
