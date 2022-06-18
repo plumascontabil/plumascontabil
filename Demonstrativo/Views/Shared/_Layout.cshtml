@@ -196,9 +196,7 @@
 	<script src="~/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	@*<script src="~/lib/jquery/dist/jquery.mask.js"></script>*@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
 
 
 
@@ -211,15 +209,6 @@
 		$('.select').select2({
 			placeholder: 'Selecione'
 		});
-
-		//$(".mask-valor").maskMoney({
-		//    prefix: "R$ ",
-		//    decimal: ",",
-		//    thousands: ".",
-		//    allowNegative: false,
-		//    allowEmpty: false,
-		//    affixesStay: true
-		//});
 
 		$('[data-toggle="tooltip"]').tooltip();
 		$('.mask-valor').inputmask('currency', {

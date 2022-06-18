@@ -59,6 +59,7 @@ namespace Demonstrativo.Controllers
             {
                 date = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
             }
+            ViewBag.Sucesso = TempData["Sucesso"];
 
             return View(CarregarCategorias((int?)ViewBag.EmpresaSeleciodaId, (DateTime?)date));
         }
@@ -235,19 +236,19 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
+            AdicionarCompetenciaMesAtual();
 
+            CarregarEmpresasCompetencias();
             if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
             {
-                AdicionarCompetenciaMesAtual();
-                CarregarEmpresasCompetencias();
                 ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
                 return View("Index", CarregarCategorias());
             }
-            DateTime competencia = ViewBag.CompetenciasSelecionadaId;
-
+            DateTime competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
+            var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
             //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
 
-            var lancamentoCompetencia = _context.Lancamentos.Any(l => l.DataCompetencia == competencia);
+            var lancamentoCompetencia = _context.Lancamentos.Any(l => l.DataCompetencia == competencia && l.EmpresaId == empresaId);
             var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
             if (lancamentoCompetencia == false)
@@ -298,8 +299,8 @@ namespace Demonstrativo.Controllers
             {
                 var updateEstoqueVendas = _context.Vendas.Find(Convert.ToInt32(estoqueVendas.Id));
 
-                updateEstoqueVendas.DataCompetencia = (DateTime)estoqueVendas.Data;
-                updateEstoqueVendas.EmpresaId = (int)estoqueVendas.Empresa;
+                updateEstoqueVendas.DataCompetencia = competencia;
+                updateEstoqueVendas.EmpresaId = empresaId;
                 updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
 
                 foreach (var itemVenda in estoqueVendas.ItensVendas)
@@ -336,13 +337,13 @@ namespace Demonstrativo.Controllers
             }
 
             var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
-
-            if (lancamentoCompetencia == false)
+            var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
+            if (lancamentoCompetencia == false || updateProvisoes == null)
             {
                 var insertProvisoes = new ProvisoesDepreciacao()
                 {
-                    DataCompetencia = provisoesDepreciacoes.Data,
-                    EmpresaId = provisoesDepreciacoes.Empresa,
+                    DataCompetencia = competencia,
+                    EmpresaId = empresaId,
                     DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro,
                     Ferias = provisoesDepreciacoes.Ferias,
                     Depreciacao = provisoesDepreciacoes.Depreciacao,
@@ -356,10 +357,10 @@ namespace Demonstrativo.Controllers
             }
             else
             {
-                var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
+                //var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
 
-                updateProvisoes.DataCompetencia = provisoesDepreciacoes.Data;
-                updateProvisoes.EmpresaId = provisoesDepreciacoes.Empresa;
+                updateProvisoes.DataCompetencia = competencia;//provisoesDepreciacoes.Data;
+                updateProvisoes.EmpresaId = empresaId; //provisoesDepreciacoes.Empresa;
                 updateProvisoes.DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro;
                 updateProvisoes.Ferias = provisoesDepreciacoes.Ferias;
                 updateProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
@@ -371,7 +372,7 @@ namespace Demonstrativo.Controllers
                 _context.SaveChanges();
             }
 
-            var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.SelectMany(x => x.Lancamentos));
+            var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.SelectMany(x => x.Lancamentos)).ToList();
 
             var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
             {
@@ -427,11 +428,9 @@ namespace Demonstrativo.Controllers
             var primeiroLancamento = lancamentos.FirstOrDefault();
             _logger.LogInformation(((int)EEventLog.Post), "Lançamento Id: {lancamento} created.", primeiroLancamento.Id);
 
+            TempData["Sucesso"] = "Dados salvos com sucesso!";
 
-            if (primeiroLancamento != null)
-                return Filtrar(primeiroLancamento.EmpresaId, primeiroLancamento.DataCompetencia);
-            else
-                return RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         public TrimestreViewModel CarregarTrimestre(DateTime? competenciasId = null, int? empresaId = null)
@@ -472,8 +471,7 @@ namespace Demonstrativo.Controllers
             var contasCorrentes = _context.ContasCorrentes.Where(c => c.EmpresaId == empresaId).ToList();
             var OfxLancamentos = _context.OfxLancamentos.Include(x => x.LancamentoPadrao).ToList();
             List<LancamentoPadrao> contas = _context.LancamentosPadroes.ToList();
-            List<ProvisoesDepreciacao> provisoes = _context.ProvisoesDepreciacoes.ToList();
-
+            var provisaoDepreciacao = _context.ProvisoesDepreciacoes.Where(f => f.EmpresaId == empresaId && f.DataCompetencia == competenciasId.Value).FirstOrDefault();
             trimestreViewModel.Trimestre = trimestre;
 
             foreach (var competencia in trimestre)
@@ -563,7 +561,7 @@ namespace Demonstrativo.Controllers
                     }
                 }
 
-                var provisaoDepreciacao = provisoes.FirstOrDefault(p => p.EmpresaId == empresaId && p.DataCompetencia.Month == competencia);
+
 
                 if (provisaoDepreciacao != null)
                 {
@@ -572,10 +570,10 @@ namespace Demonstrativo.Controllers
                         Id = provisaoDepreciacao.Id,
                         Data = provisaoDepreciacao.DataCompetencia,
                         Empresa = provisaoDepreciacao.EmpresaId,
-                        Ferias = provisaoDepreciacao.Ferias,
-                        DecimoTerceiro = provisaoDepreciacao.DecimoTerceiro,
-                        Depreciacao = provisaoDepreciacao.Depreciacao,
-                        SaldoPrejuizo = provisaoDepreciacao.SaldoPrejuizo,
+                        FeriasVlr = provisaoDepreciacao.Ferias.ToString(),
+                        DecimoTerceiroVlr = provisaoDepreciacao.DecimoTerceiro.ToString(),
+                        DepreciacaoVlr = provisaoDepreciacao.Depreciacao.ToString(),
+                        SaldoPrejuizoVlr = provisaoDepreciacao.SaldoPrejuizo.ToString(),
                         CalcularCompesacao = provisaoDepreciacao.CalcularCompensacao,
                         Apurar = provisaoDepreciacao.Apurar
                     };
@@ -617,7 +615,7 @@ namespace Demonstrativo.Controllers
                         VendaId = itemVenda.VendaId,
                         ProdutoId = itemVenda.ProdutoId,
                         Quantidade = itemVenda.Quantidade,
-                        Preco = itemVenda.Preco,
+                        PrecoVlr = itemVenda.Preco.ToString(),
                         Produto = produtoViewModel
                     });
                 }
@@ -646,15 +644,19 @@ namespace Demonstrativo.Controllers
             return trimestreViewModel;
         }
 
-        public IActionResult GerarArquivo(int? empresaId = null, DateTime? competenciasId = null)
+        public IActionResult GerarArquivo()
         {
+            AdicionarCompetenciaMesAtual();
+
+            CarregarEmpresasCompetencias();
             if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
             {
-                AdicionarCompetenciaMesAtual();
-                CarregarEmpresasCompetencias();
                 ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
                 return View("Index", CarregarCategorias());
             }
+
+            var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+            var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
             var contas = _context.LancamentosPadroes.ToList();
             var lancamentos = _context.Lancamentos.Where(l => l.DataCompetencia == competenciasId &&
                                                                  l.EmpresaId == empresaId).ToList();

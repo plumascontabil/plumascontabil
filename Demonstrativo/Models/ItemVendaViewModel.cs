@@ -1,4 +1,6 @@
-﻿namespace Demonstrativo.Models
+﻿using System;
+
+namespace Demonstrativo.Models
 {
     public class ItemVendaViewModel
     {
@@ -6,7 +8,14 @@
         public int VendaId { get; set; }
         public int ProdutoId { get; set; }
         public decimal Quantidade { get; set; }
-        public decimal Preco { get; set; }
+        public string PrecoVlr { get; set; }
+        public decimal Preco
+        {
+            get
+            {
+                return Convert.ToDecimal(PrecoVlr.Replace("R$", "").Trim());
+            }
+        }
         public ProdutoViewModel Produto { get; set; }
     }
 }
