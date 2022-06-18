@@ -32,8 +32,6 @@ namespace Demonstrativo.Controllers
             Context context,
             IWebHostEnvironment env,
             ILogger<AutoDescricao> logger,
-            //ImportacaoDomainService importacaoDomainService
-            UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;

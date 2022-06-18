@@ -15,7 +15,6 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly ILogger<LancamentoPadrao> _logger;
-        //private readonly LancamentoPadroesDomainService _lancamentoPadroesDomainService;
 
         public LancamentosPadroesController(Context context,
             RoleManager<IdentityRole> roleManager,

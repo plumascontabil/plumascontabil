@@ -138,7 +138,8 @@ namespace Demonstrativo.Controllers
             if (userId != null)
             {
                 var usuarioEmpresas = _context.UsuarioEmpresa.ToList().Where(x => x.UsuarioId == userId);
-                empresas = empresas.Where(e => usuarioEmpresas.Any(u => u.EmpresaId == e.Codigo)).ToList();
+                if (usuarioEmpresas.ToList().Count > 0)
+                    empresas = empresas.Where(e => usuarioEmpresas.Any(u => u.EmpresaId == e.Codigo)).ToList();
 
             }
 

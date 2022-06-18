@@ -26,8 +26,6 @@ namespace Demonstrativo.Controllers
         //private readonly LancamentoDomainService _lancamentoDomainService;
 
         public LancamentoController(Context context,
-            //LancamentoDomainService LancamentoDomainService
-            UserManager<IdentityUser> userManager,
             ILogger<Lancamento> logger,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {

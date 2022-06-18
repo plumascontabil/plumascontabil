@@ -22,15 +22,16 @@ namespace Demonstrativo.Controllers
     {
         private readonly Context _context;
         private readonly IWebHostEnvironment _appEnvironment;
-        private readonly ILogger _logger;
+        private readonly ILogger<object> _logger;
         // private readonly OfxImportacoesDomainService _ofxImportacoesDomainService;
 
 
         public OfxImportacoesController(Context context,
-            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager) : base(context, roleManager)
+            IWebHostEnvironment env, RoleManager<IdentityRole> roleManager, ILogger<object> logger) : base(context, roleManager)
         {
             _context = context;
             _appEnvironment = env;
+            _logger = logger;
             //_ofxImportacoesDomainService = ofxImportacoesDomainService;
         }
 
@@ -72,11 +73,17 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> OfxLoteDelete(int LoteLancamentoId)
         {
-            IniT();
+            //  IniT();
             var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
             var lancamentos = _context.OfxLancamentos.Where(f => f.LoteLancamentoId == lote.Id).ToList();
-            var saldo = _context.SaldoMensal.Where(f => f.Competencia == lote.CompetenciaId && f.ContaCorrenteId == lancamentos.FirstOrDefault().ContaCorrenteId).FirstOrDefault();
-            saldo.Saldo -= lote.Valor;
+
+            if (lancamentos.Count > 0)
+            {
+                var cin = lancamentos.FirstOrDefault().ContaCorrenteId;
+                var saldo = _context.SaldoMensal.Where(f => f.Competencia == lote.CompetenciaId && f.ContaCorrenteId == cin).FirstOrDefault();
+                saldo.Saldo -= lote.Valor;
+            }
+
 
             lancamentos.ForEach(el =>
             {
@@ -290,7 +297,16 @@ namespace Demonstrativo.Controllers
                 System.IO.File.Delete(caminhoDestinoArquivo);
                 System.IO.File.Delete($"{caminhoDestinoArquivo}.xml");
             }
-            _logger.LogInformation(((int)EEventLog.Post), "Import created.");
+            try
+            {
+                _logger.LogInformation(((int)EEventLog.Post), "Import created.");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
 
             if (extratoBancarioViewModel.Banco == null)
             {
