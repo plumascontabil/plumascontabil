@@ -573,9 +573,12 @@
 @section Scripts {
     <script type="text/javascript">
         $("input[id*='qtdProd']").change((event) => {
-            const valor = event.target.value;
+            const valor = Number(event.target.value);
+            console.log(valor);
             let ids = '#vlrProd_' + event.target.id.split('_')[1];
             const qtd = $(ids).val();
+
+            console.log(qtd);
             if (qtd && valor) {
                 const real = qtd * valor;
                 $("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
@@ -583,8 +586,12 @@
         });
         $("input[id*='vlrProd']").change((event) => {
             const valor = event.target.value;
+            console.log(valor);
+
             let ids = '#qtdProd_' + event.target.id.split('_')[1];
             const qtd = $(ids).val();
+
+            console.log(qtd);
             if (qtd && valor) {
                 const real = qtd * valor;
                 $("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));

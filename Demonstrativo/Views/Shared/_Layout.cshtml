@@ -229,6 +229,7 @@
 		});
 
 		$(".mask-decimal").inputmask({
+            "autoUnmask": true,
 			'alias': 'decimal',
 			rightAlign: true,
 			'groupSeparator': '.',
@@ -236,6 +237,7 @@
 			'autoGroup': true,
 			digits: 2,
 			digitsOptional: true,
+			unmaskAsNumber: true,
 		});
 
 
