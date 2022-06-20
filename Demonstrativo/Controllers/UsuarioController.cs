@@ -161,7 +161,7 @@ namespace Demonstrativo.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Usuarios");
+                    return RedirectToAction("CarregarUsuario");
                     //return LocalRedirect(viewModel.ReturnUrl);
                 }
 
@@ -178,7 +178,7 @@ namespace Demonstrativo.Controllers
             };
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            return RedirectToAction("Usuarios");
+            return RedirectToAction("CarregarUsuario");
         }
         //[Authorize(Policy = "roleAdministrador")]
         public IActionResult CarregarUsuario()
