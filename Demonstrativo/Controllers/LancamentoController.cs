@@ -253,7 +253,6 @@ namespace Demonstrativo.Controllers
             return trimestreViewModel;
         }
 
-        [HttpPost]
         public IActionResult Filtrar(int empresasId, DateTime competenciasId)
         {
             CarregarEmpresasCompetencias(empresasId, competenciasId);
@@ -261,6 +260,21 @@ namespace Demonstrativo.Controllers
 
 
             return View("Index", CarregarCategorias(empresasId, competenciasId));
+        }
+        [HttpGet]
+        public IActionResult Filtrar()
+        {
+            var date = (DateTime?)null;
+
+            if (ViewBag.CompetenciasSelecionadaId != null)
+            {
+                date = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
+            }
+            CarregarEmpresasCompetencias(ViewBag.EmpresaSeleciodaId, date);
+
+
+
+            return View("Index", CarregarCategorias((int?)ViewBag.EmpresaSeleciodaId, (DateTime?)date));
         }
 
         [HttpPost]
