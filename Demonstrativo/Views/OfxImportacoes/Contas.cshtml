@@ -134,11 +134,11 @@
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
                             </td>
                             <td>
-                                @ofxs.Type
+                                @Html.Raw(ofxs.Type)
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
                             </td>
                             <td>
-                                @ofxs.Description
+                                @Html.Raw(ofxs.Description)
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
                             </td>
                             <td class="@value">

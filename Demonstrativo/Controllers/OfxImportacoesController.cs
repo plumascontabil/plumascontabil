@@ -367,10 +367,10 @@ namespace Demonstrativo.Controllers
                         CheckSum = dados.CheckSum,
                         Type = dados.Type,
                         LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                        LancamentoPadraoSelecionado =
-                            Convert.ToInt32(_context.LancamentosPadroes
-                                            .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
-                                                .Codigo)
+                        //LancamentoPadraoSelecionado =
+                        //    Convert.ToInt32(_context.LancamentosPadroes
+                        //                    .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
+                        //                        .Codigo)
                     });
                 }
 
