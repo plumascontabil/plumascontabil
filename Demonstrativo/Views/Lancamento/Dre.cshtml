@@ -878,24 +878,16 @@
 
     @section Scripts {
         <script type="text/javascript">
-
-            //window.onbeforeunload = function (event) {
-            //    debugger;
-            //    event.preventDefault();
-            //    window.location.href = '/Lancamento';
-
-            //};
+          
             $(window).on('beforeunload', function (e) {
-                debugger;
                 e.preventDefault();
-
                 e.returnValue = '';
-                window.location.href = '/Lancamento';
-              
-
+                setTimeout(function () { Ir(); }, 10);
 
             });
-
+            function Ir() {
+                window.location.href = '/Lancamento';
+            }
             function handlePrint(event) {
                 event.preventDefault();
                 let container = document.querySelectorAll(".container");
