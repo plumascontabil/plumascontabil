@@ -30,12 +30,20 @@
             <span asp-validation-for="UserRole" class="text-danger"></span>
         </div>
     </div>
-    <a asp-action="CarregarUsuario" class="btn btn-plumas-w">Voltar</a>
-    <button type="submit" class="btn btn-plumas-w">Editar</button>
+@*    <div>
+        <div class="form-group">
+            <label asp-for="EmpresasId"></label>
+            <select asp-for="EmpresasId" class="form-control select" multiselect asp-items='ViewBag.EmpresasId'>
+            </select>
+            <span asp-validation-for="EmpresasId" class="text-danger"></span>
+        </div>
+    </div>
+    <div>*@
+        <a asp-action="CarregarUsuario" class="btn btn-plumas-w">Voltar</a>
+        <button type="submit" class="btn btn-plumas-w">Editar</button>
     </div>
 </form>
 <div>
-
 </div>
 
 

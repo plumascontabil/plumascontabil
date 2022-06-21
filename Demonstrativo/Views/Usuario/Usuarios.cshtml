@@ -53,3 +53,20 @@
         </table>
     </section>
 </div>
+
+
+@section Scripts{
+    @if ((string)TempData["criado"] == "criado")
+    {
+        <script type="text/javascript">
+            window.onload = function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: 'Usuário cadastrado com sucesso!',
+
+                })
+            };
+        </script>
+    }
+}
