@@ -39,7 +39,7 @@
 							@Html.DisplayFor(modelItem => item.Empresa.Apelido)
 						</td>
 						<td>
-							@Html.DisplayFor(modelItem => item.BancoOfx.Id)
+							@Html.Raw($"{item.BancoOfx.Codigo} - {item.BancoOfx.Nome}")
 						</td>
 						<td>
 @*							<button data-toggle="tooltip" title="Editar"  asp-action="Edit" asp-route-id="@item.Id"> <i class="fa fa-edit"></i></button>

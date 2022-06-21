@@ -587,8 +587,14 @@ namespace Demonstrativo.Controllers
             //    ViewBag.LancamentoPadraoSelecionadoNotSelect = "Existe lançamentos sem ser atribuidos a contas contábeis";
             //    return View("Contas", dados);
             //}
+            var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             IniT();
             dados.EmpresaSelecionada = ViewBag.EmpresaSeleciodaId;
+
+            dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            {
+                el.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
+            });
             if (dados.EmpresaSelecionada == 0)
             {
                 ViewBag.LancamentoPadraoSelecionadoNotSelect = "Selecione a empresa";

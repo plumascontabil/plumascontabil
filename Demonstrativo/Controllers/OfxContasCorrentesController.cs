@@ -21,7 +21,7 @@ namespace Demonstrativo.Controllers
 
         public OfxContasCorrentesController(Context context,
             RoleManager<IdentityRole> roleManager,
-            ILogger<OfxContaCorrente> logger) : base(context,roleManager)
+            ILogger<OfxContaCorrente> logger) : base(context, roleManager)
         {
             _context = context;
             _logger = logger;
@@ -66,8 +66,8 @@ namespace Demonstrativo.Controllers
         {
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id");
-            ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido");
+            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos.Select(x => new { Id = x.Id, Nome = $"{x.Codigo} - {x.Nome}" }), "Id", "Nome");
+            ViewData["EmpresaId"] = new SelectList(_context.Empresas.Select(x => new { Codigo = x.Codigo, Apelido = $"{x.Codigo} - {x.RazaoSocial}" }), "Codigo", "Apelido");
             return View();
         }
 
@@ -88,8 +88,8 @@ namespace Demonstrativo.Controllers
             }
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id", ofxContaCorrente.BancoOfxId);
-            ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido", ofxContaCorrente.EmpresaId);
+            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos.Select(x => new { Id = x.Id, Nome = $"{x.Codigo} - {x.Nome}" }), "Id", "Nome");
+            ViewData["EmpresaId"] = new SelectList(_context.Empresas.Select(x => new { Codigo = x.Codigo, Apelido = $"{x.Codigo} - {x.RazaoSocial}" }), "Codigo", "Apelido");
             return View(ofxContaCorrente);
         }
 
@@ -110,8 +110,8 @@ namespace Demonstrativo.Controllers
             }
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id", ofxContaCorrente.BancoOfxId);
-            ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido", ofxContaCorrente.EmpresaId);
+            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos.Select(x => new { Id = x.Id, Nome = $"{x.Codigo} - {x.Nome}" }), "Id", "Nome");
+            ViewData["EmpresaId"] = new SelectList(_context.Empresas.Select(x => new { Codigo = x.Codigo, Apelido = $"{x.Codigo} - {x.RazaoSocial}" }), "Codigo", "Apelido");
             return View(ofxContaCorrente);
         }
 
@@ -153,8 +153,8 @@ namespace Demonstrativo.Controllers
             }
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
-            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos, "Id", "Id", ofxContaCorrente.BancoOfxId);
-            ViewData["EmpresaId"] = new SelectList(_context.Empresas, "Codigo", "Apelido", ofxContaCorrente.EmpresaId);
+            ViewData["BancoOfxId"] = new SelectList(_context.OfxBancos.Select(x => new { Id = x.Id, Nome = $"{x.Codigo} - {x.Nome}" }), "Id", "Nome");
+            ViewData["EmpresaId"] = new SelectList(_context.Empresas.Select(x => new { Codigo = x.Codigo, Apelido = $"{x.Codigo} - {x.RazaoSocial}" }), "Codigo", "Apelido");
             return View(ofxContaCorrente);
         }
 
