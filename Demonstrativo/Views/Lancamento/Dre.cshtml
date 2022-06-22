@@ -269,7 +269,7 @@
 						<td colspan="3" class="descricao" style="border-right-color: transparent">
 							Total Trimestre
 						</td>
-						
+
 						<td class="valor mask-valor">@estoqueFinal</td>
 					</tr>
 
@@ -358,6 +358,7 @@
 								<td colspan="3">Total Despesas @j o. mês</td>
 								<td class="mask-valor">@somaDespesa</td>
 							</tr>
+							<tr><td colspan="3"></td></tr>
 							somaDespesaTrimestre += somaDespesa;
 							j++;
 
@@ -366,6 +367,7 @@
 							<td colspan="3">Total trimestre</td>
 							<td class="mask-valor">@somaDespesaTrimestre</td>
 						</tr>
+						<tr><td colspan="3"></td></tr>
 					}
 
 
@@ -378,7 +380,7 @@
 							@Model.ProvisoesDepreciacoes.DecimoTerceiro
 						</td>
 					</tr>
-
+					<tr><td colspan="3"></td></tr>
 
 					<tr>
 						<td colspan="3">( - ) Provisão de Férias</td>
@@ -387,7 +389,7 @@
 							@Model.ProvisoesDepreciacoes.Ferias
 						</td>
 					</tr>
-
+					<tr><td colspan="3"></td></tr>
 					<tr>
 						<td colspan="3">( - ) Depreciações</td>
 						<td class="mask-valor">
@@ -395,7 +397,7 @@
 							@Model.ProvisoesDepreciacoes.Depreciacao
 						</td>
 					</tr>
-
+					<tr><td colspan="3"></td></tr>
 					<tr>
 						<td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
 						<td class="mask-valor">
@@ -403,7 +405,7 @@
 							@Model.ProvisoesDepreciacoes.SaldoPrejuizo
 						</td>
 					</tr>
-
+					<tr><td colspan="3"></td></tr>
 
 					double prejuizoCompensado = 0;
 					var lucroPeriodo = lucroBruto - somaDespesaTrimestre - @Model.ProvisoesDepreciacoes.DecimoTerceiro - @Model.ProvisoesDepreciacoes.Ferias - @Model.ProvisoesDepreciacoes.Depreciacao;
@@ -417,22 +419,50 @@
 							<output class="mask-valor">@prejuizoCompensado</output>
 						</td>
 					</tr>
-
+					<tr><td colspan="3"></td></tr>
 			//var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
-				<thead>
+
 					<tr>
 						<td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
 						<td>
 							<output class="mask-valor"> @(csll) </output>
 						</td>
 					</tr>
+					<tr><td colspan="3"></td></tr>
+
 					<tr>
-						<th colspan="3" class="bg-categoria text-white p-2">APURAR - S/N </th>
-						<td class="bg-categoria text-white p-2 col-result"><input type="checkbox" disabled asp-for="@Model.ProvisoesDepreciacoes.Apurar" /></td>
+						<th rowspan="5">
+							<div style="margin-top: 44px; margin-left: 63px" class="d-flex align-items-center">
+								<input style="width:30px" class="m-0" id="apurar" type="checkbox" disabled asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
+								<label class="m-0" for="apurar">Apurar imposto</label>
+							</div>
+						</th>
+						<td colspan="2">( - ) Contribuição Social - 9%</td>
+						<td><output class="mask-valor"> @(contribuicaoSocial) </output></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="py-2"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan="2">( - ) Imposto de Renda - 15%</td>
+						<td><output class="mask-valor">@impostoRenda </output></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="py-2"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
+							lucro)
+						</td>
+						<td><output class="mask-valor"> @adcionalIr </output></td>
 					</tr>
 
 
-				</thead>
+
+
 					//double contribuicaoSocial = 0;
 					//double impostoRenda = 0;
 					//double adcionalIr = 0;
@@ -445,211 +475,195 @@
 							adcionalIr = (double)csll * 0.10;
 						}
 					}
-				<tr>
-					<td colspan="3">( - ) Contribuição Social - 9%</td>
-					<td>
-						<output class="mask-valor"> @(contribuicaoSocial) </output>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3">( - ) Imposto de Renda - 15%</td>
-					<td>
-						<output class="mask-valor">@impostoRenda </output>
-					</td>
-				</tr>
-				<tr><td colspan="3"></td></tr>
-				<tr>
-					<td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
-					<td>
-						<output class="mask-valor"> @adcionalIr </output>
-					</td>
-				</tr>
-				<tr><td colspan="3"></td></tr>
+
+
+					<tr><td colspan="3"></td><td></td></tr>
+
+					<tr><td colspan="3"></td><td></td></tr>
 
 
 
-				<tr>
-					<td style="border-right-color: transparent">
-						( = ) Prejuízo Real
-					</td>
-					<td>
-					</td>
-					<td class="mask-valor"> @(lucroBruto + somaDespesaTrimestre)</td>
-				</tr>
+					<tr>
+						<td colspan="3" style="border-right-color: transparent">
+							( = ) Prejuízo Real
+						</td>
+
+						<td class="mask-valor"> @(lucroBruto + somaDespesaTrimestre)</td>
+					</tr>
 
 				}
 
 				@*<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor mask-valor"></td>
-			</tr>*@
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor mask-valor"></td>
+				</tr>*@
 
 
 				@*<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor mask-valor"></td>
-			</tr>*@
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor mask-valor"></td>
+				</tr>*@
 				@*<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( = ) Lucro Bruto (R$)
-			</td>
-			<td></td>
-			<td class="valor mask-valor">1000</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( = ) Margem Bruta Total em %
-			</td>
-			<td></td>
-			<td class="valor">10,20%</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor"></td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Despesas - 1º. mês
-			</td>
-			<td></td>
-			<td class="valor mask-valor">1020</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Despesas - 2º. mês
-			</td>
-			<td></td>
-			<td class="valor mask-valor">1020</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Despesas - 3º. mês
-			</td>
-			<td></td>
-			<td class="valor mask-valor">1020</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			Total Trimestre
-			</td>
-			<td></td>
-			<td class="valor mask-valor">1020</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor"></td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Provisão de 13° Salário
-			</td>
-			<td></td>
-			<td class="valor mask-valor">2500</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor"></td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Provisão de Férias
-			</td>
-			<td></td>
-			<td class="valor mask-valor">2500</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor"></td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Depreciações
-			</td>
-			<td></td>
-			<td class="valor mask-valor">-2500</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor"></td>
-			</tr>*@
+				<td class="descricao" style="border-right-color: transparent">
+				( = ) Lucro Bruto (R$)
+				</td>
+				<td></td>
+				<td class="valor mask-valor">1000</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( = ) Margem Bruta Total em %
+				</td>
+				<td></td>
+				<td class="valor">10,20%</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor"></td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Despesas - 1º. mês
+				</td>
+				<td></td>
+				<td class="valor mask-valor">1020</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Despesas - 2º. mês
+				</td>
+				<td></td>
+				<td class="valor mask-valor">1020</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Despesas - 3º. mês
+				</td>
+				<td></td>
+				<td class="valor mask-valor">1020</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				Total Trimestre
+				</td>
+				<td></td>
+				<td class="valor mask-valor">1020</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor"></td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Provisão de 13° Salário
+				</td>
+				<td></td>
+				<td class="valor mask-valor">2500</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor"></td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Provisão de Férias
+				</td>
+				<td></td>
+				<td class="valor mask-valor">2500</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor"></td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Depreciações
+				</td>
+				<td></td>
+				<td class="valor mask-valor">-2500</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor"></td>
+				</tr>*@
 				@*<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( = ) Prejuízo do Período
-			</td>
-			<td></td>
-			<td class="valor mask-valor">-2500</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			<td class="valor"></td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( - ) Saldo Prejuízos Acumulados R$ 0,00
-			</td>
-			<td> Compesação Prejuízo (30% Lucro do Período)</td>
-			<td class="valor mask-valor">0</td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			</td>
-			<td></td>
-			</tr>
-			<tr>
-			<td class="descricao" style="border-right-color: transparent">
-			( = ) Base de Cálculo do CSLL/IRPJ
-			</td>
-			<td></td>
-			<td class="valor mask-valor">-14500</td>
-			</tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( = ) Prejuízo do Período
+				</td>
+				<td></td>
+				<td class="valor mask-valor">-2500</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				<td class="valor"></td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( - ) Saldo Prejuízos Acumulados R$ 0,00
+				</td>
+				<td> Compesação Prejuízo (30% Lucro do Período)</td>
+				<td class="valor mask-valor">0</td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				</td>
+				<td></td>
+				</tr>
+				<tr>
+				<td class="descricao" style="border-right-color: transparent">
+				( = ) Base de Cálculo do CSLL/IRPJ
+				</td>
+				<td></td>
+				<td class="valor mask-valor">-14500</td>
+				</tr>
 
-			<tr>
-			<th rowspan="5">
-			<div style="margin-top: 44px; margin-left: 63px" class="d-flex">
-			<input style="width: 43px !important; margin: 0"
-			id="apurar" disabled
-			type="checkbox" asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
-			<label for="apurar">Apurar imposto</label>
-			</div>
-			</th>
-			<td>( - ) Contribuição Social - 9%</td>
-			<td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", contribuicaoSocial)</td>
-			</tr>
-			<tr>
-			<td class="py-2"></td>
-			<td class="py-2"></td>
-			</tr>
-			<tr>
-			<td>( - ) Imposto de Renda - 15%</td>
-			<td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", impostoRenda)</td>
-			</tr>
-			<tr>
-			<td class="py-2"></td>
-			<td class="py-2"></td>
-			</tr>
-			<tr>
-			<td>
-			( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
-			lucro)
-			</td>
-			<td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", adcionalIr)</td>
-			</tr>*@
+				<tr>
+				<th rowspan="5">
+				<div style="margin-top: 44px; margin-left: 63px" class="d-flex">
+				<input style="width: 43px !important; margin: 0"
+				id="apurar" disabled
+				type="checkbox" asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
+				<label for="apurar">Apurar imposto</label>
+				</div>
+				</th>
+				<td>( - ) Contribuição Social - 9%</td>
+				<td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", contribuicaoSocial)</td>
+				</tr>
+				<tr>
+				<td class="py-2"></td>
+				<td class="py-2"></td>
+				</tr>
+				<tr>
+				<td>( - ) Imposto de Renda - 15%</td>
+				<td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", impostoRenda)</td>
+				</tr>
+				<tr>
+				<td class="py-2"></td>
+				<td class="py-2"></td>
+				</tr>
+				<tr>
+				<td>
+				( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
+				lucro)
+				</td>
+				<td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", adcionalIr)</td>
+				</tr>*@
 
 
 			</tbody>
@@ -860,7 +874,7 @@
 		</div>
 		<div class="row">
 			<div class="col-6 text-center">
-				<p class="mb-0">Maria do Carmo</p>
+				<p class="mb-0">@Model.Empresas.FirstOrDefault(f=>f.Value == Model.EmpresaSelecionada.ToString()).Text</p>
 				<h5>ASSINATURA DO CLIENTE</h5>
 			</div>
 			<div class="col-6 text-center">
@@ -873,13 +887,21 @@
 
 @section Scripts {
 	<script type="text/javascript">
-
-		$(window).on('beforeunload', function(e) {
+		$(window).on("popstate", function(event) {
+			debugger
+			console.log(event);
 			e.preventDefault();
 			e.returnValue = '';
 			setTimeout(function() { Ir(); }, 10);
 
 		});
+		//$(window).on('beforeunload', function(e) {
+
+		//	console.log(e);
+		//	console.log(document.activeElement.href);
+
+
+		//});
 		function Ir() {
 			window.location.href = '/Lancamento';
 		}

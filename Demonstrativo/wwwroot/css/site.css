@@ -366,6 +366,9 @@ input {
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     top: 6px !important;
 }
+.select2-container--default .select2-selection--multiple .select2-selection__choice {    
+    margin-top: 0 !important;
+}
 
 th, td {
     text-align: center;
@@ -393,7 +396,7 @@ th, td {
     border-bottom: 1px solid black !important;
 }
 
-#dre .table-bordered td, .table-bordered th {
+#dre .table-bordered td, #dre .table-bordered th {
     border: 1px solid black !important;
 }
 
