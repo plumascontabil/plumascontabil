@@ -304,8 +304,8 @@ namespace Demonstrativo.Controllers
             {
                 var insertEstoqueVendas = new Venda()
                 {
-                    DataCompetencia = ViewBag.CompetenciasSelecionadaId,
-                    EmpresaId = ViewBag.EmpresaSeleciodaId,
+                    DataCompetencia = competencia,
+                    EmpresaId = empresaId,
                     Observacao = estoqueVendas.Observacao
                 };
 
