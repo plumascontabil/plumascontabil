@@ -838,7 +838,7 @@
                                     @itemVenda?.Preco
                                 </td>
                                 <td class="mask-valor text-center">
-                                    @itemVenda?.Quantidade * itemVenda?.Preco
+                                    @(itemVenda?.Quantidade * itemVenda?.Preco)
                                 </td>
                             </tr>
                         }
@@ -878,12 +878,12 @@
 
     @section Scripts {
         <script type="text/javascript">
-          
+
             $(window).on('beforeunload', function (e) {
                 e.preventDefault();
                 e.returnValue = '';
                 setTimeout(function () { Ir(); }, 10);
-
+              
             });
             function Ir() {
                 window.location.href = '/Lancamento';
