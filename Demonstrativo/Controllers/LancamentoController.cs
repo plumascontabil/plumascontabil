@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Demonstrativo.Controllers
 {
@@ -22,19 +23,23 @@ namespace Demonstrativo.Controllers
     {
         readonly Context _context;
         private readonly ILogger<Lancamento> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
 
         //private readonly LancamentoDomainService _lancamentoDomainService;
 
         public LancamentoController(Context context,
             ILogger<Lancamento> logger,
+            UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager) : base(context, roleManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
             //_lancamentoDomainService = LancamentoDomainService;
         }
         public IActionResult Dre()
         {
+            ViewBag.Consultor = _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)).Result;
             AdicionarCompetenciaMesAtual();
 
             CarregarEmpresasCompetencias();

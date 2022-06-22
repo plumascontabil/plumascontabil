@@ -48,8 +48,9 @@
 	<div class="col-md-6">
 		<div class="form-group">
 			<label asp-for="EmpresasId"></label>
-			<select asp-for="EmpresasId" class="form-control select" multiselect asp-items='ViewBag.EmpresasId'>
-			</select>
+            <select asp-for="EmpresasId" class="form-control select" multiselect asp-items='ViewBag.EmpresasId'>
+                <option disabled value="">Selecione</option>
+            </select>
 			<span asp-validation-for="EmpresasId" class="text-danger"></span>
 		</div>
 		<a asp-action="CarregarUsuario" class="btn btn-plumas-w">Voltar</a>

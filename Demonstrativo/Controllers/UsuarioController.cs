@@ -49,6 +49,9 @@ namespace Demonstrativo.Controllers
             CarregarEmpresasCompetencias();
             return View(new RegistrarViewModel()
             {
+                Email = null,
+                Password = null,
+                ConfirmPassword = null,
                 UserRoles = _roleManager.Roles.ToList()
             });
         }
