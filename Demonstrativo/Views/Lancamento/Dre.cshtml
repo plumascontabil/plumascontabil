@@ -192,7 +192,8 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th colspan="2"></th>
+                    <th colspan="3"></th>
+
                     <th>RESULTADO</th>
                 </tr>
             </thead>
@@ -208,7 +209,7 @@
                     if (Model.LancamentosCompra == null)
                     {
                         <tr>
-                            <td colspan="2" class="bg-categoria text-white p-2">Compras</td>
+                            <td colspan="3" class="bg-categoria text-white p-2">Compras</td>
                             <td class="bg-categoria text-white p-2"></td>
                         </tr>
                     }
@@ -220,10 +221,10 @@
                             estoqueInicial += compra.Valor;
                         }
                         <tr>
-                            <td class="descricao" style="border-right-color: transparent">
+                            <td colspan="3" class="descricao" style="border-right-color: transparent">
                                 ESTOQUE INICIAL
                             </td>
-                            <td></td>
+
                             <td class="valor mask-valor">@estoqueInicial</td>
                         </tr>
                     }
@@ -241,7 +242,7 @@
                             somaCompra += compra.Valor;
                         }
                         <tr>
-                            <td colspan="2">Total Compras @j o. mês</td>
+                            <td colspan="3">Total Compras @j o. mês</td>
                             <td class="mask-valor">@somaCompra</td>
                         </tr>
                         somaCompraTrimestre += somaCompra;
@@ -249,36 +250,33 @@
                     }
 
                     <tr>
-                        <td colspan="2">Total Trimestre</td>
+                        <td colspan="3">Total Trimestre</td>
                         <td class="mask-valor">@somaCompraTrimestre</td>
                     </tr>
                     foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
                     {
                         estoqueFinal += compra.Valor;
                     }
-                    <tr><td></td></tr>
+                    <tr><td colspan="3"></td></tr>
                     <tr>
-                        <td colspan="2">( - ) Estoque Final</td>
+                        <td colspan="3">( - ) Estoque Final</td>
                         <td class="mask-valor">@estoqueFinal</td>
                     </tr>
-                    <tr><td></td></tr>
+                    <tr><td colspan="3"></td></tr>
                     custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
 
                     <tr>
-                        <td class="descricao" style="border-right-color: transparent">
+                        <td colspan="3" class="descricao" style="border-right-color: transparent">
                             Total Trimestre
                         </td>
-                        <td></td>
+
                         <td class="valor mask-valor">@estoqueFinal</td>
                     </tr>
 
                     //decimal lucroBruto = 0;
                     if (Model.LancamentosReceita == null)
                     {
-                        <tr>
-                            <td colspan="2"></td>
-                            <td></td>
-                        </tr>
+                        <tr><td colspan="3"></td></tr>
                     }
                     else
                     {
@@ -293,7 +291,7 @@
                                 somaReceita += receita.Valor;
                             }
                             <tr>
-                                <td colspan="2">Total Receitas @j o. mês</td>
+                                <td colspan="3">Total Receitas @j o. mês</td>
                                 <td class="mask-valor">@somaReceita</td>
                             </tr>
                             somaReceitaTrimestre += somaReceita;
@@ -304,16 +302,16 @@
                         if (somaReceitaTrimestre == 0)
                         {
                             <tr>
-                                <td colspan="2">Total Receitas Trimestre</td>
+                                <td colspan="3">Total Receitas Trimestre</td>
                                 <td class="mask-valor">@somaReceitaTrimestre</td>
                             </tr>
                             <tr>
-                                <td colspan="2">( = ) Lucro Bruto (R$)</td>
+                                <td colspan="3">( = ) Lucro Bruto (R$)</td>
                                 <td class="mask-valor">@lucroBruto</td>
                             </tr>
-                            <tr><td></td></tr>
+                            <tr><td colspan="3"></td></tr>
                             <tr>
-                                <td colspan="2">( = ) Margem Bruta Total em %</td>
+                                <td colspan="3">( = ) Margem Bruta Total em %</td>
                                 <td class="mask-valor"></td>
                             </tr>
                         }
@@ -321,21 +319,21 @@
                         {
                             var margemLucroBruto = (lucroBruto / somaReceitaTrimestre) * 100;
                             <tr>
-                                <td colspan="2">Total Receitas Trimestre</td>
+                                <td colspan="3">Total Receitas Trimestre</td>
                                 <td class="mask-valor">@somaReceitaTrimestre</td>
                             </tr>
 
-                            <tr><td></td></tr>
+                            <tr><td colspan="3"></td></tr>
                             <tr>
-                                <td colspan="2">( = ) Lucro Bruto (R$)</td>
+                                <td colspan="3">( = ) Lucro Bruto (R$)</td>
                                 <td class="mask-valor">@lucroBruto</td>
                             </tr>
-                            <tr><td></td></tr>
+                            <tr><td colspan="3"></td></tr>
                             <tr>
-                                <td colspan="2">( = ) Margem Bruta Total em %</td>
+                                <td colspan="3">( = ) Margem Bruta Total em %</td>
                                 <td class="mask-valorDecimal">@margemLucroBruto</td>
                             </tr>
-                            <tr><td></td></tr>
+                            <tr><td colspan="3"></td></tr>
                         }
                     }
 
@@ -343,10 +341,7 @@
                     //decimal somaDespesaTrimestre = 0;
                     if (Model.LancamentosDespesa == null)
                     {
-                        <tr>
-                            <td colspan="2"></td>
-                            <td></td>
-                        </tr>
+                        <tr><td colspan="3"></td></tr>
                     }
                     else
                     {
@@ -360,17 +355,19 @@
                                 somaDespesa += despesa.Valor;
                             }
                             <tr>
-                                <td colspan="2">Total Despesas @j o. mês</td>
+                                <td colspan="3">Total Despesas @j o. mês</td>
                                 <td class="mask-valor">@somaDespesa</td>
                             </tr>
+                            <tr><td colspan="3"></td></tr>
                             somaDespesaTrimestre += somaDespesa;
                             j++;
 
                         }
                         <tr>
-                            <td colspan="2">Total trimestre</td>
+                            <td colspan="3">Total trimestre</td>
                             <td class="mask-valor">@somaDespesaTrimestre</td>
                         </tr>
+                        <tr><td colspan="3"></td></tr>
                     }
 
 
@@ -383,7 +380,7 @@
                             @Model.ProvisoesDepreciacoes.DecimoTerceiro
                         </td>
                     </tr>
-
+                    <tr><td colspan="3"></td></tr>
 
                     <tr>
                         <td colspan="3">( - ) Provisão de Férias</td>
@@ -392,7 +389,7 @@
                             @Model.ProvisoesDepreciacoes.Ferias
                         </td>
                     </tr>
-
+                    <tr><td colspan="3"></td></tr>
                     <tr>
                         <td colspan="3">( - ) Depreciações</td>
                         <td class="mask-valor">
@@ -400,7 +397,7 @@
                             @Model.ProvisoesDepreciacoes.Depreciacao
                         </td>
                     </tr>
-
+                    <tr><td colspan="3"></td></tr>
                     <tr>
                         <td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
                         <td class="mask-valor">
@@ -408,7 +405,7 @@
                             @Model.ProvisoesDepreciacoes.SaldoPrejuizo
                         </td>
                     </tr>
-
+                    <tr><td colspan="3"></td></tr>
 
                     double prejuizoCompensado = 0;
                     var lucroPeriodo = lucroBruto - somaDespesaTrimestre - @Model.ProvisoesDepreciacoes.DecimoTerceiro - @Model.ProvisoesDepreciacoes.Ferias - @Model.ProvisoesDepreciacoes.Depreciacao;
@@ -422,522 +419,534 @@
                             <output class="mask-valor">@prejuizoCompensado</output>
                         </td>
                     </tr>
-
+                    <tr><td colspan="3"></td></tr>
                     //var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
-                <thead>
+
                     <tr>
                         <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
                         <td>
                             <output class="mask-valor"> @(csll) </output>
                         </td>
                     </tr>
-                    <tr>
-                        <th colspan="3" class="bg-categoria text-white p-2">APURAR - S/N </th>
-                        <td class="bg-categoria text-white p-2 col-result"><input type="checkbox" disabled asp-for="@Model.ProvisoesDepreciacoes.Apurar" /></td>
-                    </tr>
-
-
-                </thead>
-                //double contribuicaoSocial = 0;
-                //double impostoRenda = 0;
-                //double adcionalIr = 0;
-                if (@Model.ProvisoesDepreciacoes.Apurar)
-                {
-                    contribuicaoSocial = (double)csll * 0.09;
-                    impostoRenda = (double)csll * 0.15;
-                    if (csll > 60000)
-                    {
-                        adcionalIr = (double)csll * 0.10;
-                    }
-                }
-                <tr>
-                    <td colspan="3">( - ) Contribuição Social - 9%</td>
-                    <td>
-                        <output class="mask-valor"> @(contribuicaoSocial) </output>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">( - ) Imposto de Renda - 15%</td>
-                    <td>
-                        <output class="mask-valor">@impostoRenda </output>
-                    </td>
-                </tr>
-                <tr><td colspan="3"></td></tr>
-                <tr>
-                    <td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
-                    <td>
-                        <output class="mask-valor"> @adcionalIr </output>
-                    </td>
-                </tr>
-                <tr><td colspan="3"></td></tr>
-
-
-
-                <tr>
-                    <td style="border-right-color: transparent">
-                        ( = ) Prejuízo Real
-                    </td>
-                    <td>
-                    </td>
-                    <td class="mask-valor"> @(lucroBruto + somaDespesaTrimestre)</td>
-                </tr>
-
-                }
-
-                @*<tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor"></td>
-                    </tr>*@
-
-
-                @*<tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor"></td>
-                    </tr>*@
-                @*<tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( = ) Lucro Bruto (R$)
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">1000</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( = ) Margem Bruta Total em %
-                        </td>
-                        <td></td>
-                        <td class="valor">10,20%</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor"></td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Despesas - 1º. mês
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Despesas - 2º. mês
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Despesas - 3º. mês
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            Total Trimestre
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor"></td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Provisão de 13° Salário
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">2500</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor"></td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Provisão de Férias
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">2500</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor"></td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Depreciações
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">-2500</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor"></td>
-                    </tr>*@
-                @*<tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( = ) Prejuízo do Período
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">-2500</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                        <td class="valor"></td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( - ) Saldo Prejuízos Acumulados R$ 0,00
-                        </td>
-                        <td> Compesação Prejuízo (30% Lucro do Período)</td>
-                        <td class="valor mask-valor">0</td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="descricao" style="border-right-color: transparent">
-                            ( = ) Base de Cálculo do CSLL/IRPJ
-                        </td>
-                        <td></td>
-                        <td class="valor mask-valor">-14500</td>
-                    </tr>
+                    <tr><td colspan="3"></td></tr>
 
                     <tr>
                         <th rowspan="5">
-                            <div style="margin-top: 44px; margin-left: 63px" class="d-flex">
-                                <input style="width: 43px !important; margin: 0"
-                                       id="apurar" disabled
-                                       type="checkbox" asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
-                                <label for="apurar">Apurar imposto</label>
+                            <div style="margin-top: 44px; margin-left: 63px" class="d-flex align-items-center">
+                                <input style="width:30px" class="m-0" id="apurar" type="checkbox" disabled asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
+                                <label class="m-0" for="apurar">Apurar imposto</label>
                             </div>
                         </th>
-                        <td>( - ) Contribuição Social - 9%</td>
-                        <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", contribuicaoSocial)</td>
+                        <td colspan="2">( - ) Contribuição Social - 9%</td>
+                        <td><output class="mask-valor"> @(contribuicaoSocial) </output></td>
                     </tr>
                     <tr>
-                        <td class="py-2"></td>
-                        <td class="py-2"></td>
+                        <td colspan="2" class="py-2"></td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td>( - ) Imposto de Renda - 15%</td>
-                        <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", impostoRenda)</td>
+                        <td colspan="2">( - ) Imposto de Renda - 15%</td>
+                        <td><output class="mask-valor">@impostoRenda </output></td>
                     </tr>
                     <tr>
-                        <td class="py-2"></td>
-                        <td class="py-2"></td>
+                        <td colspan="2" class="py-2"></td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td>
+                        <td colspan="2">
                             ( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
                             lucro)
                         </td>
-                        <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", adcionalIr)</td>
-                    </tr>*@
-
-
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-12" style="font-size: 15px">
-            <div class="row">
-                <div class="col-6"><h3>Escrita Fiscal</h3></div>
-                <div class="col-6"><h3>Verificação</h3></div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Responsável</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 60px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                    width: 220px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Líder</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 60px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                    width: 220px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Fernando</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 60px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                    width: 220px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Luiz</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 60px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                    width: 220px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Fabiana</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 35px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                           style="
-                    width: 60px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                    width: 220px;
-                    height: 24px;
-                    border-bottom: solid 1px black;
-                  "></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Combustíveis</th>
-                        <th>Estoque Final (LT)</th>
-                        <th>Valor Unitário (R$)</th>
-                        <th>Estoque Final</th>
+                        <td><output class="mask-valor"> @adcionalIr </output></td>
                     </tr>
-                </thead>
-                <tbody>
-                    @{
-                        for (int y = 0; j < Model.EstoqueVendas.Produtos.Count; j++)
+
+
+
+
+                    //double contribuicaoSocial = 0;
+                    //double impostoRenda = 0;
+                    //double adcionalIr = 0;
+                    if (@Model.ProvisoesDepreciacoes.Apurar)
+                    {
+                        contribuicaoSocial = (double)csll * 0.09;
+                        impostoRenda = (double)csll * 0.15;
+                        if (csll > 60000)
                         {
-                            var produtos = Model.EstoqueVendas.Produtos[y];
-
-                            var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
-
-                            <tr>
-                                <th>
-                                    @produtos.Nome
-                                </th>
-                                <td class="mask-decimal">
-                                    @itemVenda?.Quantidade
-                                </td>
-                                <td class="mask-valor">
-                                    @itemVenda?.Preco
-                                </td>
-                                <td class="mask-valor text-center">
-                                    @(itemVenda?.Quantidade * itemVenda?.Preco)
-                                </td>
-                            </tr>
+                            adcionalIr = (double)csll * 0.10;
                         }
                     }
 
-                    <tr colspan="4">
-                        <td colspan="4"
-                            style="border-right: transparent; border-bottom: transparent">
-                            <p class="text-left mb-0 mt-5">Observações</p>
-                            <div class="w-100">
-                                <textarea rows="5" disabled class="w-100">@Model.EstoqueVendas.Observacao</textarea>
-                            </div>
+
+                    <tr><td colspan="3"></td><td></td></tr>
+
+                    <tr><td colspan="3"></td><td></td></tr>
+
+
+
+                    <tr>
+                        <td colspan="3" style="border-right-color: transparent">
+                            ( = ) Prejuízo Real
                         </td>
+
+                        <td class="mask-valor"> @(lucroBruto + somaDespesaTrimestre)</td>
                     </tr>
-                </tbody>
-            </table>
-            <small>
-                Obs.: As informações deste demonstrativo são apenas para análise e
-                tomada de decisões. <br />Os valoes de CSSL e IRPJ podem sofrer
-                alterações.
-            </small>
-            <div class="d-flex justify-content-end pb-1 border-bottom border-dark">
-                <p>@DateTime.Now.ToString("dd/MM/yyyy")</p>
-            </div>
-            <div class="row">
-                <div class="col-6 text-center">
-                    <p class="mb-0">Maria do Carmo</p>
-                    <h5>ASSINATURA DO CLIENTE</h5>
+
+                }
+
+                @*<tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor"></td>
+                    </tr>*@
+
+
+                @*<tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor"></td>
+                    </tr>*@
+                @*<tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( = ) Lucro Bruto (R$)
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">1000</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( = ) Margem Bruta Total em %
+                    </td>
+                    <td></td>
+                    <td class="valor">10,20%</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Despesas - 1º. mês
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">1020</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Despesas - 2º. mês
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">1020</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Despesas - 3º. mês
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">1020</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    Total Trimestre
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">1020</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Provisão de 13° Salário
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">2500</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Provisão de Férias
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">2500</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Depreciações
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">-2500</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                    </tr>*@
+                @*<tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( = ) Prejuízo do Período
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">-2500</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    <td class="valor"></td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( - ) Saldo Prejuízos Acumulados R$ 0,00
+                    </td>
+                    <td> Compesação Prejuízo (30% Lucro do Período)</td>
+                    <td class="valor mask-valor">0</td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    </td>
+                    <td></td>
+                    </tr>
+                    <tr>
+                    <td class="descricao" style="border-right-color: transparent">
+                    ( = ) Base de Cálculo do CSLL/IRPJ
+                    </td>
+                    <td></td>
+                    <td class="valor mask-valor">-14500</td>
+                    </tr>
+
+                    <tr>
+                    <th rowspan="5">
+                    <div style="margin-top: 44px; margin-left: 63px" class="d-flex">
+                    <input style="width: 43px !important; margin: 0"
+                    id="apurar" disabled
+                    type="checkbox" asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
+                    <label for="apurar">Apurar imposto</label>
+                    </div>
+                    </th>
+                    <td>( - ) Contribuição Social - 9%</td>
+                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", contribuicaoSocial)</td>
+                    </tr>
+                    <tr>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+                    </tr>
+                    <tr>
+                    <td>( - ) Imposto de Renda - 15%</td>
+                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", impostoRenda)</td>
+                    </tr>
+                    <tr>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+                    </tr>
+                    <tr>
+                    <td>
+                    ( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
+                    lucro)
+                    </td>
+                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", adcionalIr)</td>
+                    </tr>*@
+
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-12" style="font-size: 15px">
+        <div class="row">
+            <div class="col-6"><h3>Escrita Fiscal</h3></div>
+            <div class="col-6"><h3>Verificação</h3></div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Responsável</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 60px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                        <span class="d-inline-block ml-2"
+                              style="
+                    width: 220px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                    </div>
                 </div>
-                <div class="col-6 text-center">
-                    <p class="mb-0">David Pinheiro</p>
-                    <p>Última exportação(Contábil): 09/02/2022 11:37:27</p>
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Líder</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 60px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                        <span class="d-inline-block ml-2"
+                              style="
+                    width: 220px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Fernando</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 60px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                        <span class="d-inline-block ml-2"
+                              style="
+                    width: 220px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Luiz</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 60px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                        <span class="d-inline-block ml-2"
+                              style="
+                    width: 220px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between ass-area">
+                    <p class="m-0">Fabiana</p>
+                    <div class="ml-3">
+                        <span class="d-inline-block"
+                              style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 35px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
+                                                                           style="
+                    width: 60px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                        <span class="d-inline-block ml-2"
+                              style="
+                    width: 220px;
+                    height: 24px;
+                    border-bottom: solid 1px black;
+                  "></span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @section Scripts {
-        <script type="text/javascript">
+    <div class="col-12">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Combustíveis</th>
+                    <th>Estoque Final (LT)</th>
+                    <th>Valor Unitário (R$)</th>
+                    <th>Estoque Final</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    for (int y = 0; j < Model.EstoqueVendas.Produtos.Count; j++)
+                    {
+                        var produtos = Model.EstoqueVendas.Produtos[y];
 
-            $(window).on('beforeunload', function (e) {
-                e.preventDefault();
-                e.returnValue = '';
-                setTimeout(function () { Ir(); }, 10);
-              
-            });
-            function Ir() {
-                window.location.href = '/Lancamento';
-            }
-            function handlePrint(event) {
-                event.preventDefault();
-                let container = document.querySelectorAll(".container");
-                let teste = document.querySelectorAll(".print-none");
-                const btnPrint = document.getElementById("btnPrint");
-                // let textSize = document.querySelector(".text-small");
-                // let areaAssinatura = document.querySelectorAll(".ass-area");
+                        var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
 
-                // areaAssinatura.forEach((ass) => {
-                //   ass.style.fontSize = "25px";
-                // });
-
-                // textSize.classList.remove("text-small");
-                // textSize.style.fontSize = "30px";
-
-                container.classList = 'container-fluid'
-
-                btnPrint.classList.add("d-none");
-                teste.forEach((item) => {
-                    item.classList.remove("d-flex");
-                    item.classList.add("d-none");
-                });
-
-                var css = '@@page { size: landscape; }',
-                    head = document.head || document.getElementsByTagName('head')[0],
-                    style = document.createElement('style');
-
-                style.type = 'text/css';
-                style.media = 'print';
-
-                if (style.styleSheet) {
-                    style.styleSheet.cssText = css;
-                } else {
-                    style.appendChild(document.createTextNode(css));
+                        <tr>
+                            <th>
+                                @produtos.Nome
+                            </th>
+                            <td class="mask-decimal">
+                                @itemVenda?.Quantidade
+                            </td>
+                            <td class="mask-valor">
+                                @itemVenda?.Preco
+                            </td>
+                            <td class="mask-valor text-center">
+                                @(itemVenda?.Quantidade * itemVenda?.Preco)
+                            </td>
+                        </tr>
+                    }
                 }
 
-                head.appendChild(style);
+                <tr colspan="4">
+                    <td colspan="4"
+                        style="border-right: transparent; border-bottom: transparent">
+                        <p class="text-left mb-0 mt-5">Observações</p>
+                        <div class="w-100">
+                            <textarea rows="5" disabled class="w-100">@Model.EstoqueVendas.Observacao</textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <small>
+            Obs.: As informações deste demonstrativo são apenas para análise e
+            tomada de decisões. <br />Os valoes de CSSL e IRPJ podem sofrer
+            alterações.
+        </small>
+        <div class="d-flex justify-content-end pb-1 border-bottom border-dark">
+            <p>@DateTime.Now.ToString("dd/MM/yyyy")</p>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-0">@Model.Empresas.FirstOrDefault(f => f.Value == Model.EmpresaSelecionada.ToString()).Text</p>
+                <h5>ASSINATURA DO CLIENTE</h5>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-0">@ViewBag.Consultor</p>
+               @* <p>Última exportação(Contábil): 09/02/2022 11:37:27</p>*@
+            </div>
+        </div>
+    </div>
+</div>
 
-                window.print();
+@section Scripts {
+    <script type="text/javascript">
 
-                teste.forEach((item) => {
-                    item.classList.remove("d-none");
-                    item.classList.add("d-flex");
-                });
-                btnPrint.classList.remove("d-none");
-                container.classList = 'container'
-                // textSize.classList.add("text-small");
-                // areaAssinatura.forEach((ass) => {
-                //   ass.style.fontSize = "15px";
-                // });
+        $(window).on('beforeunload', function (e) {
+            console.log(event);
+            e.preventDefault();
+            e.returnValue = '';
+            setTimeout(function () { Ir(); }, 10);
+        });
+        function Ir() {
+            window.location.href = '/Lancamento';
+        }
+        function handlePrint(event) {
+            event.preventDefault();
+            let container = document.querySelectorAll(".container");
+            let teste = document.querySelectorAll(".print-none");
+            const btnPrint = document.getElementById("btnPrint");
+            // let textSize = document.querySelector(".text-small");
+            // let areaAssinatura = document.querySelectorAll(".ass-area");
+
+            // areaAssinatura.forEach((ass) => {
+            //   ass.style.fontSize = "25px";
+            // });
+
+            // textSize.classList.remove("text-small");
+            // textSize.style.fontSize = "30px";
+
+            container.classList = 'container-fluid'
+
+            btnPrint.classList.add("d-none");
+            teste.forEach((item) => {
+                item.classList.remove("d-flex");
+                item.classList.add("d-none");
+            });
+
+            var css = '@@page { size: landscape; }',
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.type = 'text/css';
+            style.media = 'print';
+
+            if (style.styleSheet) {
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
             }
-        </script>
-    }
+
+            head.appendChild(style);
+
+            window.print();
+
+            teste.forEach((item) => {
+                item.classList.remove("d-none");
+                item.classList.add("d-flex");
+            });
+            btnPrint.classList.remove("d-none");
+            container.classList = 'container'
+            // textSize.classList.add("text-small");
+            // areaAssinatura.forEach((ass) => {
+            //   ass.style.fontSize = "15px";
+            // });
+        }
+    </script>
+}

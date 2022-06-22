@@ -33,12 +33,12 @@
         };
     </script>
 }
-<a href="@Url.Action("Dre")" class="floatBtnDRE btn btn-plumas" data-toggle="tooltip" data-placement="top" title="Imprimir DRE">
-    <i class="fa fa-bar-chart fa-2x"></i>
+<a href="@Url.Action("Dre")" class="floatBtnDRE btn btn-plumas d-flex justify-content-center align-items-center" data-toggle="tooltip" data-placement="top" title="Imprimir DRE">
+   <i class="fa fa-bar-chart fa-2x"></i>
 </a>
-<a href="@Url.Action("GerarArquivo")" data-toggle="tooltip" data-placement="top" title="Baixar arquivo txt" class="floatBtnArquivo btn btn-plumas">
+<a href="@Url.Action("GerarArquivo")" data-toggle="tooltip" data-placement="top" title="Baixar arquivo txt" class="floatBtnArquivo d-flex justify-content-center align-items-center btn btn-plumas">
 
-    <span class="download-txt">TXT</span>
+   <span class="download-txt">TXT</span>
 </a>
 @using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post, new { @class = "form-lancamento" }))
 
@@ -81,7 +81,7 @@
                     <table class="table table-bordered inptable mx-auto">
                         <thead>
                             <tr>
-                                <th colspan="3" class="bg-categoria text-white p-2">@categoria.Descricao</th>
+                                <th colspan="3" class="bg-categoria text-white">@categoria.Descricao</th>
                             </tr>
                         </thead>
                         @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
@@ -150,8 +150,8 @@
             <table class="table table-bordered mx-auto inptable">
                 <thead>
                     <tr>
-                        <th colspan="2" class="bg-categoria text-white p-2">COMPRAS</th>
-                        <th class="bg-categoria text-white p-2 col-result">Resultado</th>
+                        <th colspan="2" class="bg-categoria text-white">COMPRAS</th>
+                        <th class="bg-categoria text-white col-result">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -165,8 +165,8 @@
                         if (Model.LancamentosCompra == null)
                         {
                             <tr>
-                                <td colspan="2" class="bg-categoria text-white p-2">Compras</td>
-                                <td class="bg-categoria text-white p-2"></td>
+                                <td colspan="2" class="bg-categoria text-white">Compras</td>
+                                <td class="bg-categoria text-white"></td>
                             </tr>
                         }
                         else
@@ -225,8 +225,8 @@
             <table class="table table-bordered mx-auto inptable">
                 <thead>
                     <tr>
-                        <th colspan="2" class="bg-categoria text-white p-2">RECEITAS</th>
-                        <th class="bg-categoria text-white p-2 col-result">Resultado</th>
+                        <th colspan="2" class="bg-categoria text-white">RECEITAS</th>
+                        <th class="bg-categoria text-white col-result">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -305,8 +305,8 @@
             <table class="table table-bordered mx-auto inptable">
                 <thead>
                     <tr>
-                        <th colspan="2" class="bg-categoria text-white p-2">DESPESAS</th>
-                        <th class="bg-categoria text-white p-2 col-result">Resultado</th>
+                        <th colspan="2" class="bg-categoria text-white">DESPESAS</th>
+                        <th class="bg-categoria text-white col-result">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -354,8 +354,8 @@
             <table class="table table-bordered mx-auto inptable">
                 <thead>
                     <tr>
-                        <th colspan="3" class="bg-categoria text-white p-2">Prejuisos e Compensações</th>
-                        <th class="bg-categoria text-white p-2 col-result">Resultado</th>
+                        <th colspan="3" class="bg-categoria text-white">Prejuisos e Compensações</th>
+                        <th class="bg-categoria text-white col-result">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -397,8 +397,8 @@
 
                         <tr><td></td></tr>
                         <tr>
-                            <th colspan="3" class="bg-categoria text-white p-2"> Calcular Compensação </th>
-                            <td class="bg-categoria text-white p-2"><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
+                            <th colspan="3" class="bg-categoria text-white"> Calcular Compensação </th>
+                            <td class="bg-categoria text-white "><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
                         </tr>
                         <tr><td></td></tr>
                         double prejuizoCompensado = 0;
@@ -430,8 +430,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <th colspan="3" class="bg-categoria text-white p-2">APURAR - S/N </th>
-                            <td class="bg-categoria text-white p-2 col-result"><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
+                            <th colspan="3" class="bg-categoria text-white">APURAR - S/N </th>
+                            <td class="bg-categoria text-white col-result"><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
                         </tr>
                     </thead>
                     double contribuicaoSocial = 0;
@@ -476,8 +476,8 @@
             <table class="table table-bordered mx-auto inptable">
                 <thead>
                     <tr>
-                        <th colspan="3" class="bg-categoria text-white p-2">Lucro</th>
-                        <th class="bg-categoria text-white p-2 col-result">Resultado</th>
+                        <th colspan="3" class="bg-categoria text-white">Lucro</th>
+                        <th class="bg-categoria text-white col-result">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -523,7 +523,7 @@
             <table class="table table-bordered mx-auto inptable">
                 <thead>
                     <tr>
-                        <th colspan="4" class="bg-categoria text-white p-2">Estoque Combustível</th>
+                        <th colspan="4" class="bg-categoria text-white ">Estoque Combustível</th>
                     </tr>
                     <tr>
                         <th class="bg-light">Combustíveis</th>

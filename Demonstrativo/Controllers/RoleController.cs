@@ -59,6 +59,7 @@ namespace Demonstrativo.Controllers
             var newRole = new IdentityRole();
             newRole.Name = data.Role;
             await _roleManager.CreateAsync(newRole);
+            _context.SaveChanges();
             var role = _roleManager.GetRoleIdAsync(newRole);
             foreach (var id in data.TelaId)
             {
@@ -104,6 +105,7 @@ namespace Demonstrativo.Controllers
                     foreach (var rt in roleTela)
                     {
                         _context.RoleTelas.Remove(rt);
+                        _context.SaveChanges();
                     }
                     await _roleManager.DeleteAsync(role);
                     _logger.LogInformation(((int)EEventLog.Delete), "Role Id: {role} created.", id);

@@ -49,6 +49,9 @@ namespace Demonstrativo.Controllers
             CarregarEmpresasCompetencias();
             return View(new RegistrarViewModel()
             {
+                Email = null,
+                Password = null,
+                ConfirmPassword = null,
                 UserRoles = _roleManager.Roles.ToList()
             });
         }
@@ -77,7 +80,8 @@ namespace Demonstrativo.Controllers
                         _context.SaveChanges();
                     }
                     await _userManager.AddToRoleAsync(user, role.Name);
-                    return LocalRedirect(viewModel.ReturnUrl);
+                    TempData["criado"] = "criado";
+                    return RedirectToAction("CarregarUsuario");
                 }
                 foreach (var error in result.Errors)
                 {
