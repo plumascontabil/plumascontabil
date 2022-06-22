@@ -26,22 +26,22 @@
 		};
     </script>
 }
+<form asp-controller="Importacao" asp-action="OfxReimportar">
 
-<div class="py-4 pl-3 d-flex justify-content-between">
-    <h1 class="page-title">@ViewData["Title"]</h1>
+    <div class="py-4 pl-3 d-flex justify-content-between">
+        <h1 class="page-title">@ViewData["Title"]</h1>
 
-    <div>
-        <a class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
-            Adicionar Lançamento Manual<i class="fa fa-plus ml-2"></i>
-        </a>
+        <div>
+            <a class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
+                Adicionar Lançamento Manual<i class="fa fa-plus ml-2"></i>
+            </a>
+        </div>
+
     </div>
-
-</div>
-<div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
+    <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
 
 
-    <div class="m-auto">
-        <form asp-controller="Importacao" asp-action="OfxReimportar">
+        <div class="m-auto">
 
 
             <!-- Modal -->
@@ -86,10 +86,10 @@
                     </div>
                 </div>
             </div>
-        </form>
 
 
-        <form id="OfxSalvar" asp-controller="Importacao" asp-action="OfxSalvar">
+
+
             @*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
                 <option value="">Selecione</option>
                 </select>*@
@@ -159,11 +159,11 @@
             </table>
             <button class="btn btn-plumas-w" data-goBack="voltar">Voltar</button>
             <input type="submit" class="btn btn-plumas-w" asp-action="OfxSalvar" />
-        </form>
 
-    </div>
-</div>
 
+        </div>
+
+</form>
 @section Scripts{
 
 }
