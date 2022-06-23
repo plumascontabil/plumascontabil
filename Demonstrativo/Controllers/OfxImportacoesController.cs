@@ -177,7 +177,8 @@ namespace Demonstrativo.Controllers
                 }
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
-                try {
+                try
+                {
                     if (extratoBancario != null)
                     {
                         var documento = new OFXDocumentParser();
@@ -196,7 +197,9 @@ namespace Demonstrativo.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.Message = e.Message;
+
+                    var erro = e.Message == "Unable to parse date" ? "Data do arquivo Inválida" : e.Message;
+                    ViewBag.Message = erro;
                     return View("Index");
                 }
 
