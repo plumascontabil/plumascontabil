@@ -125,7 +125,6 @@ namespace Demonstrativo.Controllers
             var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             var autoDescricoes = _context.AutoDescricoes;
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
-
             if (ofxArquivo == null)
             {
                 // IniT();
@@ -133,7 +132,7 @@ namespace Demonstrativo.Controllers
                 return View("Index");
             }
 
-            if (!ofxArquivo.FileName.Contains("ofx"))
+            if (!ofxArquivo.FileName.ToLower().Contains("ofx"))
             {
                 // IniT();
                 ViewBag.SemArquivo = $"Esse arquivo não possui o formato correto! Importe um arquivo OFX.";
@@ -170,7 +169,7 @@ namespace Demonstrativo.Controllers
                     Directory.CreateDirectory($"{_appEnvironment.WebRootPath}\\Temp");
                 }
                 //Caminho para salvar arquivo no servidor
-                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
+                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName.ToLower()}";
 
                 using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
                 {
@@ -178,22 +177,28 @@ namespace Demonstrativo.Controllers
                 }
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
-                if (extratoBancario != null)
-                {
-                    var documento = new OFXDocumentParser();
-                    var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
-                    //saldo = dadoDocumento.Balance.LedgerBalance;
-                }
+                try {
+                    if (extratoBancario != null)
+                    {
+                        var documento = new OFXDocumentParser();
+                        var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
+                        //saldo = dadoDocumento.Balance.LedgerBalance;
+                    }
 
-                if (extratoBancario.
-                    Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
-                                         || (f.Date.Month != competenciasId.Month && f.Date.Year != competenciasId.Year)
-                                         || (f.Date.Year != competenciasId.Year)).Count() > 0)
+                    if (extratoBancario.
+                        Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
+                                             || (f.Date.Month != competenciasId.Month && f.Date.Year != competenciasId.Year)
+                                             || (f.Date.Year != competenciasId.Year)).Count() > 0)
+                    {
+                        ViewBag.Message = "Este OFX tem datas que não correspondem a Competência selecionada!";
+                        return View("Index");
+                    }
+                }
+                catch (Exception e)
                 {
-                    ViewBag.Message = "Este OFX tem datas que não correspondem a Competência selecionada!";
+                    ViewBag.Message = e.Message;
                     return View("Index");
                 }
-
 
                 var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == extratoBancario.BankAccount.AccountCode);
                 if (dadosContaCorrente != null)
