@@ -16,7 +16,7 @@ namespace Demonstrativo.Models
         {
             get
             {
-                return Convert.ToDecimal(ValorInput.Replace("R$", "").Trim());
+                return ValorInput != null ? Convert.ToDecimal(ValorInput.Replace("R$", "").Trim()) : 0;
             }
         }
 

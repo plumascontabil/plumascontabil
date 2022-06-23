@@ -196,7 +196,7 @@ namespace Demonstrativo.Controllers
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel()
                         {
-                            Valor = Convert.ToDecimal(valor)
+                            Valor = Convert.ToDecimal(valor) * -1
                         });
                     }
 

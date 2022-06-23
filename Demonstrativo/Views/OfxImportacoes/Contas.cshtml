@@ -26,7 +26,7 @@
 		};
     </script>
 }
-<form asp-controller="Importacao" asp-action="OfxReimportar">
+<form id="OfxReimportar" asp-controller="OfxImportacoes" asp-action="OfxReimportar">
 
     <div class="py-4 pl-3 d-flex justify-content-between">
         <h1 class="page-title">@ViewData["Title"]</h1>
@@ -40,6 +40,11 @@
     </div>
     <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
 
+        @{
+            var maxYin = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+            var min = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}").ToString("yyyy-MM-dd");
+            var max = maxYin.AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
+        }
 
         <div class="m-auto">
 
@@ -58,7 +63,7 @@
 
                             <div class="form-group">
                                 <label for="data">Data</label>
-                                <input id="data" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
+                                <input id="data" max="@max" min="@min" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
                             </div>
                             <div class="import-lote mb-3">
                                 <div><label for="tipo">Tipo</label></div>
@@ -152,6 +157,18 @@
                                     <option value="">Selecione</option>
                                 </select>
                             </td>
+                            @if (ofxs.Id == "MANUAL")
+                            {
+                                <td>
+                                    @*<button data-toggle="tooltip" id="ManualEdit_@i" title="Editar" value="@true" asp-action="OfxReimportEdit">
+                                        <i class="fa fa-edit"></i>
+                                    </button>*@
+                                    <button data-toggle="tooltip" id="ManualExcluir_@i" title="Excluir" value="@true" asp-action="OfxReimportarDelete"> <i class="fa fa-trash"></i></button>
+                                    <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Selecionando" />
+                                    <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
+                                </td>
+                            }
+
                         </tr>
 
                     }
@@ -165,5 +182,24 @@
 
 </form>
 @section Scripts{
+    <script type="text/javascript">
+        $("button[id*='Manual'").click(function (event) {
+            var id = event.currentTarget.id;
+            const xx = "#Manu_" + id.split("_")[1];
+            $(xx).val(true);
+        });
 
+     /*   $("#staticBackdrop").click(function (event) {
+            //$("#OfxReimportar").reset();
+            $('#OfxReimportar').trigger("reset");
+
+        });
+        */
+    </script>
+    @if (ViewBag.OpenModal != null)
+    {
+        <script type="text/javascript">
+            $("#staticBackdrop").modal();
+        </script>
+    }
 }

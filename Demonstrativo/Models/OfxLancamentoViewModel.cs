@@ -18,6 +18,8 @@ namespace Demonstrativo.Models
         public SelectList LancamentosPadroes { get; set; }
         public int LancamentoPadraoSelecionado { get; set; }
         public SaldoMensalViewModel SaldoMensal { get; set; }
+        public bool Selecionando { get; set; }
+        public int Index { get; set; }
 
     }
 }

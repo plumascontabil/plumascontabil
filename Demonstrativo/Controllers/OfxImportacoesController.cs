@@ -334,8 +334,7 @@ namespace Demonstrativo.Controllers
             var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
             var extratoBancarioViewModel = new ExtratoBancarioViewModel();
 
-
-
+            extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
             foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
                 var lancamentoPadrao = lancamentosPadroes
@@ -367,10 +366,10 @@ namespace Demonstrativo.Controllers
                         CheckSum = dados.CheckSum,
                         Type = dados.Type,
                         LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                        //LancamentoPadraoSelecionado =
-                        //    Convert.ToInt32(_context.LancamentosPadroes
-                        //                    .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
-                        //                        .Codigo)
+                        LancamentoPadraoSelecionado =
+                            Convert.ToInt32(_context.LancamentosPadroes
+                                            .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
+                                                .Codigo)
                     });
                 }
 
@@ -401,7 +400,7 @@ namespace Demonstrativo.Controllers
                 //var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
-                    TransationValue = extratoViewModel.LancamentoManual.Valor,
+                    TransationValue = extratoViewModel.LancamentoManual.Valor * (extratoViewModel.LancamentoManual.TipoSelecionado == "DEBIT" ? -1 : 1),
                     Description = extratoViewModel.LancamentoManual.Descricao,
                     Date = extratoViewModel.LancamentoManual.Data,
                     CheckSum = 1,
@@ -443,6 +442,54 @@ namespace Demonstrativo.Controllers
             //
             return View("Contas", extratoBancarioViewModel);
         }
+
+        [HttpPost]
+        public IActionResult OfxReimportarDelete(ExtratoBancarioViewModel extratoViewModel = null)
+        {
+            try
+            {
+                AdicionarCompetenciaMesAtual();
+                CarregarEmpresasCompetencias();
+                extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
+
+
+                return View("Contas", extratoViewModel);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        //[HttpPost]
+        //public IActionResult OfxReimportEdit(ExtratoBancarioViewModel extratoViewModel = null)
+        //{
+
+        //    try
+        //    {
+
+        //        AdicionarCompetenciaMesAtual();
+        //        CarregarEmpresasCompetencias();
+        //        var lanc = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => f.Selecionando).FirstOrDefault();
+        //        extratoViewModel.LancamentoManual.Data = lanc.Date;
+        //        extratoViewModel.LancamentoManual.Descricao = lanc.Description;
+        //        extratoViewModel.LancamentoManual.ValorInput = lanc.TransationValue.ToString();
+        //        extratoViewModel.LancamentoManual.TipoSelecionado = lanc.Type;                
+
+        //        ViewBag.OpenModal = true;
+
+
+        //        return View("Contas", extratoViewModel);
+
+        //    }
+        //    catch (global::System.Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
 
         [HttpPost]
         public IActionResult OfxReimportarLote(int LoteLancamentoId)
@@ -554,7 +601,7 @@ namespace Demonstrativo.Controllers
                 var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
-                    TransationValue = extratoViewModel.LancamentoManual.Valor,
+                    TransationValue = extratoViewModel.LancamentoManual.Valor * (extratoViewModel.LancamentoManual.TipoSelecionado == "DEBIT" ? -1 : 1),
                     Description = extratoViewModel.LancamentoManual.Descricao,
                     Date = extratoViewModel.LancamentoManual.Data,
                     CheckSum = 1,
