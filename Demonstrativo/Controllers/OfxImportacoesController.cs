@@ -169,7 +169,7 @@ namespace Demonstrativo.Controllers
                     Directory.CreateDirectory($"{_appEnvironment.WebRootPath}\\Temp");
                 }
                 //Caminho para salvar arquivo no servidor
-                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName.ToLower()}";
+                string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
 
                 using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
                 {
