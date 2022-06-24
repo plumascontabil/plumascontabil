@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Demonstrativo.Models.Empresa>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Empresas";
+}
+
+<div class="py-4 pl-3 d-flex justify-content-between">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+
+    <div>
+        <a class="btn btn-plumas-w btn-nav-link" asp-action="Create">
+            Adicionar Empresa <i class="fa fa-plus ml-2"></i>
+        </a>
+    </div>
+
+</div>
+@using (Html.BeginForm("Index", "Empresa", FormMethod.Get))
+{
+    <div class="col-12 mb-2" style="display:inline-block">
+        <div>
+            <h5>Nome da Empresa: </h5>
+
+            @Html.TextBox("SearchString","", new { style="width:50%" })
+            <input  class="btn btn-plumas-w" type="submit" value="Buscar" />
+        </div>
+    </div>
+}
+
+<div class="row">
+    <section class="col-12 border-0 table-bordered">
+        <table class="w-100 mx-auto">
+            <thead>
+                <tr>
+                    <td class="bg-categoria text-white p-2">Número da Empresa</td>
+                    <td class="bg-categoria text-white p-2">Razão Social</td>
+                    <td class="bg-categoria text-white p-2">Nome fantasia</td>
+                    <td class="bg-categoria text-white p-2">Cnpj</td>
+                    <td class="bg-categoria text-white p-2">Ações</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Codigo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RazaoSocial)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Apelido)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cnpj)
+                        </td>
+                        <td>
+                            <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "Empresa",new { id = item.Codigo })'"> <i class="fa fa-edit"></i></button>
+                            <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "Empresa",new { id = item.Codigo })'"><i class="fa fa-info-circle"></i></button>
+                            <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "Empresa",new { id = item.Codigo })'"> <i class="fa fa-trash"></i></button>
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    </section>
+</div>
+<br />
+@* Página  @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+         @Html.PagedListPager(Model, page => Url.Action("Index", new { page })))*@
+
+@section Scripts {
+    @{
+
+        @if ((string)TempData["erro"] == "erro")
+        {
+            <script type="text/javascript">
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Não foi possível cadastrar a empresa',
+
+                    })
+                };
+            </script>
+        }
+        @if ((string)TempData["criado"] == "criado")
+        {
+            <script type="text/javascript">
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso...',
+                        text: 'Empresa cadastrada com sucesso',
+
+                    })
+                };
+            </script>
+        }
+        @if ((string)TempData["editado"] == "editado")
+        {
+            <script type="text/javascript">
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso...',
+                        text: 'Empresa editada com sucesso',
+
+                    })
+                };
+            </script>
+        }
+        @if ((string)TempData["deletado"] == "deletado")
+        {
+            <script type="text/javascript">
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso...',
+                        text: 'Empresa deletada com sucesso',
+
+                    })
+                };
+            </script>
+        }
+
+    }
+	}
+

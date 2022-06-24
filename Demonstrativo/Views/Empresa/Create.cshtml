@@ -1,0 +1,66 @@
+﻿@model Demonstrativo.Models.Empresa
+
+@{
+    Layout = "_LayoutSemFiltroEmpresa";
+    ViewData["Title"] = "Empresa";
+}
+
+<div class="py-4 pl-3 d-flex justify-content-between">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Codigo" class="control-label">Número da empresa</label>
+                <input asp-for="Codigo" class="form-control" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RazaoSocial" class="control-label">Razão Social</label>
+                <input asp-for="RazaoSocial" class="form-control" />
+                <span asp-validation-for="RazaoSocial" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Cnpj" class="control-label">CNPJ</label>
+                <input id="txtCPF" asp-for="Cnpj" class="form-control" />
+                <span asp-validation-for="Cnpj" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apelido" class="control-label">Nome Fantasia</label>
+                <input asp-for="Apelido" class="form-control" />
+                <span asp-validation-for="Apelido" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
+                <input type="submit" value="Cadastrar" class="btn btn-plumas-w" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+         @if ((string)TempData["erro"] == "erro")
+        {
+            <script type="text/javascript">
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Não foi possível cadastrar a empresa',
+
+                    })
+                };
+            </script>
+        }
+       
+    }
+	}
