@@ -26,6 +26,8 @@
 		};
     </script>
 }
+
+
 <form id="OfxReimportar" asp-controller="OfxImportacoes" asp-action="OfxReimportar">
 
     <div class="py-4 pl-3 d-flex justify-content-between">
@@ -38,7 +40,15 @@
         </div>
 
     </div>
-    <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
+
+     <div class="alert alert-warning" role="alert">
+  VERIFIQUE A COMPETÊNCIA DO OFX IMPORTADO!
+</div>
+   
+    <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">    
+        <div class="col-12">
+
+       
 
         @{
             var maxYin = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
@@ -178,12 +188,12 @@
                     }
                 </tbody>
             </table>
-            <button class="btn btn-plumas-w" data-goBack="voltar">Voltar</button>
+            <button class="btn btn-plumas-w" asp-action="index">Voltar</button>
             <input type="submit" class="btn btn-plumas-w" asp-action="OfxSalvar" />
 
-
+             </div>
         </div>
-
+    </div>
 </form>
 @section Scripts{
     <script type="text/javascript">
