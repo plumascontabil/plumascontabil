@@ -125,7 +125,7 @@
                         var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
                         <tr>
                             <td>
-                                @ofxs.Id
+                                @Html.Raw(ofxs.Id)
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
                                 <input type="hidden" asp-for="@Model.DescricaoLote" />
@@ -140,11 +140,11 @@
                             </td>
                             <td>
                                 @Html.Raw(ofxs.Type)
-                                <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
+                                <input type="hidden" asp-for="@Html.Raw(Model.ContasCorrentes.OfxLancamentos[i].Type)" />
                             </td>
                             <td>
                                 @Html.Raw(ofxs.Description)
-                                <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
+                                <input type="hidden" asp-for="@Html.Raw(Model.ContasCorrentes.OfxLancamentos[i].Description)" />
                             </td>
                             <td class="@value">
                                 @*@ofxs.TransationValue*@

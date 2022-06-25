@@ -2,190 +2,194 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 @{
-	var actualAction = ViewContext.RouteData.Values["action"].ToString();
+    var actualAction = ViewContext.RouteData.Values["action"].ToString();
 
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - Demonstrativo</title>
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/site.css" />
-	<link rel="stylesheet"
-		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-		  integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
-		  crossorigin="anonymous"
-		  referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Demonstrativo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-	<header class=" bg-light">
-		<nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
-			<div class="container">
-				<a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
-					<img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
-				</a>
-				@if (actualAction != "Login" && actualAction != "Logout")
-				{
+    <header class=" bg-light">
+        <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
+                    <img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
+                </a>
+                @if (actualAction != "Login" && actualAction != "Logout")
+                {
 
 
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-						<ul class="navbar-nav flex-grow-1 ">
-							<li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index") ? "active":"")">
-								<a class="nav-link text-dark"
-							   asp-area=""
-							   asp-controller="Lancamento"
-							   asp-action="Index">Lançamentos</a>
-							</li>
-							@* @if (User.IsInRole("Administrador"))
-						{*@
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1 ">
+                            <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index") ? "active":"")">
+                                <a class="nav-link text-dark"
+                                   asp-area=""
+                                   asp-controller="Lancamento"
+                                   asp-action="Index">Lançamentos</a>
+                            </li>
+                            @* @if (User.IsInRole("Administrador"))
+                                {*@
 
-							<li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index" )? "active":"")">
-								<div class="dropdown show">
-									<a class="nav-link text-dark"
-								   asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
-										Importações OFX
-									</a>
-									@*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-								<a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
-								</div>*@
-								</div>
-							</li>
-							<li class="nav-item">
-								<div class="dropdown show">
-									<a class="nav-link text-dark dropdown-toggle"
-								   role="button"
-								   id="dropdownMenuLink"
-								   data-toggle="dropdown"
-								   aria-haspopup="true"
-								   aria-expanded="false"
-								   asp-area=""
-								   asp-controller="Importacao"
-								   asp-action="Index">
-										Cadastros
-									</a>
-									<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Usuario"
-									   asp-action="CarregarUsuario">Usuários</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Role"
-									   asp-action="Index">Perfis</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="AutoDescricoes"
-									   asp-action="Index">Históricos Banco</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="OfxContasCorrentes"
-									   asp-action="Index">Contas Correntes</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="SaldoMensals"
-									   asp-action="Index">Saldos Contas Correntes</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="OfxBancos"
-									   asp-action="Index">Bancos</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="ContasContabeis"
-									   asp-action="Index">Contas Contábeis</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="LancamentosPadroes"
-									   asp-action="Index">Lançamentos Contábeis</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Importacao"
-									   asp-action="RelatorioOfx">Relatório</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Empresa"
-									   asp-action="Index">Empresas</a>
-									</div>
-								</div>
-							</li>
-							@*}*@
-						</ul>
-						@using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50" }))
-						{
-							@Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "form-control my-2 mr-sm-2 w-50 select" })
-							<div class="mx-1"></div>
-							@Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "form-control my-2 mr-sm-2 select" })
-							<button class="my-2 my-sm-0 m-1" type="submit">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-									<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-								</svg>
-							</button>
+                            <li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index" )? "active":"")">
+                                <div class="dropdown show">
+                                    <a class="nav-link text-dark"
+                                       asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
+                                        Importações OFX
+                                    </a>
+                                    @*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
+                                        </div>*@
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <div class="dropdown show">
+                                    <a class="nav-link text-dark dropdown-toggle"
+                                       role="button"
+                                       id="dropdownMenuLink"
+                                       data-toggle="dropdown"
+                                       aria-haspopup="true"
+                                       aria-expanded="false"
+                                       asp-area=""
+                                       asp-controller="Importacao"
+                                       asp-action="Index">
+                                        Cadastros
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="Usuario"
+                                           asp-action="CarregarUsuario">Usuários</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="Role"
+                                           asp-action="Index">Perfis</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="AutoDescricoes"
+                                           asp-action="Index">Históricos Banco</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="OfxContasCorrentes"
+                                           asp-action="Index">Contas Correntes</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="SaldoMensals"
+                                           asp-action="Index">Saldos Contas Correntes</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="OfxBancos"
+                                           asp-action="Index">Bancos</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="ContasContabeis"
+                                           asp-action="Index">Contas Contábeis</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="LancamentosPadroes"
+                                           asp-action="Index">Lançamentos Contábeis</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="Importacao"
+                                           asp-action="RelatorioOfx">Relatório</a>
+                                        <a class="dropdown-item"
+                                           asp-area=""
+                                           asp-controller="Empresa"
+                                           asp-action="Index">Empresas</a>
+                                    </div>
+                                </div>
+                            </li>
+                            @*}*@
+                        </ul>
+                        @{
+                            var url = $"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}";
+                        }
+                        @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50" }))
+                        {
+                            <input type="hidden" name="Url" id="Url" value="@url" />
+                            @Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "form-control my-2 mr-sm-2 w-50 select" })
+                            <div class="mx-1"></div>
+                            @Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "form-control my-2 mr-sm-2 select" })
+                            <button class="my-2 my-sm-0 m-1" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                            </button>
 
-							<a class="btn bg-transparent" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt"></i></a>
-						}
-					</div>
-				}
-			</div>
-		</nav>
-	</header>
-	<div class="container">
-		<main role="main" class="pb-3 pt-5">
-			@RenderBody()
-		</main>
-	</div>
+                            <a class="btn bg-transparent" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt"></i></a>
+                        }
+                    </div>
+                }
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3 pt-5">
+            @RenderBody()
+        </main>
+    </div>
 
-	<footer class="border-top footer text-muted">
-		<div class="container">
-			&copy; 2021 - Demonstrativo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-		</div>
-	</footer>
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script src="~/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-
-	<script>
-		$('.select').select2({
-			placeholder: 'Selecione'
-		});
-
-		$('.mask-valor').inputmask('currency', {
-			"autoUnmask": true,
-			radixPoint: ",",
-			groupSeparator: ".",
-			allowMinus: false,
-			prefix: 'R$ ',
-			digits: 2,
-			digitsOptional: false,
-			rightAlign: true,
-			unmaskAsNumber: true
-		});
-		$('[data-toggle="tooltip"]').tooltip();
-		$('[data-toggle-tooltip="tooltip"]').tooltip();
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - Demonstrativo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
+    <script>
+        $('.select').select2({
+            placeholder: 'Selecione'
+        });
 
-		$('[data-goBack="voltar"]').click(function(e) {
-			e.preventDefault()
-			window.history.back()
-		});
-	
-		
+        $('.mask-valor').inputmask('currency', {
+            "autoUnmask": true,
+            radixPoint: ",",
+            groupSeparator: ".",
+            allowMinus: false,
+            prefix: 'R$ ',
+            digits: 2,
+            digitsOptional: false,
+            rightAlign: true,
+            unmaskAsNumber: true
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle-tooltip="tooltip"]').tooltip();
 
-	</script>
 
-	@await RenderSectionAsync("Scripts", required: false)
+
+        $('[data-goBack="voltar"]').click(function (e) {
+            e.preventDefault()
+            window.history.back()
+        });
+
+
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
