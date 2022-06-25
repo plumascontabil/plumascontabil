@@ -20,6 +20,7 @@ namespace Demonstrativo.Models
         public SaldoMensalViewModel SaldoMensal { get; set; }
         public bool Selecionando { get; set; }
         public int Index { get; set; }
+        public bool Mostrar { get; set; }
 
     }
 }

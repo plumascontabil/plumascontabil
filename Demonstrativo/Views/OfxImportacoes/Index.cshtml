@@ -149,6 +149,7 @@
 				{
 					<div class="d-flex justify-content-center align-content-center flex-column">
 						<label>
+							<input type="hidden" name="ContacorrenteId" value="@item.ContaCorrneteId" >
 							<span id="Bank_@item.BancoOfxId" class="icon-banco m-auto" style="background-image:url(@Url.Content(item.BancoOfx.UrlImagem))"></span>
 							<input type="radio" name="BancosId" value="@item.BancoOfxId" class="sr-only">
 						</label>
