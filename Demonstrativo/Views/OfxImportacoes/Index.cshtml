@@ -327,23 +327,23 @@
 		var bancosSelecionados = []
 		$(':radio[name=BancosId]').change(function() {
 			var value = $(this).val();
-			@*
+		@*
 			let indexElemento = bancosSelecionados.findIndex((x) => x == value)
 			if (indexElemento != -1) {
-				bancosSelecionados.splice(indexElemento, 1)
-				$("#Bank_" + value).removeClass("checkado");
+			bancosSelecionados.splice(indexElemento, 1)
+			$("#Bank_" + value).removeClass("checkado");
 			} else {
-				bancosSelecionados.push(value)
-				$("#Bank_" + value).addClass("checkado");
-			}	*@			
-		
-			
-			$("span[id*=Bank]").each(function() {
-			$(this).removeClass("checkado");
-			});
+			bancosSelecionados.push(value)
 			$("#Bank_" + value).addClass("checkado");
-			
-												});
+			}	*@
+
+
+				$("span[id*=Bank]").each(function() {
+					$(this).removeClass("checkado");
+				});
+			$("#Bank_" + value).addClass("checkado");
+
+		});
 
 		$("#OfxLoteDelete").submit(function(event) {
 			event.preventDefault();

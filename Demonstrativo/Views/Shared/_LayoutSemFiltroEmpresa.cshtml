@@ -30,8 +30,8 @@
 				<a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
 					<img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
 				</a>
-				@if (actualAction != "Login" && actualAction != "Logout" )
-                {
+				@if (actualAction != "Login" && actualAction != "Logout")
+				{
 
 
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -110,7 +110,7 @@
 									   asp-area=""
 									   asp-controller="Importacao"
 									   asp-action="RelatorioOfx">Relatório</a>
-									   <a class="dropdown-item"
+										<a class="dropdown-item"
 									   asp-area=""
 									   asp-controller="Empresa"
 									   asp-action="Index">Empresas</a>
@@ -151,7 +151,6 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="~/lib/jquery-inputmask/jquery.inputmask.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -182,8 +181,8 @@
 			e.preventDefault()
 			window.history.back()
 		});
-
 	
+		
 
 	</script>
 

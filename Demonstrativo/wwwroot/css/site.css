@@ -362,13 +362,15 @@ input {
     border-radius: 0.25rem !important;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
 }
+.select2-container .select2-selection--multiple {
+    height: auto !important;
+    padding: -0.425rem 0.75rem !important;
+}
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    top: 6px !important;
+    top: 6px !important;    
 }
-.select2-container--default .select2-selection--multiple .select2-selection__choice {    
-    margin-top: 0 !important;
-}
+
 
 th, td {
     text-align: center;
@@ -411,4 +413,8 @@ th, td {
 #dre td {
     height: 23.5px;
     text-align: center !important;
+}
+
+#page-empresa td:nth-last-child(1){
+    width:130px!important;
 }

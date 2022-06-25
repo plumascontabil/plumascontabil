@@ -232,7 +232,7 @@ namespace Demonstrativo.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Verifique os dados de acesso.");
                     return View(viewModel);
                 }
             }
