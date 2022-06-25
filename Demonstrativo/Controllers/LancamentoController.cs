@@ -258,13 +258,13 @@ namespace Demonstrativo.Controllers
             return trimestreViewModel;
         }
 
-        public IActionResult Filtrar(int empresasId, DateTime competenciasId)
+        public IActionResult Filtrar(int empresasId, DateTime competenciasId, string url)
         {
             CarregarEmpresasCompetencias(empresasId, competenciasId);
 
+            return RedirectToAction(url.Split("/")[1], url.Split("/")[0]);
 
-
-            return View("Index", CarregarCategorias(empresasId, competenciasId));
+            //return View("Index", CarregarCategorias(empresasId, competenciasId));
         }
         [HttpGet]
         public IActionResult Filtrar()

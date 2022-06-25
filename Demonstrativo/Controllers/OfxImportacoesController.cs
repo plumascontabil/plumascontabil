@@ -101,7 +101,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null, int? ContaCorrneteId = null, string DescricaoLote = null)
+        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? ContaCorrenteId = null, string DescricaoLote = null)
         {
             IniT();
 
@@ -126,6 +126,8 @@ namespace Demonstrativo.Controllers
             var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             var autoDescricoes = _context.AutoDescricoes;
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+
+            int? BancosId = _context.ContasCorrentes.Where(f => f.Id == ContaCorrenteId).FirstOrDefault().BancoOfxId;
             if (ofxArquivo == null)
             {
                 // IniT();
@@ -140,10 +142,10 @@ namespace Demonstrativo.Controllers
                 return View("Index");
             }
 
-            if (!ContaCorrneteId.HasValue)
+            if (!ContaCorrenteId.HasValue)
             {
                 // Init();
-                ViewBag.SemContaCorrnete = " Não possui o ID da conta corrente!";
+                ViewBag.Message = " Não possui o ID da conta corrente!";
                 return View("Index");
 
             }
@@ -188,12 +190,12 @@ namespace Demonstrativo.Controllers
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
                 try
                 {
-                    if (extratoBancario != null)
-                    {
-                        var documento = new OFXDocumentParser();
-                        var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
-                        //saldo = dadoDocumento.Balance.LedgerBalance;
-                    }
+                    //if (extratoBancario != null)
+                    //{
+                    //    var documento = new OFXDocumentParser();
+                    //    var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
+                    //    //saldo = dadoDocumento.Balance.LedgerBalance;
+                    //}
 
                     //if (extratoBancario.
                     //    Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
@@ -216,7 +218,7 @@ namespace Demonstrativo.Controllers
 
                 if (dadosContaCorrente != null)
                 {
-                    if (dadosContaCorrente.Id != ContaCorrneteId.Value)
+                    if (dadosContaCorrente.Id != ContaCorrenteId.Value)
                     {
                         ViewBag.Message = "A conta corrente selecionada não é informada no arquivo OFX!";
                         return View("Index");
