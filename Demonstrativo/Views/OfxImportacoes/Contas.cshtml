@@ -100,7 +100,7 @@
                 </select>*@
 
             <output>
-                <H2>@Model.DescricaoLote</H2>
+                <H2 class="text-uppercase">@Model.DescricaoLote</H2>
                 @Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
                 <input type="hidden" asp-for="@Model.Banco.Codigo" />
                 <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
@@ -123,6 +123,11 @@
                         var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
                         var value = ofxs.TransationValue > 0 ? "blue" : "red";
                         var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
+                        var descricao = Html.Raw(ofxs.Description);
+                        ofxs.Description = descricao.ToString();
+                        ofxs.Type = Html.Raw(ofxs.Type).ToString();
+                        Model.ContasCorrentes.OfxLancamentos[i].Description = descricao.ToString();
+                        Model.ContasCorrentes.OfxLancamentos[i].Type = Html.Raw(ofxs.Type).ToString();
                         <tr>
                             <td>
                                 @Html.Raw(ofxs.Id)
@@ -140,11 +145,11 @@
                             </td>
                             <td>
                                 @Html.Raw(ofxs.Type)
-                                <input type="hidden" asp-for="@Html.Raw(Model.ContasCorrentes.OfxLancamentos[i].Type)" />
+                                <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
                             </td>
                             <td>
-                                @Html.Raw(ofxs.Description)
-                                <input type="hidden" asp-for="@Html.Raw(Model.ContasCorrentes.OfxLancamentos[i].Description)" />
+                                @descricao
+                                <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
                             </td>
                             <td class="@value">
                                 @*@ofxs.TransationValue*@

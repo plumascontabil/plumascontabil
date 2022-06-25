@@ -149,8 +149,8 @@
                 {
                     <div class="d-flex justify-content-center align-content-center flex-column">
                         <label>
-                            <span id="Bank_@item.BancoOfxId" class="icon-banco m-auto" style="background-image:url(@Url.Content(item.BancoOfx.UrlImagem))"></span>
-                            <input type="radio" name="BancosId" value="@item.Id" class="sr-only">
+                            <span id="Bank_@item.Id" class="icon-banco m-auto" style="background-image:url(@Url.Content(item.BancoOfx.UrlImagem))"></span>
+                            <input type="radio" name="ContaCorrenteId" value="@item.Id" class="sr-only">
                         </label>
 
                         <p class="m-0"><small>Conta: @item.NumeroConta</small></p>
@@ -325,8 +325,9 @@
     <script type="text/javascript">
 
 		var bancosSelecionados = []
-		$(':radio[name=BancosId]').change(function() {
-			var value = $(this).val();
+        $(':radio[name=ContaCorrenteId]').change(function() {
+            var value = $(this).val();
+
 		@*
 			let indexElemento = bancosSelecionados.findIndex((x) => x == value)
 			if (indexElemento != -1) {
