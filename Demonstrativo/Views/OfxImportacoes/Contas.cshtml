@@ -153,16 +153,20 @@
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
                             </td>
                             <td>
-                                <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
-                                    <option value="">Selecione</option>
-                                </select>
+                                @if (ofxs.Mostrar)
+                                {
+
+                                    <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
+                                        <option value="">Selecione</option>
+                                    </select>
+                                }
                             </td>
                             @if (ofxs.Id == "MANUAL")
                             {
                                 <td>
                                     @*<button data-toggle="tooltip" id="ManualEdit_@i" title="Editar" value="@true" asp-action="OfxReimportEdit">
-                                        <i class="fa fa-edit"></i>
-                                    </button>*@
+                                            <i class="fa fa-edit"></i>
+                                        </button>*@
                                     <button data-toggle="tooltip" id="ManualExcluir_@i" title="Excluir" value="@true" asp-action="OfxReimportarDelete"> <i class="fa fa-trash"></i></button>
                                     <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Selecionando" />
                                     <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
@@ -189,12 +193,12 @@
             $(xx).val(true);
         });
 
-     /*   $("#staticBackdrop").click(function (event) {
-            //$("#OfxReimportar").reset();
-            $('#OfxReimportar').trigger("reset");
+        /*   $("#staticBackdrop").click(function (event) {
+               //$("#OfxReimportar").reset();
+               $('#OfxReimportar').trigger("reset");
 
-        });
-        */
+           });
+           */
     </script>
     @if (ViewBag.OpenModal != null)
     {

@@ -57,6 +57,7 @@ namespace Demonstrativo.Controllers
 
                 //});
 
+
                 ViewBag.BancosId = contaCorrente;
                 ViewBag.Lotes = _context.OfxLoteLancamento.Where(f => f.EmpresaId == idEmp).ToList().OrderByDescending(f => f.Data).ToList();
             }
@@ -100,7 +101,7 @@ namespace Demonstrativo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null, string DescricaoLote = null)
+        public async Task<IActionResult> OfxImportar(IFormFile ofxArquivo = null, int? BancosId = null, int? ContaCorrneteId = null, string DescricaoLote = null)
         {
             IniT();
 
@@ -137,6 +138,14 @@ namespace Demonstrativo.Controllers
                 // IniT();
                 ViewBag.SemArquivo = $"Esse arquivo não possui o formato correto! Importe um arquivo OFX.";
                 return View("Index");
+            }
+
+            if (!ContaCorrneteId.HasValue)
+            {
+                // Init();
+                ViewBag.SemContaCorrnete = " Não possui o ID da conta corrente!";
+                return View("Index");
+
             }
 
             if (!BancosId.HasValue)
@@ -186,14 +195,14 @@ namespace Demonstrativo.Controllers
                         //saldo = dadoDocumento.Balance.LedgerBalance;
                     }
 
-                    if (extratoBancario.
-                        Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
-                                             || (f.Date.Month != competenciasId.Month && f.Date.Year != competenciasId.Year)
-                                             || (f.Date.Year != competenciasId.Year)).Count() > 0)
-                    {
-                        ViewBag.Message = "Este OFX tem datas que não correspondem a Competência selecionada!";
-                        return View("Index");
-                    }
+                    //if (extratoBancario.
+                    //    Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
+                    //                         || (f.Date.Month != competenciasId.Month && f.Date.Year != competenciasId.Year)
+                    //                         || (f.Date.Year != competenciasId.Year)).Count() > 0)
+                    //{
+                    //    ViewBag.Message = "Este OFX tem datas que não correspondem a Competência selecionada!";
+                    //    return View("Index");
+                    //}
                 }
                 catch (Exception e)
                 {
@@ -204,8 +213,16 @@ namespace Demonstrativo.Controllers
                 }
 
                 var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == extratoBancario.BankAccount.AccountCode);
+
                 if (dadosContaCorrente != null)
                 {
+                    if (dadosContaCorrente.Id != ContaCorrneteId.Value)
+                    {
+                        ViewBag.Message = "A conta corrente selecionada não é informada no arquivo OFX!";
+                        return View("Index");
+
+                    }
+
                     saldoMensalViewModel = new SaldoMensalViewModel()
                     {
                         SaldoMensal = 0,
@@ -282,8 +299,9 @@ namespace Demonstrativo.Controllers
                             Type = dados.Type,
                             SaldoMensal = saldoMensalViewModel,
                             LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                            Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year))
                             //LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
-                        });
+                        }); ;
 
                         contaCorrenteViewModel = new OfxContaCorrenteViewModel()
                         {
@@ -350,6 +368,7 @@ namespace Demonstrativo.Controllers
             var contasContabeis = _context.ContasContabeis.ToList();
             var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             var autoDescricoes = _context.AutoDescricoes;
+            var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
 
             //Views Models
             var lancamentoOfxViewModel = new List<OfxLancamentoViewModel>();
@@ -373,7 +392,8 @@ namespace Demonstrativo.Controllers
                         Date = dados.Date,
                         CheckSum = dados.CheckSum,
                         Type = dados.Type,
-                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
+                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                        Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year))
                     });
                 }
                 else
@@ -388,6 +408,7 @@ namespace Demonstrativo.Controllers
                         CheckSum = dados.CheckSum,
                         Type = dados.Type,
                         LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                        Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year)),
                         LancamentoPadraoSelecionado =
                             Convert.ToInt32(_context.LancamentosPadroes
                                             .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
