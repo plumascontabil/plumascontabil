@@ -82,6 +82,11 @@ body {
 button {
     background-color: transparent;
     border: 0;
+    cursor:pointer;
+}
+button:focus {
+    border: 0;
+    outline: none;
 }
 
 
