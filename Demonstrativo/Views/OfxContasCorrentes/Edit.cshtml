@@ -15,6 +15,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
+                <label asp-for="NumeroAgencia" class="control-label">Número da Agência</label>
+                <input asp-for="NumeroAgencia" class="form-control" />
+                <span asp-validation-for="NumeroAgencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="NumeroConta" class="control-label">Número da conta</label>
                 <input asp-for="NumeroConta" class="form-control" />
                 <span asp-validation-for="NumeroConta" class="text-danger"></span>
@@ -28,6 +33,11 @@
                 <label asp-for="BancoOfxId" class="control-label">Banco</label>
                 <select asp-for="BancoOfxId" class="form-control select" asp-items="ViewBag.BancoOfxId"></select>
                 <span asp-validation-for="BancoOfxId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Acctid" class="control-label">ACCTID (OFX)</label>
+                <input asp-for="Acctid" class="form-control" />
+                <span asp-validation-for="Acctid" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-plumas-w">Voltar</a>

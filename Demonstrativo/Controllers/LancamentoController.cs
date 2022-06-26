@@ -218,6 +218,8 @@ namespace Demonstrativo.Controllers
                     }
                     else
                     {
+
+
                         lancamentosViewModelBancos.ForEach(f =>
                         {
                             var xxx = new List<LancamentoViewModel>();
@@ -234,6 +236,10 @@ namespace Demonstrativo.Controllers
                         });
                     }
 
+                    if (conta.Id == 143)
+                    {
+
+                    }
 
                 });
 

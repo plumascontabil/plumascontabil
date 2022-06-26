@@ -11,23 +11,29 @@
     <h4>OfxContaCorrente</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumeroAgencia)
+        </dt>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NumeroConta)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NumeroConta)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Empresa)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Empresa.Apelido)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BancoOfx)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BancoOfx.Codigo)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BancoOfx.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BancoOfx.Nome)
+        </dd>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Acctid)
         </dd>
     </dl>
 </div>

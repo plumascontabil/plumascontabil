@@ -683,7 +683,7 @@ namespace Demonstrativo.Controllers
             IniT();
             dados.EmpresaSelecionada = ViewBag.EmpresaSeleciodaId;
 
-            dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            dados.ContasCorrentes.OfxLancamentos.Where(f => f.Mostrar).ToList().ForEach(el =>
             {
                 el.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
             });
@@ -693,7 +693,7 @@ namespace Demonstrativo.Controllers
                 return View("Contas", dados);
             }
 
-            if (dados.ContasCorrentes.OfxLancamentos.Any(f => f.LancamentoPadraoSelecionado == 0))
+            if (dados.ContasCorrentes.OfxLancamentos.Where(f => f.Mostrar).Any(f => f.LancamentoPadraoSelecionado == 0))
             {
                 ViewBag.LancamentoPadraoSelecionadoNotSelect = "É necessário realizar todos os lançamentos Contábeis para prossegui!";
                 return View("Contas", dados);
@@ -753,7 +753,7 @@ namespace Demonstrativo.Controllers
             }
 
 
-            foreach (var dado in dados.ContasCorrentes.OfxLancamentos)
+            foreach (var dado in dados.ContasCorrentes.OfxLancamentos.Where(f => f.Mostrar).ToList())
             {
                 var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
                 var banco = _context.OfxBancos.Any(b => b.Codigo == dados.Banco.Codigo);
@@ -858,6 +858,8 @@ namespace Demonstrativo.Controllers
             return View("Index");
 
         }
+      
+        
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)
             => new(lancamentoPadroes.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Descricao}" }), "Codigo", "Descricao");
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)

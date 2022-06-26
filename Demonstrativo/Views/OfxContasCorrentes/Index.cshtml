@@ -18,44 +18,52 @@
 </div>
 
 <div class="row">
-	<section class="col-12 border-0 table-bordered">
-		<table class="w-100 mx-auto">
-			<thead>
-				<tr>
-					<td class="bg-categoria text-white p-2">Número conta</td>
-					<td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.Empresa)</td>
-					<td class="bg-categoria text-white p-2">Banco OFX</td>
-					<td class="bg-categoria text-white p-2">Ações</td>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model)
-				{
-					<tr>
-						<td>
-							@Html.DisplayFor(modelItem => item.NumeroConta)
-						</td>
-						<td>
-							@Html.DisplayFor(modelItem => item.Empresa.Apelido)
-						</td>
-						<td>
-							@Html.Raw($"{item.BancoOfx.Codigo} - {item.BancoOfx.Nome}")
-						</td>
-						<td>
-@*							<button data-toggle="tooltip" title="Editar"  asp-action="Edit" asp-route-id="@item.Id"> <i class="fa fa-edit"></i></button>
-							<button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-info-circle"></i></button>
-							<button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Id"> <i class="fa fa-trash"></i></button>*@
+    <section class="col-12 border-0 table-bordered">
+        <table class="w-100 mx-auto">
+            <thead>
+                <tr>
+                    <td class="bg-categoria text-white p-2">Agência</td>
+                    <td class="bg-categoria text-white p-2">Número conta</td>
+                    <td class="bg-categoria text-white p-2">@Html.DisplayNameFor(model => model.Empresa)</td>
+                    <td class="bg-categoria text-white p-2">Banco OFX</td>
+                    <td class="bg-categoria text-white p-2">ACCTID (OFX)</td>
+                    <td class="bg-categoria text-white p-2">Ações</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumeroAgencia)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumeroConta)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Empresa.Apelido)
+                        </td>
+                        <td>
+                            @Html.Raw($"{item.BancoOfx.Codigo} - {item.BancoOfx.Nome}")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Acctid)
+                        </td>
+                        <td>
+                            @*							<button data-toggle="tooltip" title="Editar"  asp-action="Edit" asp-route-id="@item.Id"> <i class="fa fa-edit"></i></button>
+                                <button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-info-circle"></i></button>
+                                <button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Id"> <i class="fa fa-trash"></i></button>*@
 
-							<div class="column">
-								 <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "OfxContasCorrentes",new { id = item.Id })'"> <i class="fa fa-edit"></i></button>
-                            <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "OfxContasCorrentes",new { id = item.Id })'"><i class="fa fa-info-circle"></i></button>
-                            <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "OfxContasCorrentes",new { id = item.Id })'"> <i class="fa fa-trash"></i></button>
-							</div>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</section>
+                            <div class="column">
+                                <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "OfxContasCorrentes",new { id = item.Id })'"> <i class="fa fa-edit"></i></button>
+                                <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "OfxContasCorrentes",new { id = item.Id })'"><i class="fa fa-info-circle"></i></button>
+                                <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "OfxContasCorrentes",new { id = item.Id })'"> <i class="fa fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 </div>
 

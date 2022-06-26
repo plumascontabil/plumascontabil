@@ -76,7 +76,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NumeroConta,EmpresaId,BancoOfxId")] OfxContaCorrente ofxContaCorrente)
+        public async Task<IActionResult> Create([Bind("Id,NumeroConta,EmpresaId,BancoOfxId,NumeroAgencia,Acctid")] OfxContaCorrente ofxContaCorrente)
         {
             if (ModelState.IsValid)
             {
@@ -120,7 +120,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NumeroConta,EmpresaId,BancoOfxId")] OfxContaCorrente ofxContaCorrente)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NumeroConta,EmpresaId,BancoOfxId,NumeroAgencia,Acctid")] OfxContaCorrente ofxContaCorrente)
         {
             if (id != ofxContaCorrente.Id)
             {

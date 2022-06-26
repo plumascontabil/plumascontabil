@@ -22,6 +22,10 @@ namespace Demonstrativo.Models
         public OfxBanco BancoOfx { get; set; }
 
         public List<SaldoMensal> Saldos { get; set; }
+        
+        public string NumeroAgencia { get; set; }
+        
+        public string Acctid { get; set; }
 
     }
 }
