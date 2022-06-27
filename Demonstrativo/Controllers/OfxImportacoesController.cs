@@ -214,7 +214,7 @@ namespace Demonstrativo.Controllers
                     return View("Index");
                 }
 
-                var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == extratoBancario.BankAccount.AccountCode);
+                var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => (c.NumeroConta == extratoBancario.BankAccount.AccountCode || c.Acctid == extratoBancario.BankAccount.AccountCode));
 
                 if (dadosContaCorrente != null)
                 {
@@ -858,8 +858,8 @@ namespace Demonstrativo.Controllers
             return View("Index");
 
         }
-      
-        
+
+
         private static SelectList ConstruirLancamentosPadroesSelectList(IEnumerable<LancamentoPadrao> lancamentoPadroes)
             => new(lancamentoPadroes.Select(c => new { c.Codigo, Descricao = $"{c.Codigo} - {c.Descricao}" }), "Codigo", "Descricao");
         private static SelectList ConstruirEmpresas(IEnumerable<Empresa> empresas)
