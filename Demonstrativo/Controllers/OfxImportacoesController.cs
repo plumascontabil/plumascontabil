@@ -44,6 +44,7 @@ namespace Demonstrativo.Controllers
 
         private void IniT()
         {
+
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
 
@@ -74,7 +75,7 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public async Task<IActionResult> OfxLoteDelete(int LoteLancamentoId)
         {
-            //  IniT();
+            IniT();
             var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
             var lancamentos = _context.OfxLancamentos.Where(f => f.LoteLancamentoId == lote.Id).ToList();
 
@@ -362,7 +363,7 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult OfxReimportar(ExtratoBancarioViewModel extratoViewModel = null)
         {
-
+            IniT();
             //var extratoBancarioViewModel = _ofxImportacoesDomainService.OfxReimportar(extratoViewModel);
 
             //Listas
@@ -491,6 +492,7 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult OfxReimportarDelete(ExtratoBancarioViewModel extratoViewModel = null)
         {
+            IniT();
             try
             {
                 AdicionarCompetenciaMesAtual();
@@ -539,11 +541,12 @@ namespace Demonstrativo.Controllers
         [HttpPost]
         public IActionResult OfxReimportarLote(int LoteLancamentoId)
         {
+            IniT();
             var empresas = _context.Empresas.ToList();
             var contasContabeis = _context.ContasContabeis.ToList();
             var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             var autoDescricoes = _context.AutoDescricoes;
-
+            var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
             var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
             var lancamentos = _context.OfxLancamentos.Include(f => f.ContaCorrente).ThenInclude(f => f.BancoOfx).Where(f => f.LoteLancamentoId == lote.Id).ToList();
 
@@ -586,7 +589,8 @@ namespace Demonstrativo.Controllers
                     },
                     Id = el.Documento,
                     LancamentoPadraoSelecionado = el.LancamentoPadraoId.HasValue ? el.LancamentoPadrao.Codigo.Value : 0,
-                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes)
+                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                    Mostrar = ((el.Data.Month == competenciasId.Month) && (el.Data.Year == competenciasId.Year))
 
                 });
             });
@@ -616,7 +620,9 @@ namespace Demonstrativo.Controllers
                     CheckSum = dados.CheckSum,
                     Type = dados.Type,
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                    LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado
+                    LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado,
+                    Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year))
+
                 }); ;
 
                 var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == extratoViewModel.Banco.Codigo);
@@ -643,7 +649,7 @@ namespace Demonstrativo.Controllers
 
             if (extratoViewModel.LancamentoManual != null)
             {
-                var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
+                //var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
                     TransationValue = extratoViewModel.LancamentoManual.Valor * (extratoViewModel.LancamentoManual.TipoSelecionado == "DEBIT" ? -1 : 1),
@@ -654,7 +660,8 @@ namespace Demonstrativo.Controllers
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     SaldoMensal = new SaldoMensalViewModel(),
 
-                    Id = ids
+                    Mostrar = ((extratoViewModel.LancamentoManual.Data.Month == competenciasId.Month) && (extratoViewModel.LancamentoManual.Data.Year == competenciasId.Year)),
+                    Id = "MANUAL"
 
                 });
             }
