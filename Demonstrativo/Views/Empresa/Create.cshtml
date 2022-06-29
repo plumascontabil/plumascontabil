@@ -26,7 +26,7 @@
 
             <div class="form-group">
                 <label asp-for="Cnpj" class="control-label">CNPJ</label>
-                <input id="txtCPF" asp-for="Cnpj" class="form-control" />
+                <input id="txtCPF" asp-for="Cnpj" class="form-control mask-cpf" />
                 <span asp-validation-for="Cnpj" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,6 +34,7 @@
                 <input asp-for="Apelido" class="form-control" />
                 <span asp-validation-for="Apelido" class="text-danger"></span>
             </div>
+         
 
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
