@@ -423,3 +423,8 @@ th, td {
 #page-empresa td:nth-last-child(1){
     width:130px!important;
 }
+
+#page-empresa td {
+    width:301px!important;
+}
+

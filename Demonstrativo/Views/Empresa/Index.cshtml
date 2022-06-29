@@ -17,20 +17,20 @@
     </div>
 
 </div>
-@using (Html.BeginForm("Index", "Empresa", FormMethod.Get))
+
+
+<div id="page-empresa" class="row">
+    <section class="col-10 border-0 table-bordered m-auto">
+        @using (Html.BeginForm("Index", "Empresa", FormMethod.Get))
 {
-    <div class="col-12 mb-2" style="display:inline-block">
         <div>
             <h5>Nome da Empresa: </h5>
 
-            @Html.TextBox("SearchString","", new { style="width:50%" })
+            @Html.TextBox("SearchString","", new { style="width:50%;padding: 0.345rem 0.75rem; border-radius: 0.25rem;" })
             <input  class="btn btn-plumas-w" type="submit" value="Buscar" />
         </div>
-    </div>
+    
 }
-
-<div id="page-empresa" class="row">
-    <section class="col-12 border-0 table-bordered">
         <table class="w-100 mx-auto">
             <thead>
                 <tr>
@@ -45,7 +45,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>
+                        <td class="num-empresa">
                             @Html.DisplayFor(modelItem => item.Codigo)
                         </td>
                         <td>
