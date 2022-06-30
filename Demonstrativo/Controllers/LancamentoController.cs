@@ -137,6 +137,7 @@ namespace Demonstrativo.Controllers
                     .ToList();
             }
             var contasCorrentesLancamentos = new List<OfxLancamento>();
+            var lancamentos = new List<Lancamento>();
 
             if (empresasId.HasValue)
             {
@@ -146,10 +147,10 @@ namespace Demonstrativo.Controllers
                 {
                     contasCorrentesLancamentos = contasCorrentesLancamentos.Concat(el.Lancamentos.Where(o => ids.Any(x => x == o.ContaCorrenteId) == true).ToList()).ToList();
 
-
-
                 });
                 contasCorrentes = contasCorrentesLancamentos.Select(x => x.ContaCorrente).Distinct().ToList();
+
+                lancamentos = _context.Lancamentos.Where(f => f.EmpresaId == empresasId && f.DataCompetencia == competenciasId).ToList();
 
                 //  _context.OfxLancamentos.Where(o => ids.Any(x => x == o.ContaCorrenteId) == true).ToList();
             }
@@ -162,13 +163,15 @@ namespace Demonstrativo.Controllers
                 //var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
                 lancamentosViewModelBancos.Add(new LancamentoViewModel()
                 {
-                    Valor = contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx),
+                    ValorStr = contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome,
                     Conta = contas.FirstOrDefault(f => f.Codigo == 200).Id
-                }); ;
+                });
 
 
             });
+
+
 
             categorias.ForEach(categoria =>
             {
@@ -192,11 +195,23 @@ namespace Demonstrativo.Controllers
                                   }
                               });
 
+                    var lancManual = lancamentos.Where(f => f.ContaId.HasValue).Where(l => (int)conta.Id == (int)l.ContaId).ToList();
+
+
+                    lancManual.ForEach(ofxLancamento =>
+                    {
+                        //var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
+                        if (ofxLancamento != null)
+                        {
+                            valor += ofxLancamento.Valor;
+                        }
+                    });
+
                     if (valor != 0)
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel()
                         {
-                            Valor = Convert.ToDecimal(valor) * -1
+                            ValorStr = Convert.ToString(conta.TipoLancamento == "C" ? Convert.ToDecimal(valor) * -1 : Convert.ToDecimal(valor))
                         });
                     }
 
@@ -238,6 +253,11 @@ namespace Demonstrativo.Controllers
 
                     if (conta.Id == 143)
                     {
+                        var contax = contasViewModel.Where(f => f.Codigo == 53).FirstOrDefault();
+                        var valores = contax.Lancamentos.Sum(x => x.Valor);
+
+                        var indx = contasViewModel.FindIndex(f => f.Id == conta.Id);
+                        contasViewModel[indx].Lancamentos[0].ValorStr = Convert.ToString(valores - contasViewModel[indx].Lancamentos.FirstOrDefault().Valor);
 
                     }
 
@@ -303,9 +323,10 @@ namespace Demonstrativo.Controllers
             var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
             //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
 
-            var lancamentoCompetencia = _context.Lancamentos.Any(l => l.DataCompetencia == competencia && l.EmpresaId == empresaId);
+            var lancamentoCompetencia = _context.OfxLoteLancamento.Any(l => l.CompetenciaId == competencia && l.EmpresaId == empresaId);
             var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
+            #region ItensVenda
             if (lancamentoCompetencia == false)
             {
                 var insertEstoqueVendas = new Venda()
@@ -390,7 +411,8 @@ namespace Demonstrativo.Controllers
                     }
                 }
             }
-
+            #endregion
+            #region ItensDepreciações
             var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
             var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
             if (lancamentoCompetencia == false || updateProvisoes == null)
@@ -426,8 +448,31 @@ namespace Demonstrativo.Controllers
                 _context.ProvisoesDepreciacoes.Update(updateProvisoes);
                 _context.SaveChanges();
             }
+            #endregion
 
-            var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.SelectMany(x => x.Lancamentos)).ToList();
+            #region OfxLançamentos
+            //trimestreViewModel.Categorias.Where(f => f.Contas.Where(x => x.TipoLancamento == "L").Count() > 0).ToList().ForEach(el =>
+            //{
+            //    el.Contas.Where(x => x.TipoLancamento == "L").ToList().ForEach(conta =>
+            //      {
+            //          conta.Lancamentos.Select(x => new OfxLancamento()
+            //          {
+            //              Id = x.Id,
+            //              LancamentoPadraoId = x.Conta,
+            //              Data = x.Data,
+            //              Descricao = x.Descricao,
+            //              ValorOfx = x.Valor,
+            //              Valor = x.Valor
+            //          });
+            //          conta.Lancamentos.ForEach(xxel =>
+            //          {
+
+            //          });
+            //      });
+            //});
+            #endregion
+
+            var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
 
             var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
             {
@@ -437,7 +482,7 @@ namespace Demonstrativo.Controllers
                 Descricao = x.Descricao,
                 EmpresaId = x.Empresa,
                 Valor = x.Valor
-            });
+            }).ToList();
 
             foreach (var lancamento in lancamentos)
             {
@@ -544,7 +589,7 @@ namespace Demonstrativo.Controllers
                             Empresa = contaCorrente.EmpresaId,
                             Conta = lancamento.LancamentoPadraoId,
                             Descricao = lancamento.Descricao,
-                            Valor = (decimal)lancamento.ValorOfx
+                            ValorStr = lancamento.ValorOfx.ToString()
                         });
                     }
 
@@ -559,7 +604,7 @@ namespace Demonstrativo.Controllers
                             Empresa = contaCorrente.EmpresaId,
                             Conta = lancamento.LancamentoPadraoId,
                             Descricao = lancamento.Descricao,
-                            Valor = (decimal)lancamento.ValorOfx
+                            ValorStr = lancamento.ValorOfx.ToString()
                         });
                     }
 
@@ -574,7 +619,7 @@ namespace Demonstrativo.Controllers
                             Empresa = contaCorrente.EmpresaId,
                             Conta = lancamento.LancamentoPadraoId,
                             Descricao = lancamento.Descricao,
-                            Valor = (decimal)lancamento.ValorOfx
+                            ValorStr = lancamento.ValorOfx.ToString()
                         });
                     }
 
@@ -589,7 +634,7 @@ namespace Demonstrativo.Controllers
                             Empresa = contaCorrente.EmpresaId,
                             Conta = lancamento.LancamentoPadraoId,
                             Descricao = lancamento.Descricao,
-                            Valor = (decimal)lancamento.ValorOfx
+                            ValorStr = lancamento.ValorOfx.ToString()
                         });
                     }
 
@@ -610,7 +655,7 @@ namespace Demonstrativo.Controllers
                                 Empresa = lancamento.EmpresaId,
                                 Conta = lancamento.ContaId,
                                 Descricao = lancamento.Descricao,
-                                Valor = lancamento.Valor
+                                ValorStr = lancamento.Valor.ToString()
                             });
                         }
                     }
