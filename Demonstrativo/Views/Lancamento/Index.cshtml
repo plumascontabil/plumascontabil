@@ -123,42 +123,46 @@
 												}
 											}
 										</td>
-										<td class="valor">
-											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
-											@if (conta.TipoLancamento == "C")
-											{
-												@if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
-												{
+                                        <td class="valor">
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
+                                            @if (conta.TipoLancamento == "C")
+                                            {
+                                                @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
+                                                {
 
-													<button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
-
-
-												}
-												else
-												{
-													<input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-												}
-
-											}
-											else
-											{
-												@if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
-												{
-
-													<button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
+                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
 
 
-												}
-												else
-												{
-													<input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-												}
+                                                }
+                                                else
+                                                {
+                                                    <input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                }
 
-											}
+                                            }
+                                            else
+                                            {
+                                                @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
+                                                {
 
-											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
-											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
-										</td>
+                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
+
+
+                                                }
+                                                else
+                                                {
+                                                    <input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].ValorStr" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                }
+
+                                            }
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Descricao" value="@Model.Categorias[indexCategoria].Descricao" />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" value="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id"  />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" value="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" />
+                                        </td>
 									</tr>
 								}
 							</tbody>

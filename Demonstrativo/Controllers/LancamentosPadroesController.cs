@@ -78,7 +78,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Codigo,Descricao,LancamentoHistorico,ContaDebitoId,ContaCreditoId,CategoriaId,TipoContaId")] LancamentoPadrao lancamentoPadrao)
+        public async Task<IActionResult> Create([Bind("Id,Codigo,Descricao,LancamentoHistorico,ContaDebitoId,ContaCreditoId,CategoriaId,TipoContaId,TipoLancamento,TipoConta")] LancamentoPadrao lancamentoPadrao)
         {
             if (ModelState.IsValid)
             {
@@ -127,7 +127,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Descricao,LancamentoHistorico,ContaDebitoId,ContaCreditoId,CategoriaId,TipoContaId")] LancamentoPadrao lancamentoPadrao)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Descricao,LancamentoHistorico,ContaDebitoId,ContaCreditoId,CategoriaId,TipoContaId,TipoLancamento,TipoConta")] LancamentoPadrao lancamentoPadrao)
         {
             if (id != lancamentoPadrao.Id)
             {
