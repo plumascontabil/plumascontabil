@@ -175,6 +175,7 @@
                                         <option value="">Selecione</option>
                                     </select>
                                 }
+                            <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Mostrar" />
                             </td>
                             @if (ofxs.Id == "MANUAL")
                             {

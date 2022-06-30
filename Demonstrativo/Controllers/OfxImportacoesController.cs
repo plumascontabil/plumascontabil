@@ -51,6 +51,7 @@ namespace Demonstrativo.Controllers
             if (ViewBag.EmpresaSeleciodaId != null)
             {
                 var idEmp = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
+                var comp = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
                 var contaCorrente = _context.ContasCorrentes.Include(f => f.BancoOfx).Where(f => f.EmpresaId == idEmp).ToList();
                 //contaCorrente.ForEach(el =>
                 //{
@@ -60,7 +61,7 @@ namespace Demonstrativo.Controllers
 
 
                 ViewBag.BancosId = contaCorrente;
-                ViewBag.Lotes = _context.OfxLoteLancamento.Where(f => f.EmpresaId == idEmp).ToList().OrderByDescending(f => f.Data).ToList();
+                ViewBag.Lotes = _context.OfxLoteLancamento.Where(f => f.EmpresaId == idEmp && f.CompetenciaId == comp).ToList().OrderByDescending(f => f.Data).ToList();
             }
             else
             {
@@ -453,7 +454,7 @@ namespace Demonstrativo.Controllers
                     Type = extratoViewModel.LancamentoManual.TipoSelecionado,
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     SaldoMensal = new SaldoMensalViewModel(),
-
+                    Mostrar = ((extratoViewModel.LancamentoManual.Data.Month == competenciasId.Month) && (extratoViewModel.LancamentoManual.Data.Year == competenciasId.Year)),
                     Id = "MANUAL"
 
                 });
@@ -706,7 +707,7 @@ namespace Demonstrativo.Controllers
                 return View("Contas", dados);
             }
 
-
+            var data = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
 
             decimal saldoMensalTotal = 0;
             var lote = new OfxLoteLancamento();
@@ -731,8 +732,9 @@ namespace Demonstrativo.Controllers
                     EmpresaId = ViewBag.EmpresaSeleciodaId,
                     CompetenciaId = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId)
                 };
-                dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
+                dados.ContasCorrentes.OfxLancamentos.Where(el => (el.Date.Month == data.Month && el.Date.Year == data.Year)).ToList().ForEach(el =>
                 {
+
                     lote.Valor += el.TransationValue;
                 });
                 _context.OfxLoteLancamento.Add(lote);
@@ -742,21 +744,22 @@ namespace Demonstrativo.Controllers
 
 
             var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
-            var data = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+
             var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == data
                                                                     && s.ContaCorrenteId == contaCorrente.Id);
             if (saldoMensalId == null)
             {
-                _context.SaldoMensal.Add(new SaldoMensal()
+                var saldo = new SaldoMensal()
                 {
                     Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
-                    Saldo = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal == 0 ? lote.Valor : dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal,
-                    ContaCorrenteId = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.ContaCorrenteId
-                });
+                    Saldo = lote.Valor,
+                    ContaCorrenteId = contaCorrente.Id
+                };
+                _context.SaldoMensal.Add(saldo);
             }
             else
             {
-                //saldoMensalId.Saldo += dado.SaldoMensal.SaldoMensal == 0 ? lote.Valor : dado.SaldoMensal.SaldoMensal;
+                saldoMensalId.Saldo += lote.Valor;
             }
 
 
