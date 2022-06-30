@@ -246,6 +246,10 @@ input {
 }
 
 .nav-item {
+    white-space: nowrap!important;
+}
+
+.nav-item {
     transition: all .3s;
     position: relative;
     cursor: pointer;
@@ -347,10 +351,15 @@ input {
 .select {
     margin-right: 10px !important;
 }
-
-.import-lote .select2-container {
+.select2-container {
     width: 100% !important;
 }
+
+.select-header .select2-container {
+    max-width: 322px !important;
+}
+
+
 
 .select2-selection {
     display: block;
@@ -374,6 +383,10 @@ input {
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     top: 6px !important;    
+}
+.btn-search-header{
+    position: absolute;
+    right:-20px;
 }
 
 
@@ -420,8 +433,8 @@ th, td {
     text-align: center !important;
 }
 
-#page-empresa td:nth-last-child(1){
-    width:130px!important;
+#page-empresa td:nth-last-child(1), .td-actions {
+    width: 130px !important;
 }
 
 #page-empresa td {

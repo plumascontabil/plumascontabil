@@ -30,7 +30,7 @@
 </head>
 <body>
 	<header class=" bg-light">
-		<nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
+		<nav class="navbar fixed-top navbar-expand-lg navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
 			<div class="container">
 				<a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
 					<img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
@@ -42,7 +42,7 @@
 				@if (actualAction != "Login" && actualAction != "Logout")
 				{
 
-					<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
 						<ul class="navbar-nav flex-grow-1 ">
 
 							@if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Lançamento")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
@@ -170,22 +170,29 @@
 							var url = $"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}";
 						}
 
-						@using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50" }))
+						@using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-100 justify-content-end" }))
 						{
+							<div class="row w-100">
+								<div class="col-md-5 d-flex align-items-center py-1">
+									<input type="hidden" name="Url" id="Url" value="@url" />
+									@Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "select-header form-control my-2 mr-sm-2 my-sm-1 w-50 select" })
+									@*@Html.Hidden("Url", url);*@
+								</div>
+								<div class="col-md-5 d-flex align-items-center position-relative py-1">
+									@Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "select-header form-control my-sm-1 my-2 mr-sm-2 select" })
+									<button class="my-2 my-sm-0 m-1 btn-search-header" type="submit">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+											<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+										</svg>
+									</button>
+								</div>
+								<div class="col-2 d-flex align-items-center">
+									
 
-							<input type="hidden" name="Url" id="Url" value="@url" />
-							@Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "form-control my-2 mr-sm-2 w-50 select" })
-							@*@Html.Hidden("Url", url);*@
-							<div class="mx-1"></div>
+									<a class="btn bg-transparent d-flex align-items-center justify-content-center" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt ml-2"></i></a>
 
-							@Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "form-control my-2 mr-sm-2 select" })
-							<button class="my-2 my-sm-0 m-1" type="submit">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-									<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-								</svg>
-							</button>
-
-							<a class="btn bg-transparent" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt"></i></a>
+								</div>
+							</div>
 						}
 					</div>
 				}
