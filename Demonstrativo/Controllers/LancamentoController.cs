@@ -254,14 +254,15 @@ namespace Demonstrativo.Controllers
                     if (conta.Id == 143)
                     {
                         var contax = contasViewModel.Where(f => f.Codigo == 53).FirstOrDefault();
-                        if (contax != null)
+
+                        if(contax != null)
                         {
                             var valores = contax.Lancamentos.Sum(x => x.Valor);
 
                             var indx = contasViewModel.FindIndex(f => f.Id == conta.Id);
                             contasViewModel[indx].Lancamentos[0].ValorStr = Convert.ToString(valores - contasViewModel[indx].Lancamentos.FirstOrDefault().Valor);
                         }
-
+                      
 
                     }
 

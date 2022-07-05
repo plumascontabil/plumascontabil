@@ -742,24 +742,36 @@ namespace Demonstrativo.Controllers
             }
 
 
-
-            var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
-
-            var saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == data
-                                                                    && s.ContaCorrenteId == contaCorrente.Id);
-            if (saldoMensalId == null)
+            try
             {
-                var saldo = new SaldoMensal()
+
+                var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.Acctid == dados.ContasCorrentes.NumeroConta);
+                SaldoMensal saldoMensalId = null;
+                if (contaCorrente != null)
                 {
-                    Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
-                    Saldo = lote.Valor,
-                    ContaCorrenteId = contaCorrente.Id
-                };
-                _context.SaldoMensal.Add(saldo);
+                    saldoMensalId = _context.SaldoMensal.FirstOrDefault(s => s.Competencia == data
+                                                                        && s.ContaCorrenteId == contaCorrente.Id);
+                }
+                if (saldoMensalId == null)
+                {
+                    var saldo = new SaldoMensal()
+                    {
+                        Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
+                        Saldo = lote.Valor,
+                        ContaCorrenteId = contaCorrente.Id
+                    };
+                    _context.SaldoMensal.Add(saldo);
+                }
+                else
+                {
+                    saldoMensalId.Saldo += lote.Valor;
+                }
             }
-            else
+            catch (Exception E)
             {
-                saldoMensalId.Saldo += lote.Valor;
+                // IniT();
+                ViewBag.ContaCorrenteNaoEncontrada = true;
+                return View("Index");
             }
 
 
