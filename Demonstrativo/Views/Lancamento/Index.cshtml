@@ -84,6 +84,10 @@
 			@foreach (var categoria in Model.Categorias.Skip(numeroSkip).Take(numeroTake))
 			{
 				<div class="col-12">
+					@if (categoria.Descricao == "RECEITAS")
+					{
+						<div class="inptable mx-auto d-flex justify-content-end"><button onclick="handleContasReceber(event)" class="btn btn-plumas-w">Provisão dos recebimentos</button></div>
+					}
 					<table class="table table-bordered inptable mx-auto">
 						<thead>
 							<tr>
@@ -123,46 +127,46 @@
 												}
 											}
 										</td>
-                                        <td class="valor">
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
-                                            @if (conta.TipoLancamento == "C")
-                                            {
-                                                @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
-                                                {
+										<td class="valor">
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
+											@if (conta.TipoLancamento == "C")
+											{
+												@if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
+												{
 
-                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
-
-
-                                                }
-                                                else
-                                                {
-                                                    <input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
-                                                {
-
-                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
+													<button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
 
 
-                                                }
-                                                else
-                                                {
-                                                    <input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].ValorStr" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                }
+												}
+												else
+												{
+													<input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+												}
 
-                                            }
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Descricao" value="@Model.Categorias[indexCategoria].Descricao" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" value="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id"  />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" value="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" />
-                                        </td>
+											}
+											else
+											{
+												@if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
+												{
+
+													<input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+
+
+												}
+												else
+												{
+													<input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].ValorStr" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+												}
+
+											}
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Descricao" value="@Model.Categorias[indexCategoria].Descricao" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" value="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" value="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" />
+										</td>
 									</tr>
 								}
 							</tbody>
@@ -444,7 +448,7 @@
 							</td>
 						</tr>
 					}
-					
+
 				</tbody>
 			</table>
 		</div>
@@ -615,54 +619,161 @@
 					<table class="w-100 mx-auto table-bordered">
 						<thead>
 							<tr>
-								<td colspan="2" class="bg-categoria text-white p-2">@contasAReceber.Descricao</td>
-								<td class="bg-categoria text-white p-2"></td>
+								<td class="bg-categoria text-white p-2">CÓDIGOS</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>CONTAS</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>DÉBITO</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>CRÉDITO</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>DESCRIÇÃO</td>
 							</tr>
 						</thead>
-						@for (var indexContaReceber = 0; indexContaReceber < contasAReceber.Contas.Count; indexContaReceber++)
-						{
-							var contaRec = contasAReceber.Contas[indexContaReceber];
-							<tbody>
-								@for (int indexLancamentoReceber = 0; indexLancamentoReceber < contaRec.Lancamentos.Count; indexLancamentoReceber++)
-								{
-									var lancamentoReceber = contaRec.Lancamentos[indexLancamentoReceber];
-									var valorLancReceber = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", lancamentoReceber.Valor);
-
+						
+							<tbody>									
 									<tr>
-										<td class="codigo">
-											@contaRec.Codigo<input type="hidden" value="@contaRec.Id" />
+										<td class="codigo">119</td>
+										<td>VENDAS DE MERCADORIAS - COMBUSTÍVEIS</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
 										</td>
-										<td class="descricao">
-											@if (lancamentoReceber.PodeDigitarDescricao)
-											{
-												<input type="text" class="form-control" style="width:100%;" asp-for="@Model.Categorias[indexCategoria].Contas[indexContaReceber].Lancamentos[indexContaReceber].Descricao" value="@lancamentoReceber.Descricao" />
-											}
-											else
-											{
-												if (lancamentoReceber.Descricao != null)
-												{
-													<input type="text" class="form-control" style="width:100%;" value="@lancamentoReceber.Descricao" />
-												}
-												else
-												{
-													@contaRec.Descricao
-
-
-
-													<input disabled type="hidden" value="@contaRec.Descricao" />
-												}
-											}
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
 										</td>
-										<td class="valor">
-											<input type="hidden" value="@lancamentoReceber.Id" />
-
-											<input type="text" class="mask-valor cursor-pointer" value="@valorLancReceber" onfocus="this.setSelectionRange(0, this.value.length);" />
-
+										<td>
+											<input type="text" name="descricao" />
 										</td>
 									</tr>
-								}
+									<tr>
+										<td class="codigo">121</td>
+										<td>VENDAS DE MERCADORIAS - LUB./FILTROS</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">120</td>
+										<td>VENDAS DE MERCADORIAS - LOJA/CONVÊNIENCIA</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">125</td>
+										<td>VENDAS DE MERCADORIAS - PRODUTOS</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo"></td>
+										<td>CHEQUES À RECEBER</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">4</td>
+										<td>CAIXA</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">79</td>
+										<td>DESP. CARTÃO DE CRÉDITO</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">178</td>
+										<td>OUTROS CARTÕES DE CRÉDITOS</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">157</td>
+										<td>CARTÃO CIELO</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">179</td>
+										<td>CARTÃO DE DÉBITO - IPIRANGA</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+									<tr>
+										<td class="codigo">175</td>
+										<td>CLIENTES</td>
+										<td>
+											<input type="text" name="debitoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="creditoValor" class="mask-valor" />
+										</td>
+										<td>
+											<input type="text" name="descricao" />
+										</td>
+									</tr>
+								
 							</tbody>
-						}
+						
 					</table>
 				</div>
 				<div class="modal-footer">
