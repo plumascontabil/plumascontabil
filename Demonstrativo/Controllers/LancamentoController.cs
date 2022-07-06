@@ -111,6 +111,7 @@ namespace Demonstrativo.Controllers
         {
             // var trimestreViewModel = await _lancamentoDomainService.CarregarCategorias(empresasId, competenciasId);
 
+            var receitas = new List<ReceitasViewModel>();
             var trimestreViewModel = new TrimestreViewModel();
             trimestreViewModel.CompetenciaSelecionadaId = ReturnCompetenciaMesAtual();
             var contas = _context.LancamentosPadroes.ToList();
@@ -170,7 +171,6 @@ namespace Demonstrativo.Controllers
 
 
             });
-
 
 
             categorias.ForEach(categoria =>
@@ -255,18 +255,59 @@ namespace Demonstrativo.Controllers
                     {
                         var contax = contasViewModel.Where(f => f.Codigo == 53).FirstOrDefault();
 
-                        if(contax != null)
+                        if (contax != null)
                         {
                             var valores = contax.Lancamentos.Sum(x => x.Valor);
 
                             var indx = contasViewModel.FindIndex(f => f.Id == conta.Id);
                             contasViewModel[indx].Lancamentos[0].ValorStr = Convert.ToString(valores - contasViewModel[indx].Lancamentos.FirstOrDefault().Valor);
                         }
-                      
+
 
                     }
 
                 });
+
+
+                if (categoria.Descricao == "CONTAS A PAGAR")
+                {
+                    contasViewModel.ForEach(el =>
+                    {
+                        decimal valorlancado = 0;
+                        decimal valorBaixado = 0;
+                        var ofxLanc = contasCorrentesLancamentos.Where(l => l.LancamentoPadraoId.HasValue).Where(l => (int)el.Id == (int)l.LancamentoPadraoId.Value).ToList();
+
+
+                        ofxLanc.ForEach(ofxLancamento =>
+                        {
+                            //var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
+                            if (ofxLancamento != null)
+                            {
+                                valorBaixado += ofxLancamento.ValorOfx;
+                            }
+                        });
+
+                        var lancManual = lancamentos.Where(f => f.ContaId.HasValue).Where(l => (int)el.Id == (int)l.ContaId).ToList();
+
+
+                        lancManual.ForEach(ofxLancamento =>
+                        {
+                            //var contaCodigo = autoDescricao.FirstOrDefault(a => a.Descricao == ofxLancamento.Descricao).LancamentoPadraoId;
+                            if (ofxLancamento != null)
+                            {
+                                valorlancado += ofxLancamento.Valor;
+                            }
+                        });
+
+                        var cont = el.Lancamentos.FindIndex(f => f.Conta == el.Codigo);
+                        el.Lancamentos[cont].ValorStr = (valorlancado - valorBaixado).ToString();
+                    });
+
+
+                }
+
+
+
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
                 {
@@ -274,6 +315,60 @@ namespace Demonstrativo.Controllers
                     Contas = contasViewModel
                 });
             });
+
+            var categoriaReceita = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper() == "Receitas".ToUpper()).FirstOrDefault();
+
+
+            var recei = categoriaReceita.Contas.Select(f =>
+            {
+
+                var lancManual = lancamentos.Where(f => f.ContaId.HasValue).Where(l => (int)f.Id == (int)l.ContaId).FirstOrDefault();
+                return new ReceitasViewModel()
+                {
+                    Codigo = f.Codigo ?? 0,
+                    Conta = f.Descricao,
+                    Data = competenciasId,
+                    Empresa = empresasId,
+                    Descricao = lancManual?.Descricao ?? "",
+                    Id = lancManual?.Id ?? 0,
+                    IdConta = f.Id,
+                    TipoLancamento = f.TipoLancamento,
+                    ValorCreditoStr = lancManual != null ? lancManual.Valor.ToString() : 0.ToString(),
+                    ValorDebitoStr = 0.ToString(),
+                    TipoConta = 0
+                };
+            }).ToList();
+            receitas.AddRange(recei);
+
+
+
+            var categoriaContas = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper() == "Contas a receber".ToUpper()).FirstOrDefault();
+
+
+
+            recei = categoriaContas.Contas.Select(f =>
+           {
+
+               var lancManual = lancamentos.Where(f => f.ContaId.HasValue).Where(l => (int)f.Id == (int)l.ContaId).FirstOrDefault();
+               return new ReceitasViewModel()
+               {
+                   Codigo = f.Codigo ?? 0,
+                   Conta = f.Descricao,
+                   Data = competenciasId,
+                   Empresa = empresasId,
+                   Descricao = lancManual?.Descricao ?? "",
+                   Id = lancManual?.Id ?? 0,
+                   IdConta = f.Id,
+                   TipoLancamento = f.TipoLancamento,
+                   ValorCreditoStr = 0.ToString(),
+                   ValorDebitoStr = lancManual != null ? lancManual.Valor.ToString() : 0.ToString(),
+                   TipoConta = 1
+               };
+           }).ToList();
+            receitas.AddRange(recei);
+
+
+            receitas = receitas.OrderBy(f => f.TipoConta).ToList();
 
 
             var trimestre = CarregarTrimestre(competenciasId, empresasId);
@@ -285,10 +380,11 @@ namespace Demonstrativo.Controllers
             trimestreViewModel.Trimestre = trimestre.Trimestre;
             trimestreViewModel.ProvisoesDepreciacoes = trimestre.ProvisoesDepreciacoes;
             trimestreViewModel.EstoqueVendas = estorqueVenda.EstoqueVendas;
+            trimestreViewModel.Receitas = receitas;
 
             return trimestreViewModel;
         }
-
+        [HttpPost]
         public IActionResult Filtrar(int empresasId, DateTime competenciasId, string url)
         {
             CarregarEmpresasCompetencias(empresasId, competenciasId);
@@ -311,6 +407,60 @@ namespace Demonstrativo.Controllers
 
 
             return View("Index", CarregarCategorias((int?)ViewBag.EmpresaSeleciodaId, (DateTime?)date));
+        }
+
+
+
+        public IActionResult SalvarReceitas(TrimestreViewModel trimestreViewModel)
+        {
+            AdicionarCompetenciaMesAtual();
+
+            CarregarEmpresasCompetencias();
+
+            if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
+            {
+                ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
+                return View("Index", CarregarCategorias());
+            }
+
+            var lancamentos = trimestreViewModel.Receitas.Select(x => new Lancamento()
+            {
+                Id = x.Id,
+                ContaId = x.IdConta,
+                DataCompetencia = x.Data.HasValue ? x.Data.Value : DateTime.Now,
+                Descricao = x.Descricao,
+                EmpresaId = x.Empresa.HasValue ? x.Empresa.Value : 0,
+                Valor = x.ValorCreditoStr != null ? x.ValorCredito ?? 0 : x.ValorDebito ?? 0
+            }).ToList();
+
+
+
+
+            foreach (var item in lancamentos)
+            {
+                var lanc = _context.Lancamentos.Where(f => f.EmpresaId == item.EmpresaId && f.DataCompetencia == item.DataCompetencia && f.ContaId == item.ContaId).FirstOrDefault();
+                if (lanc != null)
+                {
+                    lanc.ContaId = item.ContaId;
+                    lanc.DataCompetencia = item.DataCompetencia;
+                    lanc.Descricao = item.Descricao;
+                    lanc.EmpresaId = item.EmpresaId;
+                    lanc.Valor = item.Valor;
+                    _context.Lancamentos.Update(lanc);
+                }
+                else
+                {
+                    _context.Lancamentos.Add(item);
+                }
+
+                _context.SaveChanges();
+            }
+
+
+
+            return RedirectToAction("Index");
+
+
         }
 
         [HttpPost]

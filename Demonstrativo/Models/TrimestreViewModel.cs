@@ -18,6 +18,7 @@ namespace Demonstrativo.Models
         public SelectList Competencias { get; set; }
         public int CompetenciaSelecionada { get; set; }
         public DateTime CompetenciaSelecionadaId { get; set; }
+        public List<ReceitasViewModel> Receitas { get; set; }
 
     }
 }
