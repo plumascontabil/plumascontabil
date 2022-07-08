@@ -48,7 +48,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label asp-for="EmpresasId"></label>
-            <select asp-for="EmpresasId" class="form-control select" multiselect asp-items='ViewBag.EmpresasId'>
+            <select asp-for="EmpresasId" class="form-control select" id="select-empresa" multiselect asp-items='ViewBag.EmpresasId'>
                 <option disabled value="">Selecione</option>
             </select>
             <span asp-validation-for="EmpresasId" class="text-danger"></span>
@@ -58,5 +58,12 @@
     </div>
 </form>
 
+
 @section Scripts{
+   
+        <script type="text/javascript">
+          $("#select-empresa").multiselect('dataprovider', []);
+
+        </script>
+    
 }

@@ -469,225 +469,234 @@ namespace Demonstrativo.Controllers
         public IActionResult Salvar(TrimestreViewModel trimestreViewModel)
         {
             AdicionarCompetenciaMesAtual();
-
             CarregarEmpresasCompetencias();
-            if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
+            try
             {
-                ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
-                return View("Index", CarregarCategorias());
-            }
-            DateTime competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
-            var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
-            //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
-
-            var lancamentoCompetencia = _context.OfxLoteLancamento.Any(l => l.CompetenciaId == competencia && l.EmpresaId == empresaId);
-            var estoqueVendas = trimestreViewModel.EstoqueVendas;
-
-            #region ItensVenda
-            if (lancamentoCompetencia == false)
-            {
-                var insertEstoqueVendas = new Venda()
+                if (ViewBag.EmpresaSeleciodaId == null || ViewBag.CompetenciasSelecionadaId == null)
                 {
-                    DataCompetencia = competencia,
-                    EmpresaId = empresaId,
-                    Observacao = estoqueVendas.Observacao
-                };
-
-                _context.Vendas.Add(insertEstoqueVendas);
-                _context.SaveChanges();
-
-                foreach (var itemVenda in estoqueVendas.ItensVendas)
-                {
-                    if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
-                    {
-                        continue;
-                    }
-
-                    if (itemVenda.Id == 0)
-                    {
-                        var insertItemVenda = new ItemVenda()
-                        {
-                            VendaId = insertEstoqueVendas.Id,
-                            ProdutoId = itemVenda.ProdutoId,
-                            Quantidade = itemVenda.Quantidade,
-                            Preco = itemVenda.Preco
-                        };
-
-                        _context.ItensVendas.Add(insertItemVenda);
-                        _context.SaveChanges();
-                    }
-                    else
-                    {
-                        var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
-
-                        updateItemVenda.Quantidade = itemVenda.Quantidade;
-                        updateItemVenda.Preco = itemVenda.Preco;
-
-                        _context.ItensVendas.Update(updateItemVenda);
-                        _context.SaveChanges();
-                    }
+                    ViewBag.Message = "Porfavor, selecione uma empresa e uma competencia e filtre!";
+                    return View("Index", CarregarCategorias());
                 }
-            }
-            else
-            {
-                var updateEstoqueVendas = _context.Vendas.Find(Convert.ToInt32(estoqueVendas.Id));
+                DateTime competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId);
+                var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
+                //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
 
-                updateEstoqueVendas.DataCompetencia = competencia;
-                updateEstoqueVendas.EmpresaId = empresaId;
-                updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
+                var lancamentoCompetencia = _context.OfxLoteLancamento.Any(l => l.CompetenciaId == competencia && l.EmpresaId == empresaId);
+                var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
-                foreach (var itemVenda in estoqueVendas.ItensVendas)
+                #region ItensVenda
+                if (lancamentoCompetencia == false)
                 {
-                    if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
+                    var insertEstoqueVendas = new Venda()
                     {
-                        continue;
-                    }
+                        DataCompetencia = competencia,
+                        EmpresaId = empresaId,
+                        Observacao = estoqueVendas.Observacao
+                    };
 
-                    if (itemVenda.Id == 0)
-                    {
-                        var insertItemVenda = new ItemVenda()
-                        {
-                            VendaId = updateEstoqueVendas.Id,
-                            ProdutoId = itemVenda.ProdutoId,
-                            Quantidade = itemVenda.Quantidade,
-                            Preco = itemVenda.Preco
-                        };
-
-                        _context.ItensVendas.Add(insertItemVenda);
-                        _context.SaveChanges();
-                    }
-                    else
-                    {
-                        var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
-
-                        updateItemVenda.Quantidade = itemVenda.Quantidade;
-                        updateItemVenda.Preco = itemVenda.Preco;
-
-                        _context.ItensVendas.Update(updateItemVenda);
-                        _context.SaveChanges();
-                    }
-                }
-            }
-            #endregion
-            #region ItensDepreciações
-            var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
-            var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
-            if (lancamentoCompetencia == false || updateProvisoes == null)
-            {
-                var insertProvisoes = new ProvisoesDepreciacao()
-                {
-                    DataCompetencia = competencia,
-                    EmpresaId = empresaId,
-                    DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro,
-                    Ferias = provisoesDepreciacoes.Ferias,
-                    Depreciacao = provisoesDepreciacoes.Depreciacao,
-                    SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo,
-                    CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao,
-                    Apurar = provisoesDepreciacoes.Apurar
-                };
-
-                _context.ProvisoesDepreciacoes.Add(insertProvisoes);
-                _context.SaveChanges();
-            }
-            else
-            {
-                //var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
-
-                updateProvisoes.DataCompetencia = competencia;//provisoesDepreciacoes.Data;
-                updateProvisoes.EmpresaId = empresaId; //provisoesDepreciacoes.Empresa;
-                updateProvisoes.DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro;
-                updateProvisoes.Ferias = provisoesDepreciacoes.Ferias;
-                updateProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
-                updateProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
-                updateProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
-                updateProvisoes.Apurar = provisoesDepreciacoes.Apurar;
-
-                _context.ProvisoesDepreciacoes.Update(updateProvisoes);
-                _context.SaveChanges();
-            }
-            #endregion
-
-            #region OfxLançamentos
-            //trimestreViewModel.Categorias.Where(f => f.Contas.Where(x => x.TipoLancamento == "L").Count() > 0).ToList().ForEach(el =>
-            //{
-            //    el.Contas.Where(x => x.TipoLancamento == "L").ToList().ForEach(conta =>
-            //      {
-            //          conta.Lancamentos.Select(x => new OfxLancamento()
-            //          {
-            //              Id = x.Id,
-            //              LancamentoPadraoId = x.Conta,
-            //              Data = x.Data,
-            //              Descricao = x.Descricao,
-            //              ValorOfx = x.Valor,
-            //              Valor = x.Valor
-            //          });
-            //          conta.Lancamentos.ForEach(xxel =>
-            //          {
-
-            //          });
-            //      });
-            //});
-            #endregion
-
-            var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
-
-            var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
-            {
-                Id = x.Id,
-                ContaId = x.Conta,
-                DataCompetencia = x.Data,
-                Descricao = x.Descricao,
-                EmpresaId = x.Empresa,
-                Valor = x.Valor
-            }).ToList();
-
-            foreach (var lancamento in lancamentos)
-            {
-                if (lancamento.Id == 0 && lancamento.Valor == 0)
-                {
-                    continue;
-                }
-
-                if (lancamento.Id != 0 && lancamento.Valor == 0)
-                {
-                    _context.Lancamentos.Remove(lancamento);
+                    _context.Vendas.Add(insertEstoqueVendas);
                     _context.SaveChanges();
-                    continue;
-                }
 
-                if (lancamentoCompetencia)
-                {
-                    var insertLancamento = new Lancamento();
-                    if (lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
+                    foreach (var itemVenda in estoqueVendas.ItensVendas)
                     {
-                        insertLancamento.ContaId = lancamento.ContaId;
-                    }
-                    insertLancamento.EmpresaId = lancamento.EmpresaId;
-                    insertLancamento.DataCompetencia = lancamento.DataCompetencia;
-                    insertLancamento.Descricao = lancamento.Descricao;
-                    insertLancamento.Valor = lancamento.Valor;
+                        if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
+                        {
+                            continue;
+                        }
 
-                    _context.Lancamentos.Add(insertLancamento);
+                        if (itemVenda.Id == 0)
+                        {
+                            var insertItemVenda = new ItemVenda()
+                            {
+                                VendaId = insertEstoqueVendas.Id,
+                                ProdutoId = itemVenda.ProdutoId,
+                                Quantidade = itemVenda.Quantidade,
+                                Preco = itemVenda.Preco
+                            };
+
+                            _context.ItensVendas.Add(insertItemVenda);
+                            _context.SaveChanges();
+                        }
+                        else
+                        {
+                            var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
+
+                            updateItemVenda.Quantidade = itemVenda.Quantidade;
+                            updateItemVenda.Preco = itemVenda.Preco;
+
+                            _context.ItensVendas.Update(updateItemVenda);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    var updateEstoqueVendas = _context.Vendas.Find(Convert.ToInt32(estoqueVendas.Id));
+
+                    updateEstoqueVendas.DataCompetencia = competencia;
+                    updateEstoqueVendas.EmpresaId = empresaId;
+                    updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
+
+                    foreach (var itemVenda in estoqueVendas.ItensVendas)
+                    {
+                        if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
+                        {
+                            continue;
+                        }
+
+                        if (itemVenda.Id == 0)
+                        {
+                            var insertItemVenda = new ItemVenda()
+                            {
+                                VendaId = updateEstoqueVendas.Id,
+                                ProdutoId = itemVenda.ProdutoId,
+                                Quantidade = itemVenda.Quantidade,
+                                Preco = itemVenda.Preco
+                            };
+
+                            _context.ItensVendas.Add(insertItemVenda);
+                            _context.SaveChanges();
+                        }
+                        else
+                        {
+                            var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
+
+                            updateItemVenda.Quantidade = itemVenda.Quantidade;
+                            updateItemVenda.Preco = itemVenda.Preco;
+
+                            _context.ItensVendas.Update(updateItemVenda);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
+                #endregion
+                #region ItensDepreciações
+                var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
+                var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
+                if (lancamentoCompetencia == false || updateProvisoes == null)
+                {
+                    var insertProvisoes = new ProvisoesDepreciacao()
+                    {
+                        DataCompetencia = competencia,
+                        EmpresaId = empresaId,
+                        DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro,
+                        Ferias = provisoesDepreciacoes.Ferias,
+                        Depreciacao = provisoesDepreciacoes.Depreciacao,
+                        SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo,
+                        CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao,
+                        Apurar = provisoesDepreciacoes.Apurar
+                    };
+
+                    _context.ProvisoesDepreciacoes.Add(insertProvisoes);
                     _context.SaveChanges();
                 }
                 else
                 {
-                    var updateLancamento = _context.Lancamentos.Find(Convert.ToInt32(lancamento.Id));
+                    //var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
 
-                    updateLancamento.Descricao = lancamento.Descricao;
-                    updateLancamento.Valor = lancamento.Valor;
+                    updateProvisoes.DataCompetencia = competencia;//provisoesDepreciacoes.Data;
+                    updateProvisoes.EmpresaId = empresaId; //provisoesDepreciacoes.Empresa;
+                    updateProvisoes.DecimoTerceiro = provisoesDepreciacoes.DecimoTerceiro;
+                    updateProvisoes.Ferias = provisoesDepreciacoes.Ferias;
+                    updateProvisoes.Depreciacao = provisoesDepreciacoes.Depreciacao;
+                    updateProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
+                    updateProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
+                    updateProvisoes.Apurar = provisoesDepreciacoes.Apurar;
 
-                    _context.Lancamentos.Update(updateLancamento);
+                    _context.ProvisoesDepreciacoes.Update(updateProvisoes);
                     _context.SaveChanges();
                 }
+                #endregion
+
+                #region OfxLançamentos
+                //trimestreViewModel.Categorias.Where(f => f.Contas.Where(x => x.TipoLancamento == "L").Count() > 0).ToList().ForEach(el =>
+                //{
+                //    el.Contas.Where(x => x.TipoLancamento == "L").ToList().ForEach(conta =>
+                //      {
+                //          conta.Lancamentos.Select(x => new OfxLancamento()
+                //          {
+                //              Id = x.Id,
+                //              LancamentoPadraoId = x.Conta,
+                //              Data = x.Data,
+                //              Descricao = x.Descricao,
+                //              ValorOfx = x.Valor,
+                //              Valor = x.Valor
+                //          });
+                //          conta.Lancamentos.ForEach(xxel =>
+                //          {
+
+                //          });
+                //      });
+                //});
+                #endregion
+
+                var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
+
+                var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
+                {
+                    Id = x.Id,
+                    ContaId = x.Conta,
+                    DataCompetencia = x.Data,
+                    Descricao = x.Descricao,
+                    EmpresaId = x.Empresa,
+                    Valor = x.Valor
+                }).ToList();
+
+                foreach (var lancamento in lancamentos)
+                {
+                    if (lancamento.Id == 0 && lancamento.Valor == 0)
+                    {
+                        continue;
+                    }
+
+                    if (lancamento.Id != 0 && lancamento.Valor == 0)
+                    {
+                        _context.Lancamentos.Remove(lancamento);
+                        _context.SaveChanges();
+                        continue;
+                    }
+
+                    if (lancamentoCompetencia)
+                    {
+                        var insertLancamento = new Lancamento();
+                        if (lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
+                        {
+                            insertLancamento.ContaId = lancamento.ContaId;
+                        }
+                        insertLancamento.EmpresaId = lancamento.EmpresaId;
+                        insertLancamento.DataCompetencia = lancamento.DataCompetencia;
+                        insertLancamento.Descricao = lancamento.Descricao;
+                        insertLancamento.Valor = lancamento.Valor;
+
+                        _context.Lancamentos.Add(insertLancamento);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        var updateLancamento = _context.Lancamentos.Find(Convert.ToInt32(lancamento.Id));
+
+                        updateLancamento.Descricao = lancamento.Descricao;
+                        updateLancamento.Valor = lancamento.Valor;
+
+                        _context.Lancamentos.Update(updateLancamento);
+                        _context.SaveChanges();
+                    }
+                }
+
+                var primeiroLancamento = lancamentos.FirstOrDefault();
+                _logger.LogInformation(((int)EEventLog.Post), "Lançamento Id: {lancamento} created.", primeiroLancamento.Id);
+
+                TempData["Sucesso"] = "Dados salvos com sucesso!";
+                return RedirectToAction("Index");
+
             }
-
-            var primeiroLancamento = lancamentos.FirstOrDefault();
-            _logger.LogInformation(((int)EEventLog.Post), "Lançamento Id: {lancamento} created.", primeiroLancamento.Id);
-
-            TempData["Sucesso"] = "Dados salvos com sucesso!";
-
-            return RedirectToAction("Index");
+            catch (Exception e)
+            {
+                AdicionarCompetenciaMesAtual();
+                CarregarEmpresasCompetencias();
+                ViewBag.Message = "Erro ao tentar salvar campos manuais";
+                return RedirectToAction("Index");
+            }
         }
 
         public TrimestreViewModel CarregarTrimestre(DateTime? competenciasId = null, int? empresaId = null)
