@@ -382,43 +382,22 @@ namespace Demonstrativo.Controllers
             extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
             foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
-                var lancamentoPadrao = lancamentosPadroes
-                    .FirstOrDefault(h => h.Descricao == extratoViewModel.LancamentoManual.Descricao);
 
-                if (lancamentoPadrao == null)
+
+                lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
-                    lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
-                    {
-                        IdBd = dados.IdBd,
-                        Id = dados.Id,
-                        TransationValue = dados.TransationValue,
-                        Description = dados.Description,
-                        Date = dados.Date,
-                        CheckSum = dados.CheckSum,
-                        Type = dados.Type,
-                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                        Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year))
-                    });
-                }
-                else
-                {
-                    lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
-                    {
-                        IdBd = dados.IdBd,
-                        Id = dados.Id,
-                        TransationValue = dados.TransationValue,
-                        Description = dados.Description,
-                        Date = dados.Date,
-                        CheckSum = dados.CheckSum,
-                        Type = dados.Type,
-                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                        Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year)),
-                        LancamentoPadraoSelecionado =
-                            Convert.ToInt32(_context.LancamentosPadroes
-                                            .FirstOrDefault(l => l.Codigo == lancamentoPadrao.Codigo)
-                                                .Codigo)
-                    });
-                }
+                    IdBd = dados.IdBd,
+                    Id = dados.Id,
+                    TransationValue = dados.TransationValue,
+                    Description = dados.Description,
+                    Date = dados.Date,
+                    CheckSum = dados.CheckSum,
+                    Type = dados.Type,
+                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                    Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year)),
+                    LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado
+                });
+
 
                 var banco = _context.OfxBancos.FirstOrDefault(b => b.Codigo == extratoViewModel.Banco.Codigo);
 
