@@ -385,8 +385,7 @@ input {
     top: 6px !important;    
 }
 .btn-search-header{
-    position: absolute;
-    right:-20px;
+    margin-right:-20px!important;
 }
 
 
