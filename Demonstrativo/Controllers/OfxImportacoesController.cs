@@ -463,6 +463,8 @@ namespace Demonstrativo.Controllers
             _logger.LogInformation(((int)EEventLog.Post), "ReImport created.");
 
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
+
+            extratoBancarioViewModel.LancamentoManual = new OfxLancamentoManualViewModel();
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             //
