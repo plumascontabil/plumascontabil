@@ -269,7 +269,7 @@ namespace Demonstrativo.Controllers
                 });
 
 
-                if (categoria.Descricao == "CONTAS A PAGAR")
+                if (categoria.Descricao == "CONTAS A RECEBER")
                 {
                     contasViewModel.ForEach(el =>
                     {
@@ -286,6 +286,7 @@ namespace Demonstrativo.Controllers
                                 valorBaixado += ofxLancamento.ValorOfx;
                             }
                         });
+                        valorBaixado = valorBaixado;
 
                         var lancManual = lancamentos.Where(f => f.ContaId.HasValue).Where(l => (int)el.Id == (int)l.ContaId).ToList();
 
@@ -298,9 +299,10 @@ namespace Demonstrativo.Controllers
                                 valorlancado += ofxLancamento.Valor;
                             }
                         });
+                        valorlancado = valorlancado;
 
-                        var cont = el.Lancamentos.FindIndex(f => f.Conta == el.Codigo);
-                        el.Lancamentos[cont].ValorStr = (valorlancado - valorBaixado).ToString();
+
+                        el.Lancamentos[0].ValorStr = ((valorlancado - valorBaixado)).ToString();
                     });
 
 

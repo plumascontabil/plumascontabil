@@ -385,8 +385,7 @@ input {
     top: 6px !important;    
 }
 .btn-search-header{
-    position: absolute;
-    right:-20px;
+    margin-right:-20px!important;
 }
 
 
@@ -439,5 +438,11 @@ th, td {
 
 #page-empresa td {
     width:301px!important;
+}
+
+@media (max-width: 768px){
+    .select2-container {
+        width: 96% !important;
+    }
 }
 
