@@ -444,7 +444,7 @@ namespace Demonstrativo.Controllers
                 saldo += el.TransationValue;
             });
 
-            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+           extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
             {
                 if (el.SaldoMensal != null)
                 {

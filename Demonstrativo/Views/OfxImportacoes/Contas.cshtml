@@ -106,8 +106,8 @@
 
 
                 @*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
-                <option value="">Selecione</option>
-                </select>*@
+                    <option value="">Selecione</option>
+                    </select>*@
 
                 <output>
                     <H2 class="text-uppercase">@Model.DescricaoLote</H2>
@@ -181,8 +181,8 @@
                                 {
                                     <td>
                                         @*<button data-toggle="tooltip" id="ManualEdit_@i" title="Editar" value="@true" asp-action="OfxReimportEdit">
-                                <i class="fa fa-edit"></i>
-                                </button>*@
+                                            <i class="fa fa-edit"></i>
+                                            </button>*@
                                         <button data-toggle="tooltip" id="ManualExcluir_@i" title="Excluir" value="@true" asp-action="OfxReimportarDelete"> <i class="fa fa-trash"></i></button>
                                         <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Selecionando" />
                                         <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
@@ -203,7 +203,7 @@
 </form>
 @section Scripts{
     <script type="text/javascript">
-        $("button[id*='Manual'").click(function(event) {
+        $("button[id*='Manual'").click(function (event) {
             var id = event.currentTarget.id;
             const xx = "#Manu_" + id.split("_")[1];
             $(xx).val(true);
@@ -224,26 +224,34 @@
 
             $("div.modal-body").find('select').each((index, el) => {
 
-                console.log(el);
-                $(el).val($(el + " option:first").val());
+                //$('option:selected', el).each((idx, ell) => {
+                //    debugger
+                //    $(ell).removeAttr("selected");
+                //})
+                //console.log(el);
+                //$(`#${el.id} option:eq(0)`).prop("selected", true);
+                $(el).select2("val", "");
+                /*$(el).empty().trigger('change');*/
+                $(el).val('').trigger('change')
+                /* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
+
+                /*$(el).val($(el + " option:first").val());*/
             });
         });
 
         $("#OfxReimportar").submit((event) => {
-            event.preventDefault();
             var empty = ""
 
             $("div.modal-body").find('input').each((index, el) => {
-                console.log($(el).val())
-                if ($(el).val() == "") {
-                                                    empty  empty + " " + $(el).prop("id");
+                if (!$(el).val()) {
+                    empty = empty + " " + $(el).prop("id");
                 }
             });
 
             $("div.modal-body").find('select').each((index, el) => {
-                console.log($(el).val())
-                if ($(el).val() == "") {
-                                                    empty  empty + " " + $(el).prop("id");
+
+                if (!$(el).val()) {
+                    empty = empty + " " + $(el).prop("id");
                 }
             });
 

@@ -296,9 +296,9 @@
 										<i class="fa fa-edit"></i>
 									</button>
 								</form>
-								<button data-toggle-tooltip="tooltip" data-toggle="modal" title="Detalhes do Lote" data-target="#modalDetalhe">
+								@*<button data-toggle-tooltip="tooltip" data-toggle="modal" title="Detalhes do Lote" data-target="#modalDetalhe">
 									<i class="fa fa-info-circle"></i>
-								</button>
+								</button>*@
 								<form method="post" id="OfxLoteDelete" asp-action="OfxLoteDelete">
 									<input type="hidden" name="LoteLancamentoId" id="LoteLancamentoId" value="@item.Id" />
 									<button type="submit" data-toggle="tooltip" title="Excluir Lote">
