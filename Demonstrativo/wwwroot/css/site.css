@@ -440,3 +440,9 @@ th, td {
     width:301px!important;
 }
 
+@media (max-width: 768px){
+    .select2-container {
+        width: 96% !important;
+    }
+}
+
