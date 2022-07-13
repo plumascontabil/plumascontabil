@@ -205,13 +205,23 @@
                                 else
                                 @if (ofxs.Mostrar)
                                 {
-                                    <td>
+                            <td>
 
-                                        <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
-                                        <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
-                                        <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
-                                        <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
-                                    </td>
+                                <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
+                                @if (ofxs.Inativar.HasValue && ofxs.Inativar.Value)
+                                {
+                                    <button data-toggle="tooltip" id="Ativar_@i" title="Ativar" value="@true" asp-action="OfxReimportarAtivar"> <i class="fa fa-check" aria-hidden="true"></i></button>
+                                }
+                                else
+                                {
+                                    <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
+                                }
+
+
+
+                                <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
+                                <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
+                            </td>
 
                                 }
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />

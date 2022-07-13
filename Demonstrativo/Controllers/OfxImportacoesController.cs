@@ -510,7 +510,27 @@ namespace Demonstrativo.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult OfxReimportarAtivar(ExtratoBancarioViewModel extratoViewModel = null)
+        {
+            IniT();
+            try
+            {
+                AdicionarCompetenciaMesAtual();
+                CarregarEmpresasCompetencias();
 
+                var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Dividir.HasValue && f.Dividir.Value);
+                extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = null;
+
+                return View("Contas", extratoViewModel);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         [HttpPost]
         public IActionResult OfxReimportarInativar(ExtratoBancarioViewModel extratoViewModel = null)
         {

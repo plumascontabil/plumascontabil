@@ -440,7 +440,13 @@ th, td {
     width:301px!important;
 }
 
-@media (max-width: 768px){
+.inativo {
+    background: rgb(255, 0, 0, .8);
+    opacity: .5;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
     .select2-container {
         width: 96% !important;
     }

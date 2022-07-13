@@ -24,133 +24,195 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
+     @{
+        var TemCadastro = (((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f =>
+        f.Tela.Nome.ToString() == "Usuário" ||
+        f.Tela.Nome.ToString() == "Perfil" ||
+        f.Tela.Nome.ToString() == "Historico Bancos" ||
+        f.Tela.Nome.ToString() == "Conta Corrente" ||
+        f.Tela.Nome.ToString() == "Saldo Conta Corrente " ||
+        f.Tela.Nome.ToString() == "Bnaco" ||
+        f.Tela.Nome.ToString() == "Conta Contábil" ||
+        f.Tela.Nome.ToString() == "Lançamento Contábil" ||
+        f.Tela.Nome.ToString() == "Relatório" ||
+        f.Tela.Nome.ToString() == "Empresa"));
+
+    }
 	<header class=" bg-light">
-		<nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
-			<div class="container">
-				<a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
-					<img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
-				</a>
-				@if (actualAction != "Login" && actualAction != "Logout")
-				{
+        <nav class="navbar fixed-top navbar-expand-lg navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Lancamento" asp-action="Index">
+                    <img src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                @if (actualAction != "Login" && actualAction != "Logout")
+                {
+
+                    <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1 ">
+
+                            @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Lançamento")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                            {
+                                <li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index" || $"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Filtrar") ? "active" : "")">
+                                    <a class="nav-link text-dark"
+                                       asp-area=""
+                                       asp-controller="Lancamento"
+                                       asp-action="Index">Lançamentos</a>
+                                </li>
+                            }
 
 
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-						<ul class="navbar-nav flex-grow-1 ">
-							<li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Lancamento/Index") ? "active":"")">
-								<a class="nav-link text-dark"
-							   asp-area=""
-							   asp-controller="Lancamento"
-							   asp-action="Index">Lançamentos</a>
-							</li>
-							@* @if (User.IsInRole("Administrador"))
-						{*@
+                            @* @if (User.IsInRole("Administrador"))
+                                {*@
+                            @*<li class="nav-item @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "Usuario/CarregarUsuario") ? "active":"")">
 
-							<li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index" )? "active":"")">
-								<div class="dropdown show">
-									<a class="nav-link text-dark"
-								   asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
-										Importações OFX
-									</a>
-									@*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-								<a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
-								</div>*@
-								</div>
-							</li>
-							<li class="nav-item">
-								<div class="dropdown show">
-									<a class="nav-link text-dark dropdown-toggle"
-								   role="button"
-								   id="dropdownMenuLink"
-								   data-toggle="dropdown"
-								   aria-haspopup="true"
-								   aria-expanded="false"
-								   asp-area=""
-								   asp-controller="Importacao"
-								   asp-action="Index">
-										Cadastros
-									</a>
-									<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Usuario"
-									   asp-action="CarregarUsuario">Usuários</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Role"
-									   asp-action="Index">Perfis</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="AutoDescricoes"
-									   asp-action="Index">Históricos Banco</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="OfxContasCorrentes"
-									   asp-action="Index">Contas Correntes</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="SaldoMensals"
-									   asp-action="Index">Saldos Contas Correntes</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="OfxBancos"
-									   asp-action="Index">Bancos</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="ContasContabeis"
-									   asp-action="Index">Contas Contábeis</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="LancamentosPadroes"
-									   asp-action="Index">Lançamentos Contábeis</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Importacao"
-									   asp-action="RelatorioOfx">Relatório</a>
-										<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Empresa"
-									   asp-action="Index">Empresas</a>
-									</div>
-								</div>
-							</li>
-							@*}*@
-						</ul>
-						@{
-							var url = $"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}";
-						}
-						@using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-50" }))
-						{
-							<div class="row w-100">
-								<div class="col-md-5 d-flex align-items-center py-1">
-									<input type="hidden" name="Url" id="Url" value="@url" />
-									@Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "select-header form-control my-2 mr-sm-2 my-sm-1 w-50 select" })
-									@*@Html.Hidden("Url", url);*@
-								</div>
-								<div class="col-md-5 d-flex align-items-center position-relative py-1">
-									@Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "select-header form-control my-sm-1 my-2 mr-sm-2 select" })
-									<button class="my-2 my-sm-0 m-1 btn-search-header" type="submit">
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-											<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-										</svg>
-									</button>
-								</div>
-								<div class="col-2 d-flex align-items-center">
-									
+                                </li>*@
+                            @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Importação Ofx")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                            {
+                                <li class="nav-item   @(($"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}" == "OfxImportacoes/Index") ? "active" : "")">
+                                    <div class="dropdown show">
+                                        <a class="nav-link text-dark"
+                                           asp-area="" asp-controller="OfxImportacoes" asp-action="Index">
+                                            Importações OFX
+                                        </a>
+                                        @*<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" asp-area="" asp-controller="OfxImportacoes" asp-action="Index">Ofx</a>
+                                            </div>*@
+                                    </div>
+                                </li>
+                            }
 
-									<a class="btn bg-transparent d-flex align-items-center justify-content-center" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt ml-2"></i></a>
+                            <li class="nav-item">
+                                <div class="dropdown show">
+                                    @if (TemCadastro && ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Usuário" 
+                                        || f.Tela.Nome.ToString() == "Perfil" || f.Tela.Nome.ToString() == "Históricos Banco" || f.Tela.Nome.ToString() == "Conta Corrente"
+                                        || f.Tela.Nome.ToString() == "Saldo Conta Corrente" || f.Tela.Nome.ToString() == "Banco" || f.Tela.Nome.ToString() == "Conta Contábil"
+                                        || f.Tela.Nome.ToString() == "Lançamento Contábil" || f.Tela.Nome.ToString() == "Relatório" || f.Tela.Nome.ToString() == "Empresa")) ))
+                                    {
 
-								</div>
-							</div>
-						}
-					</div>
-				}
-			</div>
-		</nav>
-	</header>
+                                        <a class="nav-link text-dark dropdown-toggle"
+                                           role="button"
+                                           id="dropdownMenuLink"
+                                           data-toggle="dropdown"
+                                           aria-haspopup="true"
+                                           aria-expanded="false"
+                                           asp-area=""
+                                           asp-controller="Importacao"
+                                           asp-action="Index">
+                                            Cadastros
+                                        </a>
+                                    }
+
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Usuário")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="Usuario"
+                                               asp-action="CarregarUsuario">Usuários</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Perfil")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class=" dropdown-item"
+                                               asp-area=""
+                                               asp-controller="Role"
+                                               asp-action="Index">Perfis</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Históricos Banco")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="AutoDescricoes"
+                                               asp-action="Index">Históricos Banco</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Conta Corrente")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="OfxContasCorrentes"
+                                               asp-action="Index">Contas Correntes</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Saldo Conta Corrente")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="SaldoMensals"
+                                               asp-action="Index">Saldos Contas Correntes</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Banco")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="OfxBancos"
+                                               asp-action="Index">Bancos</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Conta Contábil")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="ContasContabeis"
+                                               asp-action="Index">Contas Contábeis</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Lançamento Contábil")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="LancamentosPadroes"
+                                               asp-action="Index">Lançamentos Contábeis</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Relatório")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="Importacao"
+                                               asp-action="RelatorioOfx">Relatório</a>
+                                        }
+                                        @if ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Empresa")) || ((IList<RoleTela>)ViewBag.TelasPermitidas).Count == 0)
+                                        {
+                                            <a class="dropdown-item"
+                                               asp-area=""
+                                               asp-controller="Empresa"
+                                               asp-action="Index">Empresas</a>
+                                        }
+                                    </div>
+                                </div>
+                            </li>
+                            @*}*@
+                        </ul>
+                        @{
+                            var url = $"{ViewContext.RouteData.Values["controller"].ToString()}/{ViewContext.RouteData.Values["action"].ToString()}";
+                        }
+
+                        @using (Html.BeginForm("Filtrar", "Lancamento", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 w-100 justify-content-end" }))
+                        {
+                            <div class="row w-100">
+                                <div class="col-md-5 d-flex align-items-center py-1">
+                                    <input type="hidden" name="Url" id="Url" value="@url" />
+                                    @Html.DropDownList("EmpresasId", null, "Empresas", new { @class = "select-header form-control my-2 mr-sm-2 my-sm-1 w-50 select" })
+                                    @*@Html.Hidden("Url", url);*@
+                                </div>
+                                <div class="col-md-5 d-flex align-items-center position-relative py-1">
+                                    @Html.DropDownList("CompetenciasId", null, "Competências", new { @class = "select-header form-control my-sm-1 my-2 mr-sm-2 select" })
+                                    <button class="my-2 my-sm-0 m-1 btn-search-header" type="submit">
+                                       <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                </div>
+                                <div class="col-2 d-flex align-items-center">
+
+
+                                    <a class="btn bg-transparent d-flex align-items-center justify-content-center" asp-controller="Usuario" asp-action="Logout">Sair <i class="fas fa-sign-out-alt ml-2"></i></a>
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </nav>
+    </header>
 	<div class="container">
 		<main role="main" class="pb-3 pt-5">
 			@RenderBody()
