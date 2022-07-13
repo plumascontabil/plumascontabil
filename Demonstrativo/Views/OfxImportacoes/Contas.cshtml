@@ -73,19 +73,27 @@
                             </div>
                             <div class="modal-body">
 
-                                <div class="form-group">
+                                <div class="form-group podeRetirar">
                                     <label for="data">Data</label>
                                     <input id="data" max="@max" min="@min" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
                                 </div>
                                 <div class="import-lote mb-3">
-                                    <div><label for="tipo">Tipo</label></div>
-                                    <select id="tipo" class="form-control select" asp-for="@Model.LancamentoManual.TipoSelecionado">
-                                        <option selected disabled value="">Selecione</option>
-                                        <option style="color:blue" value="CREDIT">CREDIT</option>
-                                        <option style="color:red" value="DEBIT">DEBIT</option>
+                                    <div class="podeRetirar"><label for="tipo">Tipo</label></div>
+                                    <div class="podeRetirar">
+                                        <select id="tipo" class="form-control select podeRetirar" asp-for="@Model.LancamentoManual.TipoSelecionado">
+                                            <option selected disabled value="">Selecione</option>
+                                            <option style="color:blue" value="CREDIT">CREDIT</option>
+                                            <option style="color:red" value="DEBIT">DEBIT</option>
+                                        </select>
+                                    </div>
+                                    <div class="podeRetirar"><label for="Lançamento Contábil">Lançamento Contábil</label></div>
+                                    <select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
+                                        <option value="">Selecione</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+
+
+                                <div class="form-group podeRetirar">
                                     <label for="descricao">Descrição</label>
                                     <input id="descricao" class="form-control" type="text" asp-for="@Model.LancamentoManual.Descricao" />
                                 </div>
@@ -104,36 +112,7 @@
                     </div>
                 </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="modalDivider" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                Novo lançamento Contabil (Divisor)
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body modal-divider">
-                                <h6 id="Valor-Divider"> </h6>
-                                <div class="form-group">
-                                    <label for="valor">Valor</label>
-                                    @*<input id="LancamentoManual.ValorInput" asp-for="@Model.LancamentoManual.ValorInput" name="LancamentoManual.ValorInput" class="form-control mask-valor" type="text" />*@
-                                    <input id="valor" class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
-                                </div>
-                                <select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
-                                    <option value="">Selecione</option>
-                                </select>
-                                @*<input type="hidden" id="valorRef" />*@
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button id="adicionar-DIDI" type="submit" class="btn btn-plumas-w" asp-action="OfxReimportar">Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
 
                 @*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
@@ -156,6 +135,7 @@
                             <th class="bg-categoria text-white p-2">Descrição</th>
                             <th class="bg-categoria text-white p-2">Valor</th>
                             <th class="bg-categoria text-white p-2">Lançamento contábil</th>
+                            <th class="bg-categoria text-white p-2">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -222,17 +202,18 @@
                                         <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
                                     </td>
                                 }
-                                else @if (ofxs.Mostrar)
-                           {
-                            <td>
+                                else
+                                @if (ofxs.Mostrar)
+                                {
+                                    <td>
 
-                                <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
-                                <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
-                                <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
-                                <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
-                            </td>
+                                        <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
+                                        <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
+                                        <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
+                                        <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
+                                    </td>
 
-                        }
+                                }
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
                             </tr>
 
@@ -252,41 +233,40 @@
             var id = event.currentTarget.id;
             const xx = "#Manu_" + id.split("_")[1];
             $(xx).val(true);
+            $(".podeRetirar").each((index, el) => {
+                $(el).css('display', 'block');
+            });
+
         });
         $("button[id*='Divider'").click(function (event) {
             var id = event.currentTarget.id;
             const xx = "#Manu_" + id.split("_")[1];
             $(xx).val(true);
 
-
+            debugger;
             const vlr = "#Vlr_" + id.split("_")[1];
             const valor = $(vlr).val();
-
+            localStorage.setItem("isDivider", true);
 
             localStorage.setItem("valor", Number(valor.replace(",", ".")))
             $("#Valor-Divider").html(`Valor Referência: R$ ${valor}`)
-            $("div.modal-body").find('input').each((index, el) => {
+
+            $("div.modal-body").find('input[type=text]').each((index, el) => {
                 $(el).val("");
             });
 
             $("div.modal-body").find('select').each((index, el) => {
-
-                //$('option:selected', el).each((idx, ell) => {
-                //
-                //    $(ell).removeAttr("selected");
-                //})
-                //console.log(el);
-                //$(`#${el.id} option:eq(0)`).prop("selected", true);
                 $(el).select2("val", "");
-                /*$(el).empty().trigger('change');*/
                 $(el).val('').trigger('change')
-                /* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
+            });
 
-                /*$(el).val($(el + " option:first").val());*/
+            $(".podeRetirar").each((index, el) => {
+                $(el).css('display', 'none');
             });
 
 
-            $('#modalDivider').modal();
+
+            $('#staticBackdrop').modal();
         });
         $("button[id*='Inativar'").click(function (event) {
             var id = event.currentTarget.id;
@@ -294,12 +274,6 @@
             $(xx).val(true);
         });
 
-        /*   $("#staticBackdrop").click(function (event) {
-               //$("#OfxReimportar").reset();
-               $('#OfxReimportar').trigger("reset");
-
-           });
-           */
 
         $("#btn-lancamento-manual").click((event) => {
 
@@ -309,18 +283,8 @@
 
             $("div.modal-body").find('select').each((index, el) => {
 
-                //$('option:selected', el).each((idx, ell) => {
-                //
-                //    $(ell).removeAttr("selected");
-                //})
-                //console.log(el);
-                //$(`#${el.id} option:eq(0)`).prop("selected", true);
                 $(el).select2("val", "");
-                /*$(el).empty().trigger('change');*/
                 $(el).val('').trigger('change')
-                /* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
-
-                /*$(el).val($(el + " option:first").val());*/
             });
         });
 
@@ -328,10 +292,22 @@
 
         $("#adicionar-lancamento-manual").on("click", (event) => {
             var empty = ""
+            var vlr = 0;
+            var VlrRef = Number(localStorage.getItem("valor"));
+            var isDivider = Boolean(localStorage.getItem("isDivider"));
+
 
             $("div.modal-body").find('input').each((index, el) => {
                 if (!$(el).val()) {
                     empty = empty + " " + $(el).prop("id") == "LancamentoManual.ValorInput" ? "Valor" : $(el).prop("id");
+                }
+                else {
+                    if (isDivider) {
+                        if ($(el).prop("id") != "valorRef") {
+                            if ($(el).prop("type") == "text") vlr += Number($(el).val());
+                        }
+                    }
+
                 }
             });
 
@@ -352,54 +328,23 @@
 
                 event.preventDefault();
             }
-        });
+            if (isDivider) {
+                console.log(VlrRef < vlr);
+                if (VlrRef < vlr) {
 
-        $("#adicionar-DIDI").click((event) => {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Valor lançado maior que o Valor de Referência',
 
-            var empty = ""
-            var vlr = 0;
-            var VlrRef = Number(localStorage.getItem("valor"));
-            $("div.modal-divider").find('input').each((index, el) => {
-                if (!$(el).val()) {
-                    empty = empty + " " + $(el).prop("id");
-                } else {
-                    if ($(el).prop("id") != "valorRef") {
-                        vlr += Number($(el).val());
-                    }
+                    })
+                    event.preventDefault();
                 }
-            });
-
-            $("div.modal-divider").find('select').each((index, el) => {
-
-                if (!$(el).val()) {
-                    empty = empty + " " + $(el).prop("id");
-                }
-            });
-
-            if (empty != "") {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Campos obrigatórios não preenchidos : ' + empty,
-
-                })
-
-                event.preventDefault();
             }
 
-
-            console.log(VlrRef < vlr);
-            if (VlrRef < vlr) {
-
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Valor lançado maior que o Valor de Referência',
-
-                })
-                event.preventDefault();
-            }
         });
+
+
 
     </script>
     @if (ViewBag.OpenModal != null)

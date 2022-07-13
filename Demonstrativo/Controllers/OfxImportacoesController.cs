@@ -520,7 +520,7 @@ namespace Demonstrativo.Controllers
                 AdicionarCompetenciaMesAtual();
                 CarregarEmpresasCompetencias();
 
-                var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Selecionando);
+                var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Dividir.HasValue && f.Dividir.Value);
                 extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = true;
 
                 return View("Contas", extratoViewModel);
