@@ -627,6 +627,7 @@ namespace Demonstrativo.Controllers
                     Date = el.Data,
                     Type = el.TipoLancamento,
                     Description = el.Descricao,
+                    Inativar = el.Inativar,
                     SaldoMensal = new SaldoMensalViewModel()
                     {
                         SaldoMensal = lote.Valor,
@@ -668,7 +669,8 @@ namespace Demonstrativo.Controllers
                     Type = dados.Type,
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado,
-                    Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year))
+                    Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year)),
+                    Inativar = dados.Inativar
 
                 }); ;
 
@@ -706,7 +708,6 @@ namespace Demonstrativo.Controllers
                     Type = extratoViewModel.LancamentoManual.TipoSelecionado,
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     SaldoMensal = new SaldoMensalViewModel(),
-
                     Mostrar = ((extratoViewModel.LancamentoManual.Data.Month == competenciasId.Month) && (extratoViewModel.LancamentoManual.Data.Year == competenciasId.Year)),
                     Id = "MANUAL"
 
@@ -761,10 +762,10 @@ namespace Demonstrativo.Controllers
             if (dados.LoteLancamentoid.HasValue)
             {
                 lote = _context.OfxLoteLancamento.Where(f => f.Id == dados.LoteLancamentoid.Value).FirstOrDefault();
-                dados.ContasCorrentes.OfxLancamentos.ForEach(el =>
-                {
-                    lote.Valor += el.TransationValue;
-                });
+                dados.ContasCorrentes.OfxLancamentos.Where(f => !f.Inativar.HasValue || !f.Inativar.Value).ToList().ForEach(el =>
+                  {
+                      lote.Valor += el.TransationValue;
+                  });
                 //_context.OfxLoteLancamento.Add(lote);
                 _context.SaveChanges();
             }

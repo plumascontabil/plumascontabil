@@ -24,7 +24,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-     @{
+     @*@{
         var TemCadastro = (((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f =>
         f.Tela.Nome.ToString() == "Usuário" ||
         f.Tela.Nome.ToString() == "Perfil" ||
@@ -37,7 +37,7 @@
         f.Tela.Nome.ToString() == "Relatório" ||
         f.Tela.Nome.ToString() == "Empresa"));
 
-    }
+    }*@
 	<header class=" bg-light">
         <nav class="navbar fixed-top navbar-expand-lg navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
             <div class="container">
@@ -87,7 +87,7 @@
 
                             <li class="nav-item">
                                 <div class="dropdown show">
-                                    @if (TemCadastro && ((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Usuário" 
+                                    @if (((((IList<RoleTela>)ViewBag.TelasPermitidas).Any(f => f.Tela.Nome.ToString() == "Usuário" 
                                         || f.Tela.Nome.ToString() == "Perfil" || f.Tela.Nome.ToString() == "Históricos Banco" || f.Tela.Nome.ToString() == "Conta Corrente"
                                         || f.Tela.Nome.ToString() == "Saldo Conta Corrente" || f.Tela.Nome.ToString() == "Banco" || f.Tela.Nome.ToString() == "Conta Contábil"
                                         || f.Tela.Nome.ToString() == "Lançamento Contábil" || f.Tela.Nome.ToString() == "Relatório" || f.Tela.Nome.ToString() == "Empresa")) ))

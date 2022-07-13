@@ -86,10 +86,12 @@
                                             <option style="color:red" value="DEBIT">DEBIT</option>
                                         </select>
                                     </div>
-                                    <div><label for="Lançamento Contábil">Lançamento Contábil</label></div>
-                                    <select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
-                                        <option value="">Selecione</option>
-                                    </select>
+                                    <div class="retirarLancamento">
+                                        <div><label for="Lançamento Contábil">Lançamento Contábil</label></div>
+                                        <select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
+                                            <option value="">Selecione</option>
+                                        </select>
+                                    </div>
                                 </div>
 
 
@@ -155,7 +157,7 @@
                             <tr class="@classe">
                                 <td>
                                     @Html.Raw(ofxs.Id)
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
+                                    <input type="hidden" value="@ofxs.Inativar" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
                                     <input type="hidden" asp-for="@Model.DescricaoLote" />
@@ -247,7 +249,10 @@
             $(".podeRetirar").each((index, el) => {
                 $(el).css('display', 'block');
             });
-
+            
+            $(".retirarLancamento").each((index, el) => {
+                $(el).css('display', 'none');
+            });
         });
         $("button[id*='Divider'").click(function (event) {
             var id = event.currentTarget.id;
@@ -274,7 +279,9 @@
                 $(el).css('display', 'none');
             });
 
-
+            $(".retirarLancamento").each((index, el) => {
+                $(el).css('display', 'block');
+            });
 
             $('#staticBackdrop').modal();
         });
