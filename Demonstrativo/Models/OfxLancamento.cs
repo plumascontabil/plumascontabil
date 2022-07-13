@@ -31,5 +31,6 @@ namespace Demonstrativo.Models
         [ForeignKey("LoteLancamentoId")]
         public int? LoteLancamentoId { get; set; }
         public OfxLoteLancamento Lote { get; set; }
+        public bool? Inativar { get; set; }
     }
 }

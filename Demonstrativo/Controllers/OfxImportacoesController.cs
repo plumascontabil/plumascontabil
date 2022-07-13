@@ -128,6 +128,7 @@ namespace Demonstrativo.Controllers
             var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             var autoDescricoes = _context.AutoDescricoes;
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+            var lancamentos = _context.OfxLancamentos.ToList();
 
             int? BancosId = _context.ContasCorrentes.Where(f => f.Id == ContaCorrenteId).FirstOrDefault().BancoOfxId;
             if (ofxArquivo == null)
@@ -247,33 +248,31 @@ namespace Demonstrativo.Controllers
 
                 saldoMensalViewModel.SaldoMensal = saldo;
 
-                //varrendo arquivo e adicionado as ViewsModel
-                foreach (var dados in extratoBancario.Transactions)
-                //foreach (var dados in extratoBancario.Transactions)
+                var banco = _context.OfxBancos
+                       .FirstOrDefault(b => b.Codigo == Convert.ToInt32(extratoBancario.BankAccount.Bank.Code));
+
+                if (banco == null)
                 {
-                    var banco = _context.OfxBancos
-                        .FirstOrDefault(b => b.Codigo == Convert.ToInt32(extratoBancario.BankAccount.Bank.Code));
+                    ViewBag.SemBanco = "Banco Inexistente";
+                    return View("Index");
+                }
 
-                    if (banco == null)
-                    {
-                        ViewBag.SemBanco = "Banco Inexistente";
-                        break;
-                    }
+                if (banco.Id != bancoEscolhido.Id)
+                {
+                    ViewBag.SemBanco = "O Banco do Arquivo não confere com o banco escolhido";
+                    return View("Index");
+                }
+                var bancoViewModel = new OfxBancoViewModel()
+                {
+                    Id = banco.Id,
+                    Codigo = banco.Codigo,
+                    Nome = banco.Nome
+                };
+                //varrendo arquivo e adicionado as ViewsModel
 
-                    if (banco.Id != bancoEscolhido.Id)
-                    {
-                        ViewBag.SemBanco = "O Banco do Arquivo não confere com o banco escolhido";
-                        break;
-                    }
-                    var bancoViewModel = new OfxBancoViewModel()
-                    {
-                        Id = banco.Id,
-                        Codigo = banco.Codigo,
-                        Nome = banco.Nome
-                    };
-
-
-                    if (_context.OfxLancamentos.ToList().Any(c => c.Documento == dados.Id && c.ContaCorrenteId == dadosContaCorrente.Id) == false)
+                extratoBancario.Transactions.ToList().ForEach(dados =>
+                {
+                    if (lancamentos.Any(c => c.Documento == dados.Id && c.ContaCorrenteId == dadosContaCorrente.Id) == false)
                     {
                         //if (autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description) == null)
                         //{
@@ -326,9 +325,16 @@ namespace Demonstrativo.Controllers
                     {
                         var dadoss = _context.OfxLancamentos.Include(f => f.Lote).Where(c => c.Documento == dados.Id && c.ContaCorrenteId == dadosContaCorrente.Id).FirstOrDefault();
                         loteAchado = dadoss.Lote;
-                        break;
                     }
-                }
+                });
+                //foreach (var dados in )
+                ////foreach (var dados in extratoBancario.Transactions)
+                //{
+
+
+
+
+                //}
                 if (ViewBag.SemBanco != null)
                 {
                     // IniT();
@@ -378,11 +384,22 @@ namespace Demonstrativo.Controllers
             var lancamentoOfxViewModel = new List<OfxLancamentoViewModel>();
             var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
             var extratoBancarioViewModel = new ExtratoBancarioViewModel();
-
+            var Divider = false;
+            var idDivider = string.Empty;
+            var tipo = 0;
             extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
             foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
+                if (dados.Dividir.HasValue && dados.Dividir.Value)
+                {
+                    dados.TransationValue = dados.TransationValue - extratoViewModel.LancamentoManual.Valor;
+                    extratoViewModel.LancamentoManual.Data = dados.Date;
+                    extratoViewModel.LancamentoManual.Descricao = dados.Description;
 
+                    Divider = true; idDivider = dados.Id; tipo = Convert.ToInt32(extratoViewModel.LancamentoManual.TipoSelecionado);
+
+                    extratoViewModel.LancamentoManual.TipoSelecionado = dados.Type; ;
+                }
 
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
                 {
@@ -434,7 +451,8 @@ namespace Demonstrativo.Controllers
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     SaldoMensal = new SaldoMensalViewModel(),
                     Mostrar = ((extratoViewModel.LancamentoManual.Data.Month == competenciasId.Month) && (extratoViewModel.LancamentoManual.Data.Year == competenciasId.Year)),
-                    Id = "MANUAL"
+                    Id = Divider ? idDivider : "MANUAL",
+                    LancamentoPadraoSelecionado = Divider ? tipo : 0
 
                 });
             }
@@ -444,21 +462,21 @@ namespace Demonstrativo.Controllers
                 saldo += el.TransationValue;
             });
 
-           extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
-            {
-                if (el.SaldoMensal != null)
-                {
-                    el.SaldoMensal.SaldoMensal = saldo;
-                }
-                else
-                {
-                    el.SaldoMensal = new SaldoMensalViewModel()
-                    {
-                        SaldoMensal = saldo
-                    };
-                }
+            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+             {
+                 if (el.SaldoMensal != null)
+                 {
+                     el.SaldoMensal.SaldoMensal = saldo;
+                 }
+                 else
+                 {
+                     el.SaldoMensal = new SaldoMensalViewModel()
+                     {
+                         SaldoMensal = saldo
+                     };
+                 }
 
-            });
+             });
 
             _logger.LogInformation(((int)EEventLog.Post), "ReImport created.");
 
@@ -481,6 +499,29 @@ namespace Demonstrativo.Controllers
                 CarregarEmpresasCompetencias();
                 extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
 
+
+                return View("Contas", extratoViewModel);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult OfxReimportarInativar(ExtratoBancarioViewModel extratoViewModel = null)
+        {
+            IniT();
+            try
+            {
+                AdicionarCompetenciaMesAtual();
+                CarregarEmpresasCompetencias();
+
+                var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Selecionando);
+                extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = true;
 
                 return View("Contas", extratoViewModel);
 
@@ -799,7 +840,7 @@ namespace Demonstrativo.Controllers
                 if (dado.IdBd.HasValue)
                 {
                     var lanc = _context.OfxLancamentos.Where(f => f.Id == dado.IdBd.Value).FirstOrDefault();
-
+                    lanc.Inativar = dado.Inativar;
                     lanc.Documento = dado.Id;
                     lanc.TipoLancamento = dado.Type;
                     lanc.Descricao = dado.Description;
@@ -814,6 +855,7 @@ namespace Demonstrativo.Controllers
                 {
                     _context.OfxLancamentos.Add(new OfxLancamento()
                     {
+                        Inativar = dado.Inativar,
                         Documento = dado.Id,
                         TipoLancamento = dado.Type,
                         Descricao = dado.Description,

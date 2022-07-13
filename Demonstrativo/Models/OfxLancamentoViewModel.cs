@@ -21,7 +21,9 @@ namespace Demonstrativo.Models
         public bool Selecionando { get; set; }
         public int Index { get; set; }
         public bool Mostrar { get; set; }
-
+        public bool? Inativar { get; set; }
+        public bool? Dividir { get; set; }
+        public int? IdDividido { get; set; }
     }
 }
 
