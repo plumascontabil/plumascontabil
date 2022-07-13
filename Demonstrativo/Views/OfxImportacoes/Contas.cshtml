@@ -152,37 +152,38 @@
                             Model.ContasCorrentes.OfxLancamentos[i].Description = descricao.ToString();
                             Model.ContasCorrentes.OfxLancamentos[i].Type = Html.Raw(ofxs.Type).ToString();
                             lancamnetos = ofxs.LancamentosPadroes;
+                            ofxs.Dividir = false;
 
                             var classe = ofxs.Inativar.HasValue && ofxs.Inativar.Value ? "inativo" : "";
                             <tr class="@classe">
                                 <td>
                                     @Html.Raw(ofxs.Id)
                                     <input type="hidden" value="@ofxs.Inativar" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
-                                    <input type="hidden" asp-for="@Model.DescricaoLote" />
-                                    <input type="hidden" asp-for="@Model.LoteLancamentoid" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
+                                    <input type="hidden" value="@ofxs.Id" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
+                                    <input type="hidden" value="@ofxs.IdBd" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
+                                    <input type="hidden" value="@Model.DescricaoLote" asp-for="@Model.DescricaoLote" />
+                                    <input type="hidden" value="@Model.LoteLancamentoid" asp-for="@Model.LoteLancamentoid" />
+                                    <input type="hidden" value="@ofxs.SaldoMensal.ContaCorrenteId" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
+                                    <input type="hidden" value="@ofxs.SaldoMensal.SaldoMensal" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
+                                    <input type="hidden" value="@ofxs.SaldoMensal.Competencia" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
                                 </td>
                                 <td>
                                     @ofxs.Date.Date.ToString("dd/MM/yyyy")
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
+                                    <input type="hidden" value="@ofxs.Date" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
                                 </td>
                                 <td>
                                     @Html.Raw(ofxs.Type)
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
+                                    <input type="hidden" value="@ofxs.Type" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
                                 </td>
                                 <td>
                                     @descricao
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
+                                    <input type="hidden" value="@descricao" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
                                 </td>
                                 <td class="@value">
                                     @*@ofxs.TransationValue*@
 
                                     @valor
-                                    <input id="Vlr_@i" type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
+                                    <input id="Vlr_@i" value="@ofxs.TransationValue" type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
                                 </td>
                                 <td>
                                     @if (ofxs.Mostrar)
@@ -222,12 +223,12 @@
 
 
 
-                                        <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
+                                        <input type="hidden" id="Manu_@i" value="@ofxs.Dividir" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
                                         <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
                                     </td>
 
                                 }
-                                
+
                             </tr>
 
                         }
@@ -249,7 +250,7 @@
             $(".podeRetirar").each((index, el) => {
                 $(el).css('display', 'block');
             });
-            
+
             $(".retirarLancamento").each((index, el) => {
                 $(el).css('display', 'none');
             });
@@ -258,7 +259,7 @@
             var id = event.currentTarget.id;
             const xx = "#Manu_" + id.split("_")[1];
             $(xx).val(true);
-
+            debugger;
             const vlr = "#Vlr_" + id.split("_")[1];
             const valor = $(vlr).val();
             localStorage.setItem("isDivider", true);

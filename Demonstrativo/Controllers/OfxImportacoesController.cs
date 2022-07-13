@@ -128,6 +128,7 @@ namespace Demonstrativo.Controllers
             var lancamentosPadroes = _context.LancamentosPadroes.ToList();
             var autoDescricoes = _context.AutoDescricoes;
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+            var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
             var lancamentos = _context.OfxLancamentos.ToList();
 
             int? BancosId = _context.ContasCorrentes.Where(f => f.Id == ContaCorrenteId).FirstOrDefault().BancoOfxId;
@@ -217,7 +218,7 @@ namespace Demonstrativo.Controllers
                     return View("Index");
                 }
 
-                var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => (c.NumeroConta == extratoBancario.BankAccount.AccountCode || c.Acctid == extratoBancario.BankAccount.AccountCode));
+                var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => (c.NumeroConta == extratoBancario.BankAccount.AccountCode || c.Acctid == extratoBancario.BankAccount.AccountCode) && c.EmpresaId == empresaId);
 
                 if (dadosContaCorrente != null)
                 {
@@ -302,6 +303,7 @@ namespace Demonstrativo.Controllers
                             Type = dados.Type,
                             SaldoMensal = saldoMensalViewModel,
                             LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                            Dividir = null,
                             Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year))
                             //LancamentoPadraoSelecionado = autoDescricoes.FirstOrDefault(a => a.Descricao == dados.Description).LancamentoPadraoId
                         }); ;
@@ -387,21 +389,19 @@ namespace Demonstrativo.Controllers
             var Divider = false;
             var idDivider = string.Empty;
             var tipo = 0;
+            var Minus = 1;
+            var cloneLanc = new OfxLancamentoViewModel();
             extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
             foreach (var dados in extratoViewModel.ContasCorrentes.OfxLancamentos)
             {
                 if (dados.Dividir.HasValue && dados.Dividir.Value)
                 {
-                    var Minus = (dados.TransationValue < 0 ? -1 : 1);
-
-
+                    Minus = (dados.TransationValue < 0 ? -1 : 1);
                     dados.TransationValue = (Math.Abs(dados.TransationValue) - Math.Abs(extratoViewModel.LancamentoManual.Valor)) * Minus;
-                    extratoViewModel.LancamentoManual.Data = dados.Date;
-                    extratoViewModel.LancamentoManual.Descricao = dados.Description;
-
-                    Divider = true; idDivider = dados.Id; tipo = Convert.ToInt32(extratoViewModel.LancamentoManual.TipoSelecionado);
-
-                    extratoViewModel.LancamentoManual.TipoSelecionado = dados.Type; ;
+                    cloneLanc = dados;
+                    Divider = true;
+                    tipo = Convert.ToInt32(extratoViewModel.LancamentoManual.TipoSelecionado);
+                    cloneLanc.LancamentoPadraoSelecionado = tipo;
                 }
 
                 lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
@@ -415,7 +415,8 @@ namespace Demonstrativo.Controllers
                     Type = dados.Type,
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year)),
-                    LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado
+                    LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado,
+                    Dividir = null
                 });
 
 
@@ -444,20 +445,47 @@ namespace Demonstrativo.Controllers
             if (extratoViewModel.LancamentoManual != null)
             {
                 //var ids = extratoViewModel.ContasCorrentes.OfxLancamentos.Max(x => x.Id) + 1;
-                lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
-                {
-                    TransationValue = extratoViewModel.LancamentoManual.Valor * (extratoViewModel.LancamentoManual.TipoSelecionado == "DEBIT" ? -1 : 1),
-                    Description = extratoViewModel.LancamentoManual.Descricao,
-                    Date = extratoViewModel.LancamentoManual.Data,
-                    CheckSum = 1,
-                    Type = extratoViewModel.LancamentoManual.TipoSelecionado,
-                    LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
-                    SaldoMensal = new SaldoMensalViewModel(),
-                    Mostrar = ((extratoViewModel.LancamentoManual.Data.Month == competenciasId.Month) && (extratoViewModel.LancamentoManual.Data.Year == competenciasId.Year)),
-                    Id = Divider ? idDivider : "MANUAL",
-                    LancamentoPadraoSelecionado = Divider ? tipo : 0
 
-                });
+                if (Divider)
+                {
+                    var manu = new OfxLancamentoViewModel()
+                    {
+                        TransationValue = Math.Abs(extratoViewModel.LancamentoManual.Valor) * Minus,
+                        Description = cloneLanc.Description,
+                        Date = cloneLanc.Date,
+                        CheckSum = cloneLanc.CheckSum,
+                        Type = cloneLanc.Type,
+                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                        SaldoMensal = cloneLanc.SaldoMensal,
+                        Mostrar = cloneLanc.Mostrar,
+                        Id = cloneLanc.Id,
+                        LancamentoPadraoSelecionado = cloneLanc.LancamentoPadraoSelecionado,
+                        Dividir = null
+
+                    };
+
+                    var ind = lancamentoOfxViewModel.FindIndex(f => f.Id == cloneLanc.Id);
+                    lancamentoOfxViewModel.Insert(ind+1, manu);
+                }
+                else
+                {
+                    lancamentoOfxViewModel.Add(new OfxLancamentoViewModel()
+                    {
+                        TransationValue = extratoViewModel.LancamentoManual.Valor * (extratoViewModel.LancamentoManual.TipoSelecionado == "DEBIT" ? -1 : 1),
+                        Description = extratoViewModel.LancamentoManual.Descricao,
+                        Date = extratoViewModel.LancamentoManual.Data,
+                        CheckSum = 1,
+                        Type = extratoViewModel.LancamentoManual.TipoSelecionado,
+                        LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
+                        SaldoMensal = new SaldoMensalViewModel(),
+                        Mostrar = ((extratoViewModel.LancamentoManual.Data.Month == competenciasId.Month) && (extratoViewModel.LancamentoManual.Data.Year == competenciasId.Year)),
+                        Id = Divider ? idDivider : "MANUAL",
+                        LancamentoPadraoSelecionado = Divider ? tipo : 0,
+                        Dividir = null
+                    });
+
+                }
+
             }
             decimal saldo = 0;
             extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
@@ -521,6 +549,7 @@ namespace Demonstrativo.Controllers
                 var lancamentosPadroes = _context.LancamentosPadroes.ToList();
                 var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Dividir.HasValue && f.Dividir.Value);
                 extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = null;
+                extratoViewModel.ContasCorrentes.OfxLancamentos[index].Dividir = null;
                 foreach (var item in extratoViewModel.ContasCorrentes.OfxLancamentos)
                 {
                     item.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
@@ -543,6 +572,7 @@ namespace Demonstrativo.Controllers
                 var lancamentosPadroes = _context.LancamentosPadroes.ToList();
                 var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Dividir.HasValue && f.Dividir.Value);
                 extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = true;
+                extratoViewModel.ContasCorrentes.OfxLancamentos[index].Dividir = null;
                 foreach (var item in extratoViewModel.ContasCorrentes.OfxLancamentos)
                 {
                     item.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
