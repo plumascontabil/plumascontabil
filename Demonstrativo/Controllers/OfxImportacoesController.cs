@@ -465,7 +465,7 @@ namespace Demonstrativo.Controllers
                     };
 
                     var ind = lancamentoOfxViewModel.FindIndex(f => f.Id == cloneLanc.Id);
-                    lancamentoOfxViewModel.Insert(ind+1, manu);
+                    lancamentoOfxViewModel.Insert(ind + 1, manu);
                 }
                 else
                 {
@@ -778,7 +778,7 @@ namespace Demonstrativo.Controllers
                 return View("Contas", dados);
             }
 
-            if (dados.ContasCorrentes.OfxLancamentos.Where(f => f.Mostrar).Any(f => f.LancamentoPadraoSelecionado == 0))
+            if (dados.ContasCorrentes.OfxLancamentos.Where(f => f.Mostrar && !(f.Inativar.HasValue && f.Inativar.Value)).Any(f => f.LancamentoPadraoSelecionado == 0))
             {
                 ViewBag.LancamentoPadraoSelecionadoNotSelect = "É necessário realizar todos os lançamentos Contábeis para prossegui!";
                 return View("Contas", dados);
