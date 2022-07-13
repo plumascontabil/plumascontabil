@@ -392,7 +392,10 @@ namespace Demonstrativo.Controllers
             {
                 if (dados.Dividir.HasValue && dados.Dividir.Value)
                 {
-                    dados.TransationValue = dados.TransationValue - extratoViewModel.LancamentoManual.Valor;
+                    var Minus = (dados.TransationValue < 0 ? -1 : 1);
+
+
+                    dados.TransationValue = (Math.Abs(dados.TransationValue) - Math.Abs(extratoViewModel.LancamentoManual.Valor)) * Minus;
                     extratoViewModel.LancamentoManual.Data = dados.Date;
                     extratoViewModel.LancamentoManual.Descricao = dados.Description;
 
@@ -495,8 +498,7 @@ namespace Demonstrativo.Controllers
             IniT();
             try
             {
-                AdicionarCompetenciaMesAtual();
-                CarregarEmpresasCompetencias();
+
                 extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
 
 
@@ -516,12 +518,13 @@ namespace Demonstrativo.Controllers
             IniT();
             try
             {
-                AdicionarCompetenciaMesAtual();
-                CarregarEmpresasCompetencias();
-
+                var lancamentosPadroes = _context.LancamentosPadroes.ToList();
                 var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Dividir.HasValue && f.Dividir.Value);
                 extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = null;
-
+                foreach (var item in extratoViewModel.ContasCorrentes.OfxLancamentos)
+                {
+                    item.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
+                }
                 return View("Contas", extratoViewModel);
 
             }
@@ -537,12 +540,13 @@ namespace Demonstrativo.Controllers
             IniT();
             try
             {
-                AdicionarCompetenciaMesAtual();
-                CarregarEmpresasCompetencias();
-
+                var lancamentosPadroes = _context.LancamentosPadroes.ToList();
                 var index = extratoViewModel.ContasCorrentes.OfxLancamentos.FindIndex(f => f.Dividir.HasValue && f.Dividir.Value);
                 extratoViewModel.ContasCorrentes.OfxLancamentos[index].Inativar = true;
-
+                foreach (var item in extratoViewModel.ContasCorrentes.OfxLancamentos)
+                {
+                    item.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
+                }
                 return View("Contas", extratoViewModel);
 
             }

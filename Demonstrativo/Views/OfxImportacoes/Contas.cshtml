@@ -155,6 +155,7 @@
                             <tr class="@classe">
                                 <td>
                                     @Html.Raw(ofxs.Id)
+                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
                                     <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
                                     <input type="hidden" asp-for="@Model.DescricaoLote" />
@@ -224,7 +225,7 @@
                                     </td>
 
                                 }
-                                <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
+                                
                             </tr>
 
                         }
@@ -278,6 +279,12 @@
             $('#staticBackdrop').modal();
         });
         $("button[id*='Inativar'").click(function (event) {
+            var id = event.currentTarget.id;
+            const xx = "#Manu_" + id.split("_")[1];
+            $(xx).val(true);
+        });
+
+        $("button[id*='Ativar'").click(function (event) {
             var id = event.currentTarget.id;
             const xx = "#Manu_" + id.split("_")[1];
             $(xx).val(true);
@@ -338,7 +345,13 @@
             }
             if (isDivider) {
                 console.log(VlrRef < vlr);
-                if (VlrRef < vlr) {
+
+                if (VlrRef < 0) {
+
+                    if (vlr > 0) vlr * -1;
+                }
+
+                if (Math.abs(VlrRef) < Math.abs(vlr)) {
 
                     Swal.fire({
                         icon: 'warning',
