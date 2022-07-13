@@ -154,8 +154,10 @@ namespace Demonstrativo.Controllers
                 lancamentos = _context.Lancamentos.Where(f => f.EmpresaId == empresasId && f.DataCompetencia == competenciasId).ToList();
 
                 //  _context.OfxLancamentos.Where(o => ids.Any(x => x == o.ContaCorrenteId) == true).ToList();
-            }
+                // Retirar os inativar
+                contasCorrentesLancamentos = contasCorrentesLancamentos.Where(f => !f.Inativar.HasValue || !f.Inativar.Value).ToList();
 
+            }
 
             var lancamentosViewModelBancos = new List<LancamentoViewModel>();
             contasCorrentes.ForEach(contaCorrente =>

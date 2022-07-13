@@ -72,7 +72,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-
+                                <div id="Valor-Divider"></div>
                                 <div class="form-group podeRetirar">
                                     <label for="data">Data</label>
                                     <input id="data" max="@max" min="@min" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
@@ -86,7 +86,7 @@
                                             <option style="color:red" value="DEBIT">DEBIT</option>
                                         </select>
                                     </div>
-                                    <div class="podeRetirar"><label for="Lançamento Contábil">Lançamento Contábil</label></div>
+                                    <div><label for="Lançamento Contábil">Lançamento Contábil</label></div>
                                     <select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
                                         <option value="">Selecione</option>
                                     </select>
@@ -205,23 +205,23 @@
                                 else
                                 @if (ofxs.Mostrar)
                                 {
-                            <td>
+                                    <td>
 
-                                <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
-                                @if (ofxs.Inativar.HasValue && ofxs.Inativar.Value)
-                                {
-                                    <button data-toggle="tooltip" id="Ativar_@i" title="Ativar" value="@true" asp-action="OfxReimportarAtivar"> <i class="fa fa-check" aria-hidden="true"></i></button>
-                                }
-                                else
-                                {
-                                    <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
-                                }
+                                        <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
+                                        @if (ofxs.Inativar.HasValue && ofxs.Inativar.Value)
+                                        {
+                                            <button data-toggle="tooltip" id="Ativar_@i" title="Ativar" value="@true" asp-action="OfxReimportarAtivar"> <i class="fa fa-check" aria-hidden="true"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
+                                        }
 
 
 
-                                <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
-                                <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
-                            </td>
+                                        <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
+                                        <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
+                                    </td>
 
                                 }
                                 <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
@@ -253,7 +253,6 @@
             const xx = "#Manu_" + id.split("_")[1];
             $(xx).val(true);
 
-            debugger;
             const vlr = "#Vlr_" + id.split("_")[1];
             const valor = $(vlr).val();
             localStorage.setItem("isDivider", true);
@@ -306,14 +305,13 @@
             var VlrRef = Number(localStorage.getItem("valor"));
             var isDivider = Boolean(localStorage.getItem("isDivider"));
 
-
             $("div.modal-body").find('input').each((index, el) => {
-                if (!$(el).val()) {
+                if (!$(el).val() && $(el).is(":visible")) {
                     empty = empty + " " + $(el).prop("id") == "LancamentoManual.ValorInput" ? "Valor" : $(el).prop("id");
                 }
                 else {
                     if (isDivider) {
-                        if ($(el).prop("id") != "valorRef") {
+                        if ($(el).prop("id") != "valorRef" && $(el).is(":visible")) {
                             if ($(el).prop("type") == "text") vlr += Number($(el).val());
                         }
                     }
@@ -323,7 +321,7 @@
 
             $("div.modal-body").find('select').each((index, el) => {
 
-                if (!$(el).val()) {
+                if (!$(el).val() && $(el).is(":visible")) {
                     empty = empty + " " + $(el).prop("id");
                 }
             });
