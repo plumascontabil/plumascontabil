@@ -250,10 +250,7 @@
             $(".podeRetirar").each((index, el) => {
                 $(el).css('display', 'block');
             });
-
-            $(".retirarLancamento").each((index, el) => {
-                $(el).css('display', 'none');
-            });
+           
         });
         $("button[id*='Divider'").click(function (event) {
             var id = event.currentTarget.id;
@@ -309,6 +306,10 @@
 
                 $(el).select2("val", "");
                 $(el).val('').trigger('change')
+            });
+
+            $(".retirarLancamento").each((index, el) => {
+                $(el).css('display', 'none');
             });
         });
 
