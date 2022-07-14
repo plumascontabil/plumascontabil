@@ -163,9 +163,9 @@
                                     <input type="hidden" value="@ofxs.IdBd" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
                                     <input type="hidden" value="@Model.DescricaoLote" asp-for="@Model.DescricaoLote" />
                                     <input type="hidden" value="@Model.LoteLancamentoid" asp-for="@Model.LoteLancamentoid" />
-                                    <input type="hidden" value="@ofxs.SaldoMensal.ContaCorrenteId" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
-                                    <input type="hidden" value="@ofxs.SaldoMensal.SaldoMensal" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
-                                    <input type="hidden" value="@ofxs.SaldoMensal.Competencia" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
+                                    <input type="hidden" value="@ofxs.SaldoMensal?.ContaCorrenteId" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
+                                    <input type="hidden" value="@ofxs.SaldoMensal?.SaldoMensal" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
+                                    <input type="hidden" value="@ofxs.SaldoMensal?.Competencia" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
                                 </td>
                                 <td>
                                     @ofxs.Date.Date.ToString("dd/MM/yyyy")
