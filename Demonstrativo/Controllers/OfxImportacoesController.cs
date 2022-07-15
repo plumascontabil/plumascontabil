@@ -807,7 +807,7 @@ namespace Demonstrativo.Controllers
                 {
                     Data = DateTime.Now,
                     Descricao = dados.DescricaoLote,
-                    Valor = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal;,
+                    Valor = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal,
                     EmpresaId = ViewBag.EmpresaSeleciodaId,
                     CompetenciaId = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId)
                 };
