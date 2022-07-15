@@ -163,10 +163,10 @@ namespace Demonstrativo.Controllers
             contasCorrentes.ForEach(contaCorrente =>
             {
 
-                //var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
+                var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
                 lancamentosViewModelBancos.Add(new LancamentoViewModel()
                 {
-                    ValorStr = contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
+                    ValorStr = saldoBanco.Saldo.ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome,
                     Conta = contas.FirstOrDefault(f => f.Codigo == 200).Id
                 });
@@ -253,22 +253,12 @@ namespace Demonstrativo.Controllers
                         });
                     }
 
-                    if (conta.Id == 143)
-                    {
-                        var contax = contasViewModel.Where(f => f.Codigo == 53).FirstOrDefault();
 
-                        if (contax != null)
-                        {
-                            var valores = contax.Lancamentos.Sum(x => x.Valor);
-
-                            var indx = contasViewModel.FindIndex(f => f.Id == conta.Id);
-                            contasViewModel[indx].Lancamentos[0].ValorStr = Convert.ToString(valores - contasViewModel[indx].Lancamentos.FirstOrDefault().Valor);
-                        }
-
-
-                    }
 
                 });
+
+
+
 
 
                 if (categoria.Descricao == "CONTAS A RECEBER")
@@ -319,6 +309,22 @@ namespace Demonstrativo.Controllers
                     Contas = contasViewModel
                 });
             });
+
+            var contax = trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault().Contas.Where(c => c.Codigo == 53).FirstOrDefault();
+            var indx = trimestreViewModel.Categorias.FindIndex(f => f.Descricao == "CONTAS A PAGAR");
+            trimestreViewModel.Categorias.Where(f => f.Descricao == "CONTAS A PAGAR").ToList().ForEach(el =>
+              {
+
+                  var contaF = el.Contas.FindIndex(f => f.Descricao.ToUpper() == "FORNECEDORES");
+
+                  if (contax != null)
+                  {
+                      var valores = contax.Lancamentos.Sum(x => x.Valor);
+                      trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos[0].ValorStr = Convert.ToString(valores - trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos.FirstOrDefault().Valor);
+                  }
+              });
+
+
 
             var categoriaReceita = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper() == "Receitas".ToUpper()).FirstOrDefault();
 

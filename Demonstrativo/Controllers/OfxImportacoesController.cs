@@ -185,21 +185,22 @@ namespace Demonstrativo.Controllers
                 }
                 //Caminho para salvar arquivo no servidor
                 string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
-
+                string ofx = System.IO.File.ReadAllText(caminhoDestinoArquivo);
                 using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
                 {
-                    await ofxArquivo.CopyToAsync(stream);
+                    await ofxArquivo.CopyToAsync(stream);                    
                 }
+
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
                 try
                 {
-                    //if (extratoBancario != null)
-                    //{
-                    //    var documento = new OFXDocumentParser();
-                    //    var dadoDocumento = documento.Import(new FileStream(caminhoDestinoArquivo, FileMode.Open));
-                    //    //saldo = dadoDocumento.Balance.LedgerBalance;
-                    //}
+                    if (extratoBancario != null)
+                    {
+                        var documento = new OFXDocumentParser();
+                        var dadoDocumento = documento.Import(ofx);
+                        saldo = dadoDocumento.Balance.LedgerBalance;
+                    }
 
                     //if (extratoBancario.
                     //    Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
@@ -231,7 +232,7 @@ namespace Demonstrativo.Controllers
 
                     saldoMensalViewModel = new SaldoMensalViewModel()
                     {
-                        SaldoMensal = 0,
+                        SaldoMensal = saldo,
                         Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),
                         ContaCorrenteId = dadosContaCorrente.Id,
                     };
@@ -242,12 +243,12 @@ namespace Demonstrativo.Controllers
                     ViewBag.ContaCorrenteNaoEncontrada = true;
                     return View("Index");
                 }
-                extratoBancario.Transactions.ToList().ForEach(el =>
-                {
-                    saldo += Convert.ToDecimal(el.TransactionValue);
-                });
+                //extratoBancario.Transactions.ToList().ForEach(el =>
+                //{
+                //    saldo += Convert.ToDecimal(el.TransactionValue);
+                //});
 
-                saldoMensalViewModel.SaldoMensal = saldo;
+                //saldoMensalViewModel.SaldoMensal = saldo;
 
                 var banco = _context.OfxBancos
                        .FirstOrDefault(b => b.Codigo == Convert.ToInt32(extratoBancario.BankAccount.Bank.Code));
@@ -459,7 +460,7 @@ namespace Demonstrativo.Controllers
                         SaldoMensal = cloneLanc.SaldoMensal,
                         Mostrar = cloneLanc.Mostrar,
                         Id = cloneLanc.Id,
-                        LancamentoPadraoSelecionado = cloneLanc.LancamentoPadraoSelecionado,
+                        LancamentoPadraoSelecionado = tipo,
                         Dividir = null
 
                     };
@@ -792,10 +793,11 @@ namespace Demonstrativo.Controllers
             if (dados.LoteLancamentoid.HasValue)
             {
                 lote = _context.OfxLoteLancamento.Where(f => f.Id == dados.LoteLancamentoid.Value).FirstOrDefault();
-                dados.ContasCorrentes.OfxLancamentos.Where(f => !f.Inativar.HasValue || !f.Inativar.Value).ToList().ForEach(el =>
-                  {
-                      lote.Valor += el.TransationValue;
-                  });
+                //dados.ContasCorrentes.OfxLancamentos.Where(f => !f.Inativar.HasValue || !f.Inativar.Value).ToList().ForEach(el =>
+                //  {
+                //      lote.Valor += el.TransationValue;
+                //  });
+                lote.Valor = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal;
                 //_context.OfxLoteLancamento.Add(lote);
                 _context.SaveChanges();
             }
@@ -805,15 +807,15 @@ namespace Demonstrativo.Controllers
                 {
                     Data = DateTime.Now,
                     Descricao = dados.DescricaoLote,
-                    Valor = 0,
+                    Valor = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal;,
                     EmpresaId = ViewBag.EmpresaSeleciodaId,
                     CompetenciaId = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId)
                 };
-                dados.ContasCorrentes.OfxLancamentos.Where(el => (el.Date.Month == data.Month && el.Date.Year == data.Year)).ToList().ForEach(el =>
-                {
+                //dados.ContasCorrentes.OfxLancamentos.Where(el => (el.Date.Month == data.Month && el.Date.Year == data.Year)).ToList().ForEach(el =>
+                //{
 
-                    lote.Valor += el.TransationValue;
-                });
+                //    lote.Valor += el.TransationValue;
+                //});
                 _context.OfxLoteLancamento.Add(lote);
                 _context.SaveChanges();
             }
