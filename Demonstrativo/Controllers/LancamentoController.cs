@@ -489,11 +489,11 @@ namespace Demonstrativo.Controllers
                 var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
                 //var primeiroLancamento = await_lancamentoDomainService.Salvar(competencia, trimestreViewModel);
 
-                var lancamentoCompetencia = _context.OfxLoteLancamento.Any(l => l.CompetenciaId == competencia && l.EmpresaId == empresaId);
+                var lancamentoCompetencia = _context.Lancamentos.Where(l => l.DataCompetencia == competencia && l.EmpresaId == empresaId).ToList(); ;
                 var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
                 #region ItensVenda
-                if (lancamentoCompetencia == false)
+                if (lancamentoCompetencia.Count() == 0)
                 {
                     var insertEstoqueVendas = new Venda()
                     {
@@ -581,7 +581,7 @@ namespace Demonstrativo.Controllers
                 #region ItensDepreciações
                 var provisoesDepreciacoes = trimestreViewModel.ProvisoesDepreciacoes;
                 var updateProvisoes = _context.ProvisoesDepreciacoes.Find(provisoesDepreciacoes.Id);
-                if (lancamentoCompetencia == false || updateProvisoes == null)
+                if (lancamentoCompetencia.Count() == 0 || updateProvisoes == null)
                 {
                     var insertProvisoes = new ProvisoesDepreciacao()
                     {
@@ -640,6 +640,9 @@ namespace Demonstrativo.Controllers
 
                 var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
 
+                var tste = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper().Contains("RESULTADOS")).ToList();
+
+
                 var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
                 {
                     Id = x.Id,
@@ -664,7 +667,7 @@ namespace Demonstrativo.Controllers
                         continue;
                     }
 
-                    if (lancamentoCompetencia)
+                    if (lancamentoCompetencia.Where(f => f.ContaId == lancamento.ContaId).Count() == 0)
                     {
                         var insertLancamento = new Lancamento();
                         if (lancamento.Descricao == null || lancamento.ContaId == 156 || lancamento.ContaId == 98 || lancamento.ContaId == 157 || lancamento.ContaId == 140)
@@ -681,7 +684,7 @@ namespace Demonstrativo.Controllers
                     }
                     else
                     {
-                        var updateLancamento = _context.Lancamentos.Find(Convert.ToInt32(lancamento.Id));
+                        var updateLancamento = _context.Lancamentos.Where(f => f.ContaId == lancamento.ContaId && f.DataCompetencia == competencia && f.EmpresaId == empresaId).FirstOrDefault();
 
                         updateLancamento.Descricao = lancamento.Descricao;
                         updateLancamento.Valor = lancamento.Valor;

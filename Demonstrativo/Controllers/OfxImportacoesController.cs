@@ -185,11 +185,12 @@ namespace Demonstrativo.Controllers
                 }
                 //Caminho para salvar arquivo no servidor
                 string caminhoDestinoArquivo = $"{_appEnvironment.WebRootPath}\\Temp\\{ofxArquivo.FileName}";
-                string ofx = System.IO.File.ReadAllText(caminhoDestinoArquivo);
+                string ofx = string.Empty;
                 using (var stream = new FileStream(caminhoDestinoArquivo, FileMode.Create))
                 {
-                    await ofxArquivo.CopyToAsync(stream);                    
+                    await ofxArquivo.CopyToAsync(stream);
                 }
+                ofx = System.IO.File.ReadAllText(caminhoDestinoArquivo);
 
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
