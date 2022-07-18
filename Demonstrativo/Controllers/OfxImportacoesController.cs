@@ -528,9 +528,14 @@ namespace Demonstrativo.Controllers
             IniT();
             try
             {
+                var lancamentosPadroes = _context.LancamentosPadroes.ToList();
 
                 extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
-
+                
+                foreach (var item in extratoViewModel.ContasCorrentes.OfxLancamentos)
+                {
+                    item.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
+                }
 
                 return View("Contas", extratoViewModel);
 
