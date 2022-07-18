@@ -315,20 +315,23 @@ namespace Demonstrativo.Controllers
                     Contas = contasViewModel
                 });
             });
+            if(trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault() != null)
+            {
+                var contax = trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault()?.Contas.Where(c => c.Codigo == 53).FirstOrDefault();
+                var indx = trimestreViewModel.Categorias.FindIndex(f => f.Descricao == "CONTAS A PAGAR");
+                trimestreViewModel.Categorias.Where(f => f.Descricao == "CONTAS A PAGAR").ToList().ForEach(el =>
+                {
 
-            var contax = trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault().Contas.Where(c => c.Codigo == 53).FirstOrDefault();
-            var indx = trimestreViewModel.Categorias.FindIndex(f => f.Descricao == "CONTAS A PAGAR");
-            trimestreViewModel.Categorias.Where(f => f.Descricao == "CONTAS A PAGAR").ToList().ForEach(el =>
-              {
+                    var contaF = el.Contas.FindIndex(f => f.Descricao.ToUpper() == "FORNECEDORES");
 
-                  var contaF = el.Contas.FindIndex(f => f.Descricao.ToUpper() == "FORNECEDORES");
+                    if (contax != null)
+                    {
+                        var valores = contax.Lancamentos.Sum(x => x.Valor);
+                        trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos[0].ValorStr = Convert.ToString(valores - trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos.FirstOrDefault().Valor);
+                    }
+                });
 
-                  if (contax != null)
-                  {
-                      var valores = contax.Lancamentos.Sum(x => x.Valor);
-                      trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos[0].ValorStr = Convert.ToString(valores - trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos.FirstOrDefault().Valor);
-                  }
-              });
+            }
 
 
 
