@@ -14,7 +14,7 @@ namespace Demonstrativo.Models
         public DateTime Competencia { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,0)")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Saldo { get; set; }
 
         [Required]

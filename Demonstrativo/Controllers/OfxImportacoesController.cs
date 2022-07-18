@@ -84,7 +84,8 @@ namespace Demonstrativo.Controllers
             {
                 var cin = lancamentos.FirstOrDefault().ContaCorrenteId;
                 var saldo = _context.SaldoMensal.Where(f => f.Competencia == lote.CompetenciaId && f.ContaCorrenteId == cin).FirstOrDefault();
-                saldo.Saldo -= lote.Valor;
+                if (saldo != null)
+                    saldo.Saldo -= lote.Valor;
             }
 
 
@@ -489,27 +490,27 @@ namespace Demonstrativo.Controllers
                 }
 
             }
-            decimal saldo = 0;
-            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
-            {
-                saldo += el.TransationValue;
-            });
+            //decimal saldo = 0;
+            //extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            //{
+            //    saldo += el.TransationValue;
+            //});
 
-            extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
-             {
-                 if (el.SaldoMensal != null)
-                 {
-                     el.SaldoMensal.SaldoMensal = saldo;
-                 }
-                 else
-                 {
-                     el.SaldoMensal = new SaldoMensalViewModel()
-                     {
-                         SaldoMensal = saldo
-                     };
-                 }
+            //extratoBancarioViewModel.ContasCorrentes.OfxLancamentos.ForEach(el =>
+            // {
+            //     if (el.SaldoMensal != null)
+            //     {
+            //         el.SaldoMensal.SaldoMensal = saldo;
+            //     }
+            //     else
+            //     {
+            //         el.SaldoMensal = new SaldoMensalViewModel()
+            //         {
+            //             SaldoMensal = saldo
+            //         };
+            //     }
 
-             });
+            // });
 
             _logger.LogInformation(((int)EEventLog.Post), "ReImport created.");
 
@@ -531,7 +532,7 @@ namespace Demonstrativo.Controllers
                 var lancamentosPadroes = _context.LancamentosPadroes.ToList();
 
                 extratoViewModel.ContasCorrentes.OfxLancamentos = extratoViewModel.ContasCorrentes.OfxLancamentos.Where(f => !f.Selecionando).ToList();
-                
+
                 foreach (var item in extratoViewModel.ContasCorrentes.OfxLancamentos)
                 {
                     item.LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes);
@@ -825,12 +826,12 @@ namespace Demonstrativo.Controllers
                 _context.OfxLoteLancamento.Add(lote);
                 _context.SaveChanges();
             }
-
+            var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.Acctid == dados.ContasCorrentes.NumeroConta);
 
             try
             {
 
-                var contaCorrente = _context.ContasCorrentes.FirstOrDefault(c => c.Acctid == dados.ContasCorrentes.NumeroConta);
+
                 SaldoMensal saldoMensalId = null;
                 if (contaCorrente != null)
                 {
@@ -849,8 +850,10 @@ namespace Demonstrativo.Controllers
                 }
                 else
                 {
-                    saldoMensalId.Saldo += lote.Valor;
+                    saldoMensalId.Saldo = lote.Valor;
                 }
+
+                _context.SaveChanges();
             }
             catch (Exception E)
             {
@@ -862,7 +865,7 @@ namespace Demonstrativo.Controllers
 
             foreach (var dado in dados.ContasCorrentes.OfxLancamentos.Where(f => f.Mostrar).ToList())
             {
-                var cc = _context.ContasCorrentes.Any(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta);
+                var cc = contaCorrente != null;
                 var banco = _context.OfxBancos.Any(b => b.Codigo == dados.Banco.Codigo);
                 var lancamentoPadrao = _context.LancamentosPadroes.FirstOrDefault(c => c.Codigo == dado.LancamentoPadraoSelecionado);
                 if (banco == false)
@@ -910,8 +913,8 @@ namespace Demonstrativo.Controllers
                     lanc.ValorOfx = dado.TransationValue;
                     lanc.Data = dado.Date;
                     lanc.LoteLancamentoId = lote.Id;
-                    lanc.ContaCorrenteId = _context.ContasCorrentes
-                      .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id;
+                    lanc.ContaCorrenteId = contaCorrente.Id;
+                    lanc.ContaCorrente = contaCorrente;
                     lanc.LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id;
                 }
                 else
@@ -925,8 +928,8 @@ namespace Demonstrativo.Controllers
                         ValorOfx = dado.TransationValue,
                         Data = dado.Date,
                         LoteLancamentoId = lote.Id,
-                        ContaCorrenteId = _context.ContasCorrentes
-                      .FirstOrDefault(c => c.NumeroConta == dados.ContasCorrentes.NumeroConta).Id,
+                        ContaCorrenteId = contaCorrente.Id,
+                        ContaCorrente = contaCorrente,
                         LancamentoPadraoId = _context.LancamentosPadroes.FirstOrDefault(l => l.Codigo == dado.LancamentoPadraoSelecionado).Id
                     });
                 }

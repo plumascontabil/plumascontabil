@@ -162,12 +162,12 @@ namespace Demonstrativo.Controllers
             var lancamentosViewModelBancos = new List<LancamentoViewModel>();
             contasCorrentes.ForEach(contaCorrente =>
             {
-
+                var banco = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId);
                 var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
                 lancamentosViewModelBancos.Add(new LancamentoViewModel()
                 {
                     ValorStr = (saldoBanco?.Saldo ?? 0).ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
-                    Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome,
+                    Descricao = $"{banco.Codigo} - {banco.Nome}  Ag.: {contaCorrente.NumeroAgencia} C/c.: {contaCorrente.NumeroConta}",
                     Conta = contas.FirstOrDefault(f => f.Codigo == 200).Id
                 });
 
@@ -211,10 +211,16 @@ namespace Demonstrativo.Controllers
 
                     if (valor != 0)
                     {
-                        lancamentosViewModel.Add(new LancamentoViewModel()
+                        var lanc = new LancamentoViewModel()
                         {
                             ValorStr = Convert.ToString(conta.TipoLancamento == "C" ? Convert.ToDecimal(valor) * -1 : Convert.ToDecimal(valor))
-                        });
+                        };
+                        if ((categoria.Descricao.ToUpper() == "Receitas".ToUpper()))
+                        {
+                            lanc.ValorStr = Convert.ToString(valor);
+                        }
+                        lancamentosViewModel.Add(lanc);
+
                     }
 
 
