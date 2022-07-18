@@ -166,7 +166,7 @@ namespace Demonstrativo.Controllers
                 var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
                 lancamentosViewModelBancos.Add(new LancamentoViewModel()
                 {
-                    ValorStr = saldoBanco.Saldo.ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
+                    ValorStr = (saldoBanco?.Saldo ?? 0).ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId).Nome,
                     Conta = contas.FirstOrDefault(f => f.Codigo == 200).Id
                 });
