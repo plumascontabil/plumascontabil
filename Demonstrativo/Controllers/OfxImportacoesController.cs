@@ -193,6 +193,17 @@ namespace Demonstrativo.Controllers
                 }
                 ofx = System.IO.File.ReadAllText(caminhoDestinoArquivo);
 
+                if (ofx.Contains("<DTSERVER>00000000000000"))
+                {
+                    ofx = ofx.Replace("<DTSERVER>00000000000000", $"<DTSERVER>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
+                }
+
+                if(ofx.Contains("<DTASOF>00000000") || ofx.Contains("<DTASOF>00000000000000"))
+                {
+                    ofx = ofx.Replace("<DTASOF>00000000", $"<DTASOF>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
+                    ofx = ofx.Replace("<DTASOF>00000000000000", $"<DTASOF>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
+                }
+
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
                 try
