@@ -1,413 +1,413 @@
 ﻿@model ExtratoBancarioViewModel
 @using System.Globalization;
 @{
-    Layout = "_LayoutSemFiltroEmpresa";
-    ViewData["Title"] = "Importação OFX";
+	Layout = "_LayoutSemFiltroEmpresa";
+	ViewData["Title"] = "Importação OFX";
 }
 <style>
-    .blue {
-        color: blue;
-    }
+	.blue {
+		color: blue;
+	}
 
-    .red {
-        color: red;
-    }
+	.red {
+		color: red;
+	}
 </style>
 @if (ViewBag.LancamentoPadraoSelecionadoNotSelect != null)
 {
-    <script type="text/javascript">
-        window.onload = function() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: '@Html.Raw(ViewBag.LancamentoPadraoSelecionadoNotSelect)',
+	<script type="text/javascript">
+		window.onload = function() {
+			Swal.fire({
+				icon: 'warning',
+				title: 'Oops...',
+				text: '@Html.Raw(ViewBag.LancamentoPadraoSelecionadoNotSelect)',
 
-            })
-        };
-    </script>
+			})
+		};
+	</script>
 }
 @{
-    SelectList lancamnetos = Model.ContasCorrentes.OfxLancamentos.FirstOrDefault()?.LancamentosPadroes;
+	SelectList lancamnetos = Model.ContasCorrentes.OfxLancamentos.FirstOrDefault()?.LancamentosPadroes;
 }
 
 <form id="OfxReimportar" asp-controller="OfxImportacoes" asp-action="OfxReimportar">
 
-    <div class="py-4 pl-3 d-flex justify-content-between">
-        <h1 class="page-title">@ViewData["Title"]</h1>
+	<div class="py-4 pl-3 d-flex justify-content-between">
+		<h1 class="page-title">@ViewData["Title"]</h1>
 
-        <div>
-            <a id="btn-lancamento-manual" class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
-                Adicionar Lançamento Manual<i class="fa fa-plus ml-2"></i>
-            </a>
-        </div>
+		<div>
+			<a id="btn-lancamento-manual" class="btn btn-plumas-w" data-toggle="modal" data-target="#staticBackdrop">
+				Adicionar Lançamento Manual<i class="fa fa-plus ml-2"></i>
+			</a>
+		</div>
 
-    </div>
+	</div>
 
-    <div class="alert alert-warning" role="alert">
-        VERIFIQUE A COMPETÊNCIA DO OFX IMPORTADO!
-    </div>
+	<div class="alert alert-warning" role="alert">
+		VERIFIQUE A COMPETÊNCIA DO OFX IMPORTADO!
+	</div>
 
-    <div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
-        <div class="col-12">
-
-
-
-            @{
-                var maxYin = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
-                var min = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}").ToString("yyyy-MM-dd");
-                var max = maxYin.AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
-            }
-
-            <div class="m-auto">
+	<div class="row form-lancamento mx-auto rounded-lg bg-light p-3">
+		<div class="col-12">
 
 
-                <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                Informação do Lote
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
 
-                                <div class="form-group">
-                                    <label for="data">Data</label>
-                                    <input id="data" max="@max" min="@min" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
-                                </div>
-                                <div class="import-lote mb-3">
-                                    <div><label for="tipo">Tipo</label></div>
-                                    <select id="tipo" class="form-control select" asp-for="@Model.LancamentoManual.TipoSelecionado">
-                                        <option selected disabled value="">Selecione</option>
-                                        <option style="color:blue" value="CREDIT">CREDIT</option>
-                                        <option style="color:red" value="DEBIT">DEBIT</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="descricao">Descrição</label>
-                                    <input id="descricao" class="form-control" type="text" asp-for="@Model.LancamentoManual.Descricao" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="valor">Valor</label>
-                                    <input id="valor" class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
-                                </div>
+			@{
+				var maxYin = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+				var min = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}").ToString("yyyy-MM-dd");
+				var max = maxYin.AddMonths(1).AddDays(-1).ToString("yyyy-MM-dd");
+			}
+
+			<div class="m-auto">
 
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button id="adicionar-lancamento-manual" type="submit" class="btn btn-plumas-w" asp-action="OfxReimportar">Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<!-- Modal -->
+				<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								Informação do Lote
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
 
-                <!-- Modal -->
-                <div class="modal fade" id="modalDivider" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                Novo lançamento Contabil (Divisor)
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body modal-divider">
-                                <h6 id="Valor-Divider"> </h6>
-                                <div class="form-group">
-                                    <label for="valor">Valor</label>
-                                    @*<input id="LancamentoManual.ValorInput" asp-for="@Model.LancamentoManual.ValorInput" name="LancamentoManual.ValorInput" class="form-control mask-valor" type="text" />*@
-                                    <input id="valor" class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
-                                </div>
-                                <select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
-                                    <option value="">Selecione</option>
-                                </select>
-                                @*<input type="hidden" id="valorRef" />*@
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button id="adicionar-DIDI" type="submit" class="btn btn-plumas-w" asp-action="OfxReimportar">Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+								<div class="form-group">
+									<label for="data">Data</label>
+									<input id="data" max="@max" min="@min" class="form-control" type="date" asp-for="@Model.LancamentoManual.Data" />
+								</div>
+								<div class="import-lote mb-3">
+									<div><label for="tipo">Tipo</label></div>
+									<select id="tipo" class="form-control select" asp-for="@Model.LancamentoManual.TipoSelecionado">
+										<option selected disabled value="">Selecione</option>
+										<option style="color:blue" value="CREDIT">CREDIT</option>
+										<option style="color:red" value="DEBIT">DEBIT</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="descricao">Descrição</label>
+									<input id="descricao" class="form-control" type="text" asp-for="@Model.LancamentoManual.Descricao" />
+								</div>
+								<div class="form-group">
+									<label for="valor">Valor</label>
+									<input id="valor" class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
+								</div>
 
 
-                @*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
-                    <option value="">Selecione</option>
-                    </select>*@
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+								<button id="adicionar-lancamento-manual" type="submit" class="btn btn-plumas-w" asp-action="OfxReimportar">Adicionar</button>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                <output>
-                    <H2 class="text-uppercase">@Model.DescricaoLote</H2>
-                    @Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
-                    <input type="hidden" asp-for="@Model.Banco.Codigo" />
-                    <input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
-                </output>
+				<!-- Modal -->
+				<div class="modal fade" id="modalDivider" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								Novo lançamento Contabil (Divisor)
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body modal-divider">
+								<h6 id="Valor-Divider"> </h6>
+								<div class="form-group">
+									<label for="valor">Valor</label>
+									@*<input id="LancamentoManual.ValorInput" asp-for="@Model.LancamentoManual.ValorInput" name="LancamentoManual.ValorInput" class="form-control mask-valor" type="text" />*@
+									<input id="valor" class="form-control mask-valor" type="text" asp-for="@Model.LancamentoManual.ValorInput" />
+								</div>
+								<select id="Lançamento Contábil" asp-for="@Model.LancamentoManual.TipoSelecionado" asp-items="@lancamnetos" class="form-control select">
+									<option value="">Selecione</option>
+								</select>
+								@*<input type="hidden" id="valorRef" />*@
 
-                <table class="table table-bordered d-lg-table">
-                    <thead>
-                        <tr>
-                            <th class="bg-categoria text-white p-2">Id</th>
-                            <th class="bg-categoria text-white p-2">Data</th>
-                            <th class="bg-categoria text-white p-2">Tipo</th>
-                            <th class="bg-categoria text-white p-2">Descrição</th>
-                            <th class="bg-categoria text-white p-2">Valor</th>
-                            <th class="bg-categoria text-white p-2">Lançamento contábil</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
-                        {
-                            var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
-                            var value = ofxs.TransationValue > 0 ? "blue" : "red";
-                            var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
-                            var descricao = Html.Raw(ofxs.Description);
-                            ofxs.Description = descricao.ToString();
-                            ofxs.Type = Html.Raw(ofxs.Type).ToString();
-                            Model.ContasCorrentes.OfxLancamentos[i].Description = descricao.ToString();
-                            Model.ContasCorrentes.OfxLancamentos[i].Type = Html.Raw(ofxs.Type).ToString();
-                            lancamnetos = ofxs.LancamentosPadroes;
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+								<button id="adicionar-DIDI" type="submit" class="btn btn-plumas-w" asp-action="OfxReimportar">Adicionar</button>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                            var classe = ofxs.Inativar.HasValue && ofxs.Inativar.Value ? "inativo" : "";
-                            <tr class="@classe">
-                                <td>
-                                    @Html.Raw(ofxs.Id)
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
-                                    <input type="hidden" asp-for="@Model.DescricaoLote" />
-                                    <input type="hidden" asp-for="@Model.LoteLancamentoid" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
-                                </td>
-                                <td>
-                                    @ofxs.Date.Date.ToString("dd/MM/yyyy")
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
-                                </td>
-                                <td>
-                                    @Html.Raw(ofxs.Type)
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
-                                </td>
-                                <td>
-                                    @descricao
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
-                                </td>
-                                <td class="@value">
-                                    @*@ofxs.TransationValue*@
 
-                                    @valor
-                                    <input id="Vlr_@i" type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
-                                </td>
-                                <td>
-                                    @if (ofxs.Mostrar)
-                                    {
+				@*<select asp-for="@Model.EmpresaSelecionada" asp-items="@Model.Empresas" class="form-control select" id="selectEmp" style="display:none;">
+				<option value="">Selecione</option>
+				</select>*@
 
-                                        <select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
-                                            <option value="">Selecione</option>
-                                        </select>
-                                    }
-                                    <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Mostrar" />
-                                </td>
-                                @if (ofxs.Id == "MANUAL")
-                                {
-                                    <td>
-                                        @*<button data-toggle="tooltip" id="ManualEdit_@i" title="Editar" value="@true" asp-action="OfxReimportEdit">
-                                            <i class="fa fa-edit"></i>
-                                            </button>*@
-                                        <button data-toggle="tooltip" id="ManualExcluir_@i" title="Excluir" value="@true" asp-action="OfxReimportarDelete"> <i class="fa fa-trash"></i></button>
-                                        <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Selecionando" />
-                                        <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
-                                    </td>
-                                }
-                                else @if (ofxs.Mostrar)
-                           {
-                            <td>
+				<output>
+					<H2 class="text-uppercase">@Model.DescricaoLote</H2>
+					@Model.Banco.Codigo - @Model.Banco.Nome - Conta Corrente: @Model.ContasCorrentes.NumeroConta
+					<input type="hidden" asp-for="@Model.Banco.Codigo" />
+					<input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
+				</output>
 
-                                <button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
-                                <button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
-                                                                <button data-toggle="tooltip" id="Ativar_@i" title="Ativar" value="@true" asp-action="OfxReimportarAtivar"> <i class="fa fa-check" aria-hidden="true"></i></button>
+				<table class="table table-bordered d-lg-table">
+					<thead>
+						<tr>
+							<th class="bg-categoria text-white p-2">Id</th>
+							<th class="bg-categoria text-white p-2">Data</th>
+							<th class="bg-categoria text-white p-2">Tipo</th>
+							<th class="bg-categoria text-white p-2">Descrição</th>
+							<th class="bg-categoria text-white p-2">Valor</th>
+							<th class="bg-categoria text-white p-2">Lançamento contábil</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < Model.ContasCorrentes.OfxLancamentos.Count; i++)
+						{
+							var ofxs = Model.ContasCorrentes.OfxLancamentos[i];
+							var value = ofxs.TransationValue > 0 ? "blue" : "red";
+							var valor = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", ofxs.TransationValue);
+							var descricao = Html.Raw(ofxs.Description);
+							ofxs.Description = descricao.ToString();
+							ofxs.Type = Html.Raw(ofxs.Type).ToString();
+							Model.ContasCorrentes.OfxLancamentos[i].Description = descricao.ToString();
+							Model.ContasCorrentes.OfxLancamentos[i].Type = Html.Raw(ofxs.Type).ToString();
+							lancamnetos = ofxs.LancamentosPadroes;
 
-                                <input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
-                                <input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
-                            </td>
+							var classe = ofxs.Inativar.HasValue && ofxs.Inativar.Value ? "inativo" : "";
+							<tr class="@classe">
+								<td>
+									@Html.Raw(ofxs.Id)
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Id" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].IdBd" />
+									<input type="hidden" asp-for="@Model.DescricaoLote" />
+									<input type="hidden" asp-for="@Model.LoteLancamentoid" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.ContaCorrenteId" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.SaldoMensal" />
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].SaldoMensal.Competencia" />
+								</td>
+								<td>
+									@ofxs.Date.Date.ToString("dd/MM/yyyy")
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Date" />
+								</td>
+								<td>
+									@Html.Raw(ofxs.Type)
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Type" />
+								</td>
+								<td>
+									@descricao
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Description" />
+								</td>
+								<td class="@value">
+									@*@ofxs.TransationValue*@
 
-                        }
-                                <input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
-                            </tr>
+									@valor
+									<input id="Vlr_@i" type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].TransationValue" />
+								</td>
+								<td>
+									@if (ofxs.Mostrar)
+									{
 
-                        }
-                    </tbody>
-                </table>
-                <button class="btn btn-plumas-w" asp-action="index">Voltar</button>
-                <input type="submit" class="btn btn-plumas-w" asp-action="OfxSalvar" />
+										<select asp-for="@Model.ContasCorrentes.OfxLancamentos[i].LancamentoPadraoSelecionado" asp-items="@ofxs.LancamentosPadroes" class="form-control select">
+											<option value="">Selecione</option>
+										</select>
+									}
+									<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Mostrar" />
+								</td>
+								@if (ofxs.Id == "MANUAL")
+								{
+									<td>
+										@*<button data-toggle="tooltip" id="ManualEdit_@i" title="Editar" value="@true" asp-action="OfxReimportEdit">
+								<i class="fa fa-edit"></i>
+								</button>*@
+										<button data-toggle="tooltip" id="ManualExcluir_@i" title="Excluir" value="@true" asp-action="OfxReimportarDelete"> <i class="fa fa-trash"></i></button>
+										<input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Selecionando" />
+										<input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
+									</td>
+								}
+								else @if (ofxs.Mostrar)
+								{
+									<td>
 
-            </div>
-        </div>
-    </div>
+										<button type="button" data-toggle="tooltip" id="Divider_@i" title="Dividir"> <i class='fas fa-divide'></i></button>
+										<button data-toggle="tooltip" id="Inativar_@i" title="Inativar" value="@true" asp-action="OfxReimportarInativar"> <i class="fa fa-ban" aria-hidden="true"></i></button>
+										<button data-toggle="tooltip" id="Ativar_@i" title="Ativar" value="@true" asp-action="OfxReimportarAtivar"> <i class="fa fa-check" aria-hidden="true"></i></button>
+
+										<input type="hidden" id="Manu_@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Dividir" />
+										<input type="hidden" id="index_@i" value="@i" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Index" />
+									</td>
+
+								}
+								<input type="hidden" asp-for="@Model.ContasCorrentes.OfxLancamentos[i].Inativar" />
+							</tr>
+
+						}
+					</tbody>
+				</table>
+				<button class="btn btn-plumas-w" asp-action="index">Voltar</button>
+				<input type="submit" class="btn btn-plumas-w" asp-action="OfxSalvar" />
+
+			</div>
+		</div>
+	</div>
 </form>
 @section Scripts{
-    <script type="text/javascript">
-        $("button[id*='Manual'").click(function (event) {
-            var id = event.currentTarget.id;
-            const xx = "#Manu_" + id.split("_")[1];
-            $(xx).val(true);
-        });
-        $("button[id*='Divider'").click(function (event) {
-            var id = event.currentTarget.id;
-            const xx = "#Manu_" + id.split("_")[1];
-            $(xx).val(true);
+	<script type="text/javascript">
+		$("button[id*='Manual'").click(function(event) {
+			var id = event.currentTarget.id;
+			const xx = "#Manu_" + id.split("_")[1];
+			$(xx).val(true);
+		});
+		$("button[id*='Divider'").click(function(event) {
+			var id = event.currentTarget.id;
+			const xx = "#Manu_" + id.split("_")[1];
+			$(xx).val(true);
 
 
-            const vlr = "#Vlr_" + id.split("_")[1];
-            const valor = $(vlr).val();
+			const vlr = "#Vlr_" + id.split("_")[1];
+			const valor = $(vlr).val();
 
 
-            localStorage.setItem("valor", Number(valor.replace(",", ".")))
-            $("#Valor-Divider").html(`Valor Referência: R$ ${valor}`)
-            $("div.modal-body").find('input').each((index, el) => {
-                $(el).val("");
-            });
+			localStorage.setItem("valor", Number(valor.replace(",", ".")))
+			$("#Valor-Divider").html(`Valor Referência: R$ ${valor}`)
+			$("div.modal-body").find('input').each((index, el) => {
+				$(el).val("");
+			});
 
-            $("div.modal-body").find('select').each((index, el) => {
+			$("div.modal-body").find('select').each((index, el) => {
 
-                //$('option:selected', el).each((idx, ell) => {
-                //
-                //    $(ell).removeAttr("selected");
-                //})
-                //console.log(el);
-                //$(`#${el.id} option:eq(0)`).prop("selected", true);
-                $(el).select2("val", "");
-                /*$(el).empty().trigger('change');*/
-                $(el).val('').trigger('change')
-                /* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
+				//$('option:selected', el).each((idx, ell) => {
+				//
+				//    $(ell).removeAttr("selected");
+				//})
+				//console.log(el);
+				//$(`#${el.id} option:eq(0)`).prop("selected", true);
+				$(el).select2("val", "");
+				/*$(el).empty().trigger('change');*/
+				$(el).val('').trigger('change')
+				/* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
 
-                /*$(el).val($(el + " option:first").val());*/
-            });
-
-
-            $('#modalDivider').modal();
-        });
-        $("button[id*='Inativar'").click(function (event) {
-            var id = event.currentTarget.id;
-            const xx = "#Manu_" + id.split("_")[1];
-            $(xx).val(true);
-        });
-
-        /*   $("#staticBackdrop").click(function (event) {
-               //$("#OfxReimportar").reset();
-               $('#OfxReimportar').trigger("reset");
-
-           });
-           */
-
-        $("#btn-lancamento-manual").click((event) => {
-
-            $("div.modal-body").find('input').each((index, el) => {
-                $(el).val("");
-            });
-
-            $("div.modal-body").find('select').each((index, el) => {
-
-                //$('option:selected', el).each((idx, ell) => {
-                //
-                //    $(ell).removeAttr("selected");
-                //})
-                //console.log(el);
-                //$(`#${el.id} option:eq(0)`).prop("selected", true);
-                $(el).select2("val", "");
-                /*$(el).empty().trigger('change');*/
-                $(el).val('').trigger('change')
-                /* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
-
-                /*$(el).val($(el + " option:first").val());*/
-            });
-        });
+				/*$(el).val($(el + " option:first").val());*/
+			});
 
 
+			$('#modalDivider').modal();
+		});
+		$("button[id*='Inativar'").click(function(event) {
+			var id = event.currentTarget.id;
+			const xx = "#Manu_" + id.split("_")[1];
+			$(xx).val(true);
+		});
 
-        $("#adicionar-lancamento-manual").on("click", (event) => {
-            var empty = ""
+		/*   $("#staticBackdrop").click(function (event) {
+			   //$("#OfxReimportar").reset();
+			   $('#OfxReimportar').trigger("reset");
 
-            $("div.modal-body").find('input').each((index, el) => {
-                if (!$(el).val()) {
-                    empty = empty + " " + $(el).prop("id") == "LancamentoManual.ValorInput" ? "Valor" : $(el).prop("id");
-                }
-            });
+		   });
+		   */
 
-            $("div.modal-body").find('select').each((index, el) => {
+		$("#btn-lancamento-manual").click((event) => {
 
-                if (!$(el).val()) {
-                    empty = empty + " " + $(el).prop("id");
-                }
-            });
+			$("div.modal-body").find('input').each((index, el) => {
+				$(el).val("");
+			});
 
-            if (empty != "") {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Campos obrigatórios não preenchidos : ' + empty,
+			$("div.modal-body").find('select').each((index, el) => {
 
-                })
+				//$('option:selected', el).each((idx, ell) => {
+				//
+				//    $(ell).removeAttr("selected");
+				//})
+				//console.log(el);
+				//$(`#${el.id} option:eq(0)`).prop("selected", true);
+				$(el).select2("val", "");
+				/*$(el).empty().trigger('change');*/
+				$(el).val('').trigger('change')
+				/* $("#select-choice-1-simple option:eq(0)").prop("selected", true);*/
 
-                event.preventDefault();
-            }
-        });
-
-        $("#adicionar-DIDI").click((event) => {
-
-            var empty = ""
-            var vlr = 0;
-            var VlrRef = Number(localStorage.getItem("valor"));
-            $("div.modal-divider").find('input').each((index, el) => {
-                if (!$(el).val()) {
-                    empty = empty + " " + $(el).prop("id");
-                } else {
-                    if ($(el).prop("id") != "valorRef") {
-                        vlr += Number($(el).val());
-                    }
-                }
-            });
-
-            $("div.modal-divider").find('select').each((index, el) => {
-
-                if (!$(el).val()) {
-                    empty = empty + " " + $(el).prop("id");
-                }
-            });
-
-            if (empty != "") {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Campos obrigatórios não preenchidos : ' + empty,
-
-                })
-
-                event.preventDefault();
-            }
+				/*$(el).val($(el + " option:first").val());*/
+			});
+		});
 
 
-            console.log(VlrRef < vlr);
-            if (VlrRef < vlr) {
 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Valor lançado maior que o Valor de Referência',
+		$("#adicionar-lancamento-manual").on("click", (event) => {
+			var empty = ""
 
-                })
-                event.preventDefault();
-            }
-        });
+			$("div.modal-body").find('input').each((index, el) => {
+				if (!$(el).val()) {
+					empty = empty + " " + $(el).prop("id") == "LancamentoManual.ValorInput" ? "Valor" : $(el).prop("id");
+				}
+			});
 
-    </script>
-    @if (ViewBag.OpenModal != null)
-    {
-        <script type="text/javascript">
-            $("#staticBackdrop").modal();
-        </script>
-    }
+			$("div.modal-body").find('select').each((index, el) => {
+
+				if (!$(el).val()) {
+					empty = empty + " " + $(el).prop("id");
+				}
+			});
+
+			if (empty != "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Oops...',
+					text: 'Campos obrigatórios não preenchidos : ' + empty,
+
+				})
+
+				event.preventDefault();
+			}
+		});
+
+		$("#adicionar-DIDI").click((event) => {
+
+			var empty = ""
+			var vlr = 0;
+			var VlrRef = Number(localStorage.getItem("valor"));
+			$("div.modal-divider").find('input').each((index, el) => {
+				if (!$(el).val()) {
+					empty = empty + " " + $(el).prop("id");
+				} else {
+					if ($(el).prop("id") != "valorRef") {
+						vlr += Number($(el).val());
+					}
+				}
+			});
+
+			$("div.modal-divider").find('select').each((index, el) => {
+
+				if (!$(el).val()) {
+					empty = empty + " " + $(el).prop("id");
+				}
+			});
+
+			if (empty != "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Oops...',
+					text: 'Campos obrigatórios não preenchidos : ' + empty,
+
+				})
+
+				event.preventDefault();
+			}
+
+
+			console.log(VlrRef < vlr);
+			if (VlrRef < vlr) {
+
+				Swal.fire({
+					icon: 'warning',
+					title: 'Oops...',
+					text: 'Valor lançado maior que o Valor de Referência',
+
+				})
+				event.preventDefault();
+			}
+		});
+
+	</script>
+	@if (ViewBag.OpenModal != null)
+	{
+		<script type="text/javascript">
+			$("#staticBackdrop").modal();
+		</script>
+	}
 }

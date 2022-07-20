@@ -190,7 +190,8 @@ input {
 }
 
 .form-lancamento {
-    margin-top: 60px;
+    width: 1394px;
+    margin: 45px auto;
 }
 
 .btn-check {
