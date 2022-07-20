@@ -16,7 +16,14 @@ namespace Demonstrativo.Models
         {
             get
             {
-                return ValorInput != null ? Convert.ToDecimal(ValorInput.Replace("R$", "").Trim()) : 0;
+                var minus = !string.IsNullOrEmpty(ValorInput) && ValorInput.Contains('-');
+                var value = string.IsNullOrEmpty(ValorInput) ? 0 : Convert.ToDecimal(ValorInput.Replace("-", "").Replace("R$", "").Trim());
+
+                if (minus)
+                {
+                    value = value * -1;
+                }
+                return value;
             }
         }
 

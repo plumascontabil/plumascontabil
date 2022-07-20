@@ -52,7 +52,8 @@ namespace Demonstrativo.Controllers
                 Email = null,
                 Password = null,
                 ConfirmPassword = null,
-                UserRoles = _roleManager.Roles.ToList()
+                UserRoles = _roleManager.Roles.ToList(),
+                EmpresasId = new List<int>()
             });
         }
 

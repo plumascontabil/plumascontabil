@@ -243,17 +243,18 @@
 			keepStatic: true
 		});
 
-		$('.mask-valor').inputmask('currency', {
-			"autoUnmask": true,
-			radixPoint: ",",
-			groupSeparator: ".",
-			allowMinus: false,
-			prefix: 'R$ ',
-			digits: 2,
-			digitsOptional: false,
-			rightAlign: true,
-			unmaskAsNumber: true
-		});
+        $('.mask-valor').inputmask('currency', {
+            "autoUnmask": true,
+            allowPlus: true,
+            allowMinus: true,
+            radixPoint: ",",
+            groupSeparator: ".",
+            prefix: 'R$ ',
+            digits: 2,
+            digitsOptional: false,
+            rightAlign: true,
+            unmaskAsNumber: true
+        });
 		$('[data-toggle="tooltip"]').tooltip();
 		$('[data-toggle-tooltip="tooltip"]').tooltip();
 

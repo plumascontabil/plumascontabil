@@ -31,6 +31,7 @@ namespace Demonstrativo.Models
         [ForeignKey("LoteLancamentoId")]
         public int? LoteLancamentoId { get; set; }
         public OfxLoteLancamento Lote { get; set; }
+        [Column(TypeName = "bit")]
         public bool? Inativar { get; set; }
     }
 }
