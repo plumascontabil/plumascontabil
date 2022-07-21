@@ -37,5 +37,8 @@ namespace Demonstrativo.Models
 
         [ForeignKey("EmpresaId")]
         public Empresa Empresa { get; set; }
+
+        [Column(TypeName = "decimal(11,2)")]
+        public decimal? CompesacaoPrejuizo { get; set; }
     }
 }

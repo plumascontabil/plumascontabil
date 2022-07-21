@@ -39,6 +39,16 @@ namespace Demonstrativo.Models
             }
         }
         public string SaldoPrejuizoVlr { get; set; }
+
+        public decimal? CompesacaoPrejuizo
+        {
+            get
+            {
+                return string.IsNullOrEmpty(CompesacaoPrejuizoVlr) ? null : Convert.ToDecimal(CompesacaoPrejuizoVlr.Replace("R$", "").Trim());
+            }
+        }
+
+        public string CompesacaoPrejuizoVlr { get; set; }
         public DateTime Data { get; set; }
         public int Empresa { get; set; }
         public bool CalcularCompesacao { get; set; }

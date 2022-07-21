@@ -306,7 +306,17 @@ namespace Demonstrativo.Controllers
 
                 }
 
+                if (categoria.Descricao == "CONTAS RESULTADOS")
+                {
+                    var compras = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("COMPRA")).ToList();
+                    var estoqueInicial = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("INICIAL")).ToList();
+                    var estoqueFinal = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("FINAL")).ToList();
+                    contasViewModel = new List<ContaViewModel>();
+                    contasViewModel.AddRange(compras);
+                    contasViewModel.AddRange(estoqueInicial);
+                    contasViewModel.AddRange(estoqueFinal);
 
+                }
 
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
@@ -601,7 +611,8 @@ namespace Demonstrativo.Controllers
                         Depreciacao = provisoesDepreciacoes.Depreciacao,
                         SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo,
                         CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao,
-                        Apurar = provisoesDepreciacoes.Apurar
+                        Apurar = provisoesDepreciacoes.Apurar,
+                        CompesacaoPrejuizo = provisoesDepreciacoes.CompesacaoPrejuizo
                     };
 
                     _context.ProvisoesDepreciacoes.Add(insertProvisoes);
@@ -619,6 +630,7 @@ namespace Demonstrativo.Controllers
                     updateProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
                     updateProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
                     updateProvisoes.Apurar = provisoesDepreciacoes.Apurar;
+                    updateProvisoes.CompesacaoPrejuizo = provisoesDepreciacoes.CompesacaoPrejuizo;
 
                     _context.ProvisoesDepreciacoes.Update(updateProvisoes);
                     _context.SaveChanges();
