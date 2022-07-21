@@ -120,6 +120,7 @@ input {
 
 .codigo {
     width: 40px;
+    font-weight: 500!important;
 }
 
 .descricao {
