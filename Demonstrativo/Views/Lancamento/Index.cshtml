@@ -1,12 +1,12 @@
 ﻿@model TrimestreViewModel
 
 @{
-    ViewData["Title"] = "Lançamentos";
+	ViewData["Title"] = "Lançamentos";
 }
 @using System.Globalization;
 @if (ViewBag.Message != null)
 {
-    <script type="text/javascript">
+	<script type="text/javascript">
 		window.onload = function() {
 			Swal.fire({
 				icon: 'warning',
@@ -15,11 +15,11 @@
 
 			})
 		};
-    </script>
+	</script>
 }
 @if (ViewBag.Sucesso != null)
 {
-    <script type="text/javascript">
+	<script type="text/javascript">
 		window.onload = function() {
 
 
@@ -31,742 +31,753 @@
 
 			});
 		};
-    </script>
+	</script>
 }
 
 @{
-    var contasAReceber = Model.Categorias.Where(f => f.Descricao == "CONTAS A RECEBER").FirstOrDefault();
-    var receitas = Model.Categorias.Where(f => f.Descricao.ToUpper() == "RECEITAS").FirstOrDefault();
-    //var contasReceber = Model.Categorias.Where(f => f.Descricao.ToUpper() == "CONTAS A RECEBER").FirstOrDefault();
+	var contasAReceber = Model.Categorias.Where(f => f.Descricao == "CONTAS A RECEBER").FirstOrDefault();
+	var receitas = Model.Categorias.Where(f => f.Descricao.ToUpper() == "RECEITAS").FirstOrDefault();
+	//var contasReceber = Model.Categorias.Where(f => f.Descricao.ToUpper() == "CONTAS A RECEBER").FirstOrDefault();
 
 }
 
 <a href="@Url.Action("Dre")" class="floatBtnDRE btn btn-plumas d-flex justify-content-center align-items-center" data-toggle="tooltip" data-placement="top" title="Imprimir DRE">
-    <i class="fa fa-bar-chart fa-2x"></i>
+	<i class="fa fa-bar-chart fa-2x"></i>
 </a>
 <a href="@Url.Action("GerarArquivo")" data-toggle="tooltip" data-placement="top" title="Baixar arquivo txt" class="floatBtnArquivo d-flex justify-content-center align-items-center btn btn-plumas">
 
-    <span class="download-txt">TXT</span>
+	<span class="download-txt">TXT</span>
 </a>
 @using (Html.BeginForm("Salvar", "Lancamento", FormMethod.Post, new { @class = "form-lancamento" }))
 
 
 {
-    <div>
-        <input type="hidden" name="empresaId" value="@ViewBag.EmpresaSeleciodaId" />
-        @Html.HiddenFor(x => x.CompetenciaSelecionadaId)
-        <button type="submit" value="Enviar" class="floatBtnLancamento btn btn-plumas" data-toggle="tooltip" data-placement="top" title="Salvar campos manuais">
-            @*           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                </svg>
-            *@
+	<div>
+		<input type="hidden" name="empresaId" value="@ViewBag.EmpresaSeleciodaId" />
+		@Html.HiddenFor(x => x.CompetenciaSelecionadaId)
+		<button type="submit" value="Enviar" class="floatBtnLancamento btn btn-plumas" data-toggle="tooltip" data-placement="top" title="Salvar campos manuais">
+			@*           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+		<path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+		<path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+		</svg>
+		*@
 
 
 
-            <i class="fa fa-save fa-2x"></i>
-        </button>
+			<i class="fa fa-save fa-2x"></i>
+		</button>
 
-        @{
-            var numeroSkip = 0;
-            var numeroTake = 9;
-            var indexCategoria = 0;
-        }
-    </div>
+		@{
+			var numeroSkip = 0;
+			var numeroTake = 9;
+			var indexCategoria = 0;
 
-    <div class="py-4 pl-3 d-flex justify-content-between">
-        <h1 class="page-title">@ViewData["Title"]</h1>
+			//var caraDaMorte01 = Model.Categorias.Where(f => f.Descricao == "DESPESAS MENSAIS FIXAS").FirstOrDefault();
+			//var caraDaMorte02 = Model.Categorias.Where(f => f.Descricao == "OUTRAS DESPESAS OPERACIONAIS").FirstOrDefault();
+			//var caraDaMorte = Model.Categorias.Where(f => f.Descricao == "CONTAS A RECEBER").FirstOrDefault();
+			//var categorias = Model.Categorias.Where(f => f.Descricao != "CONTAS A RECEBER" && f.Descricao != "OUTRAS DESPESAS OPERACIONAIS" && f.Descricao != "DESPESAS MENSAIS FIXAS").ToList();
+			//categorias.Add(caraDaMorte);
+			//categorias.Add(caraDaMorte01);
+			//categorias.Add(caraDaMorte02);
+		}
+	</div>
 
-    </div>
+	<div class="py-4 pl-3 d-flex justify-content-between">
+		<h1 class="page-title">@ViewData["Title"]</h1>
+	</div>
 
-    <div class="row">
-        @while (numeroSkip < Model.Categorias.Count)
-        {
-            @foreach (var categoria in Model.Categorias.Skip(numeroSkip).Take(numeroTake))
-            {
-                <div class="col-4">
-
-                    <table class="table table-bordered inptable mx-auto">
-                        <thead>
-                            <tr>
-                                <th colspan="3" class="bg-categoria text-white">@categoria.Descricao</th>
-                            </tr>
-                        </thead>
-                        @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
-                        {
-                            var conta = categoria.Contas[indexConta];
-                            <tbody>
-                                @for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
-                                {
-                                    var lancamento = conta.Lancamentos[indexLancamento];
-                                    var valorLanc = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", lancamento.Valor);
-
-                                    @if (categoria.Descricao == "RECEITAS" && indexConta == 0)
-                                    {
-                                        <tr><td colspan="3"><div class="inptable mx-auto d-flex justify-content-end"><button onclick="handleContasReceber(event)" class="btn btn-plumas-w">Provisão dos recebimentos</button></div></td></tr>
-                                    }
-
-                                    <tr>
-                                        <td class="codigo">
-                                            @conta.Codigo<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Conta" value="@conta.Id" />
-                                        </td>
-                                        <td class="descricao">
-                                            @if (lancamento.PodeDigitarDescricao)
-                                            {
-                                                <input type="text" class="form-control" style="width:100%;" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
-                                            }
-                                            else
-                                            {
-                                                if (lancamento.Descricao != null)
-                                                {
-                                                    <input type="text" class="form-control" style="width:100%;" disabled asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
-                                                }
-                                                else
-                                                {
-                                                    @conta.Descricao
+	<div class="row">
+		@while (numeroSkip < Model.Categorias.Count)
+		{
+			<div class="col-4 p-1">
+				@foreach (var categoria in Model.Categorias.Skip(numeroSkip).Take(numeroTake))
+				@*@foreach (var categoria in categorias.Skip(numeroSkip).Take(numeroTake))*@
+				{
 
 
+					<table class="table table-bordered w-100">
+						<thead>
+							<tr>
+								<th colspan="3" class="bg-categoria text-white">@categoria.Descricao</th>
+							</tr>
+						</thead>
+						@for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
+						{
+							var conta = categoria.Contas[indexConta];
+							<tbody>
+								@for (int indexLancamento = 0; indexLancamento < conta.Lancamentos.Count; indexLancamento++)
+								{
+									var lancamento = conta.Lancamentos[indexLancamento];
+									var valorLanc = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", lancamento.Valor);
 
-                                                    <input disabled type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@conta.Descricao" />
-                                                }
-                                            }
-                                        </td>
-                                        <td class="valor">
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
-                                            @if (conta.TipoLancamento == "C")
-                                            {
-                                                @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
-                                                {
+									@if (categoria.Descricao == "RECEITAS" && indexConta == 0)
+									{
+										<tr><td colspan="3"><div class="inptable mx-auto d-flex justify-content-end"><button onclick="handleContasReceber(event)" class="btn btn-plumas-w">Provisão dos recebimentos</button></div></td></tr>
+									}
 
-                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
-
-
-                                                }
-                                                else
-                                                {
-                                                    <input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
-                                                {
-
-                                                    <input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-
-
-                                                }
-                                                else
-                                                {
-                                                    <input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].ValorStr" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
-                                                }
-
-                                            }
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Descricao" value="@Model.Categorias[indexCategoria].Descricao" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" value="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" />
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" value="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" />
-                                        </td>
-
-                                    </tr>
-                                }
-                            </tbody>
-                        }
-                    </table>
-
-                </div>
-                indexCategoria++;
-            }
-
-            numeroSkip += numeroTake;
-        }
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <table class="table table-bordered mx-auto inptable">
-                <thead>
-                    <tr>
-                        <th colspan="2" class="bg-categoria text-white">COMPRAS</th>
-                        <th class="bg-categoria text-white col-result">Resultado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        decimal totalTrimestre = 0;
-                        decimal estoqueInicial = 0;
-                        decimal estoqueFinal = 0;
-                        decimal custoMercadoriaVendida = 0;
-                        decimal somaCompraTrimestre = 0;
-
-                        if (Model.LancamentosCompra == null)
-                        {
-                            <tr>
-                                <td colspan="2" class="bg-categoria text-white">Compras</td>
-                                <td class="bg-categoria text-white"></td>
-                            </tr>
-                        }
-                        else
-                        {
-                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 100))
-                            {
-                                estoqueInicial += compra.Valor;
-                            }
-                            <tr><td></td></tr>
-                            <tr>
-                                <td colspan="2">Estoque Inicial</td>
-                                <td class="mask-valor">@estoqueInicial</td>
-                            </tr>
-                            <tr><td></td></tr>
-                            int j = 1;
-                            foreach (var trimestre in Model.Trimestre)
-                            {
-                                decimal somaCompra = 0;
-                                foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre && l.Conta == null))
-                                {
-                                    somaCompra += compra.Valor;
-                                }
-                                <tr>
-                                    <td colspan="2">Total Compras @j o. mês</td>
-                                    <td class="mask-valor">@somaCompra</td>
-                                </tr>
-                                somaCompraTrimestre += somaCompra;
-                                j++;
-                            }
-                            <tr>
-                                <td colspan="2">Total Trimestre</td>
-                                <td class="mask-valor">@somaCompraTrimestre</td>
-                            </tr>
-                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
-                            {
-                                estoqueFinal += compra.Valor;
-                            }
-                            <tr><td></td></tr>
-                            <tr>
-                                <td colspan="2">( - ) Estoque Final</td>
-                                <td class="mask-valor">@estoqueFinal</td>
-                            </tr>
-                            <tr><td></td></tr>
-                            custoMercadoriaVendida = estoqueInicial + somaCompraTrimestre - estoqueFinal;
-                        }
-                        <tr>
-                            <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
-                            <td class="mask-valor">@custoMercadoriaVendida</td>
-                        </tr>
-                        <tr><td></td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="col-4">
-            <table class="table table-bordered mx-auto inptable">
-                <thead>
-                    <tr>
-                        <th colspan="2" class="bg-categoria text-white">RECEITAS</th>
-                        <th class="bg-categoria text-white col-result">Resultado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        decimal lucroBruto = 0;
-                        if (Model.LancamentosReceita == null)
-                        {
-                            <tr>
-                                <td colspan="2"></td>
-                                <td></td>
-                            </tr>
-                        }
-                        else
-                        {
-                            decimal somaReceitaTrimestre = 0;
-                            int j = 1;
-                            foreach (var trimestre in Model.Trimestre)
-                            {
-
-                                decimal somaReceita = 0;
-                                foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
-                                {
-                                    somaReceita += receita.Valor;
-                                }
-                                <tr>
-                                    <td colspan="2">Total Receitas @j o. mês</td>
-                                    <td class="mask-valor">@somaReceita</td>
-                                </tr>
-                                somaReceitaTrimestre += somaReceita;
-                                j++;
-
-                            }
-                            lucroBruto = custoMercadoriaVendida - somaReceitaTrimestre;
-                            if (somaReceitaTrimestre == 0)
-                            {
-                                <tr>
-                                    <td colspan="2">Total Receitas Trimestre</td>
-                                    <td class="mask-valor">@somaReceitaTrimestre</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">( = ) Lucro Bruto (R$)</td>
-                                    <td class="mask-valor">@lucroBruto</td>
-                                </tr>
-                                <tr><td></td></tr>
-                                <tr>
-                                    <td colspan="2">( = ) Margem Bruta Total em %</td>
-                                    <td class="mask-valor"></td>
-                                </tr>
-                            }
-                            else
-                            {
-                                var margemLucroBruto = (lucroBruto / somaReceitaTrimestre) * 100;
-                                <tr>
-                                    <td colspan="2">Total Receitas Trimestre</td>
-                                    <td class="mask-valor">@somaReceitaTrimestre</td>
-                                </tr>
-
-                                <tr><td></td></tr>
-                                <tr>
-                                    <td colspan="2">( = ) Lucro Bruto (R$)</td>
-                                    <td class="mask-valor">@lucroBruto</td>
-                                </tr>
-                                <tr><td></td></tr>
-                                <tr>
-                                    <td colspan="2">( = ) Margem Bruta Total em %</td>
-                                    <td class="mask-valorDecimal">@Math.Round(margemLucroBruto, 2)</td>
-                                </tr>
-                                <tr><td></td></tr>
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="col-4">
-            <table class="table table-bordered mx-auto inptable">
-                <thead>
-                    <tr>
-                        <th colspan="2" class="bg-categoria text-white">DESPESAS</th>
-                        <th class="bg-categoria text-white col-result">Resultado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-
-                        decimal somaDespesaTrimestre = 0;
-                        if (Model.LancamentosDespesa == null)
-                        {
-                            <tr>
-                                <td colspan="2"></td>
-                                <td></td>
-                            </tr>
-                        }
-                        else
-                        {
-                            int j = 1;
-                            foreach (var trimestre in Model.Trimestre)
-                            {
-
-                                decimal somaDespesa = 0;
-                                foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
-                                {
-                                    somaDespesa += despesa.Valor;
-                                }
-                                <tr>
-                                    <td colspan="2">Total Despesas @j o. mês</td>
-                                    <td class="mask-valor">@Math.Abs(somaDespesa)</td>
-                                </tr>
-                                somaDespesaTrimestre += somaDespesa;
-                                j++;
-
-                            }
-                            <tr>
-                                <td colspan="2">Total trimestre</td>
-                                <td class="mask-valor">@Math.Abs(somaDespesaTrimestre)</td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <table class="table table-bordered mx-auto inptable">
-                <thead>
-                    <tr>
-                        <th colspan="3" class="bg-categoria text-white">PREJUÍZOS E COMPENSAÇÕES</th>
-                        <th class="bg-categoria text-white col-result">Resultado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        var provisoesDepreciacoes = Model.ProvisoesDepreciacoes;
-
-                        <tr>
-                            <td colspan="3">
-                                ( - ) Provisão de 13° Salário
-                                <input type="hidden" name="ProvisoesDepreciacoes.Id" value="@provisoesDepreciacoes.Id" />
-                                <input type="hidden" name="ProvisoesDepreciacoes.Data" value="@provisoesDepreciacoes.Data" />
-                                <input type="hidden" name="ProvisoesDepreciacoes.Empresa" value="@provisoesDepreciacoes.Empresa" />
-                            </td>
-                            <td>
-                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.DecimoTerceiroVlr" value="@provisoesDepreciacoes.DecimoTerceiro" onfocus="this.setSelectionRange(0, this.value.length);" />
-                            </td>
-                        </tr>
-                        <tr><td></td></tr>
-                        <tr>
-                            <td colspan="3">( - ) Provisão de Férias</td>
-                            <td>
-                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.FeriasVlr" value="@provisoesDepreciacoes.Ferias" onfocus="this.setSelectionRange(0, this.value.length);" />
-                            </td>
-                        </tr>
-                        <tr><td></td></tr>
-                        <tr>
-                            <td colspan="3">( - ) Depreciações</td>
-                            <td>
-                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.DepreciacaoVlr" value="@provisoesDepreciacoes.Depreciacao" onfocus="this.setSelectionRange(0, this.value.length);" />
-                            </td>
-                        </tr>
-                        <tr><td></td></tr>
-                        <tr>
-                            <td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
-                            <td>
-                                <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.SaldoPrejuizoVlr" value="@provisoesDepreciacoes.SaldoPrejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />
-                            </td>
-                        </tr>
-
-                        <tr><td></td></tr>
-                        <tr>
-                            <th colspan="3" class="bg-categoria text-white"> Calcular Compensação </th>
-                            <td class="bg-categoria text-white "><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
-                        </tr>
-                        <tr><td></td></tr>
-                        double prejuizoCompensado = 0;
-                        var lucroPeriodo = lucroBruto - somaDespesaTrimestre -
-                            (provisoesDepreciacoes.DecimoTerceiro != null ? provisoesDepreciacoes.DecimoTerceiro : 0) -
-                            ((provisoesDepreciacoes.Ferias != null ? provisoesDepreciacoes.Ferias : 0)) -
-                            (provisoesDepreciacoes.Depreciacao.HasValue ? provisoesDepreciacoes.Depreciacao.Value : 0);
-                        if (provisoesDepreciacoes.CalcularCompesacao)
-                        {
-                            prejuizoCompensado = (double)lucroPeriodo * 0.3;
-                        }
-                        <tr>
-                            <td colspan="3"> Compesação Prejuízo (30% Lucro do Período) </td>
-                            <td>
-                                <output class="mask-valor">@prejuizoCompensado</output>
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-            </table>
-        </div>
-        <div class="col-4">
-            <table class="table table-bordered mx-auto inptable">
-
-                @{
-                    var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
-                    <thead>
-                        <tr>
-                            <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
-                            <td>
-                                <output class="mask-valor"> @(csll) </output>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="bg-categoria text-white">APURAR - S/N </th>
-                            <td class="bg-categoria text-white col-result"><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
-                        </tr>
-                    </thead>
-                    double contribuicaoSocial = 0;
-                    double impostoRenda = 0;
-                    double adcionalIr = 0;
-                    if (provisoesDepreciacoes.Apurar)
-                    {
-                        contribuicaoSocial = (double)csll * 0.09;
-                        impostoRenda = (double)csll * 0.15;
-                        if (csll > 60000)
-                        {
-                            adcionalIr = (double)csll * 0.10;
-                        }
-                    }
-                    <tbody>
-
-                        <tr>
-                            <td colspan="3">( - ) Contribuição Social - 9%</td>
-                            <td>
-                                <output class="mask-valor"> @(contribuicaoSocial) </output>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">( - ) Imposto de Renda - 15%</td>
-                            <td>
-                                <output class="mask-valor">@impostoRenda </output>
-                            </td>
-                        </tr>
-                        <tr><td colspan="3"></td></tr>
-                        <tr>
-                            <td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
-                            <td>
-                                <output class="mask-valor"> @adcionalIr </output>
-                            </td>
-                        </tr>
-                        <tr><td colspan="3"></td></tr>
-                    </tbody>
-                }
-            </table>
-        </div>
-        <div class="col-4">
-            <table class="table table-bordered mx-auto inptable">
-                <thead>
-                    <tr>
-                        <th colspan="3" class="bg-categoria text-white">Lucro</th>
-                        <th class="bg-categoria text-white col-result">Resultado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="3"> ( = ) Lucro do Período </td>
-                        <td>
-                            <output class="mask-valor">
-                                @lucroPeriodo
-                            </output>
-                        </td>
-                    </tr>
-                    @{
-                        double lucroReal = 0;
-                        if (csll != null)
-                        {
-                            if (provisoesDepreciacoes.Apurar)
-                            {
-                                lucroReal = (double)csll - (double)contribuicaoSocial - (double)impostoRenda - (double)adcionalIr;
-                                <tr>
-                                    <td colspan="3"> ( = ) Lucro Real </td>
-                                    <td>
-                                        <output class="mask-valor">@lucroReal</output>
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="3"> ( = ) Lucro Real </td>
-                                    <td>
-                                        <output class="mask-valor">@csll</output>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row px-4">
-        <div class="col-12">
-            <table class="table table-bordered mx-auto ">
-                <thead>
-                    <tr>
-                        <th colspan="4" class="bg-categoria text-white ">Estoque Combustível</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-light">Combustíveis</th>
-                        <th class="bg-light">Estoque Final (LT)</th>
-                        <th class="bg-light">Valor Unitário (R$)</th>
-                        <th class="bg-light">Estoque Final</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        for (int j = 0; j < Model.EstoqueVendas.Produtos.Count; j++)
-                        {
-                            var produtos = Model.EstoqueVendas.Produtos[j];
-
-                            var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
-
-                            <tr>
-                                <th>
-                                    @produtos.Nome<input type="hidden" name="EstoqueVendas.Data" value="@ViewBag.CompetenciasSelecionadaId" />
-
-                                    <input type="hidden" name="EstoqueVendas.Empresa" value="@ViewBag.EmpresaSeleciodaId" />
-                                </th>
-                                <td><input type="text" id="qtdProd_@j" class="mask-decimal" name="EstoqueVendas.ItensVendas[@j].Quantidade" value="@itemVenda?.Quantidade" /></td>
-                                <td>
-                                    <input type="text" id="vlrProd_@j" class="mask-valor" name="EstoqueVendas.ItensVendas[@j].PrecoVlr" value="@itemVenda?.Preco" />
-                                    <input type="hidden" name="EstoqueVendas.ItensVendas[@j].ProdutoId" value="@produtos.Id" />
-                                    <input type="hidden" name="EstoqueVendas.ItensVendas[@j].Id" value="@itemVenda?.Id" />
-                                    <input type="hidden" name="EstoqueVendas.Id" value="@Model.EstoqueVendas.Id" />
-                                </td>
-                                <td id="vlr_@j" class="mask-valor text-center">
-                                    @(itemVenda?.Preco * itemVenda?.Quantidade)
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="col-12">
-            <hr>
-            <div class="mx-auto">
-                <h3>Observações:</h3>
-                <textarea class="form-control " name="EstoqueVendas.Observacao" value="@Model.EstoqueVendas.Observacao">@Model.EstoqueVendas.Observacao</textarea>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="modalContasReceber" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl m-auto modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    Contas a receber
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="w-100 mx-auto table-bordered">
-                        <thead>
-                            <tr>
-                                <td class="bg-categoria text-white p-2">CÓDIGOS</td>
-                                <td class="bg-categoria text-white p-2"><sup>*</sup>CONTAS</td>
-                                <td class="bg-categoria text-white p-2"><sup>*</sup>DÉBITO</td>
-                                <td class="bg-categoria text-white p-2"><sup>*</sup>CRÉDITO</td>
-                                <td class="bg-categoria text-white p-2"><sup>*</sup>DESCRIÇÃO</td>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @{
-                                var index = 0;
-                                foreach (var item in Model.Receitas)
-                                {
-
-                                    <tr>
-                                        <input type="hidden" name="Receitas[@index].Id" value="@Model.Receitas[index].Id" />
-                                        <input type="hidden" name="Receitas[@index].IdConta" value="@item.IdConta" />
-                                        <input type="hidden" name="Receitas[@index].Conta" value="@item.Conta" />
-                                        <input type="hidden" name="Receitas[@index].TipoLancamento" value="@item.TipoLancamento" />
-                                        <input type="hidden" name="Receitas[@index].Empresa" value="@item.Empresa" />
-                                        <input type="hidden" name="Receitas[@index].Data" value="@item.Data" />
-                                        <td class="codigo">@item.Codigo</td>
-                                        <td>@item.Conta</td>
-
-                                        @if (item.TipoConta == 0)
-                                        {
-                                            <td>
-                                                <input type="text" name="Receitas[@index].ValorDebitoStr" disabled value="@item.ValorDebitoStr" class="mask-valor form-control" />
-                                            </td>
-                                            <td>
-                                                <input type="text" name="Receitas[@index].ValorCreditoStr" value="@item.ValorCreditoStr" class="mask-valor form-control" />
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td>
-                                                <input type="text" name="Receitas[@index].ValorDebitoStr" value="@item.ValorDebitoStr" class="mask-valor form-control" />
-                                            </td>
-                                            <td>
-                                                <input type="text" name="Receitas[@index].ValorCreditoStr" disabled value="@item.ValorCreditoStr" class="mask-valor form-control" />
-                                            </td>
+									<tr>
+										<td class="codigo">
+											@conta.Codigo
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Conta" value="@conta.Id" />
+										</td>
+										<td class="descricao">
+											@if (lancamento.PodeDigitarDescricao)
+											{
+												<input type="text" class="form-control" style="width:100%;" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
+											}
+											else
+											{
+												if (lancamento.Descricao != null)
+												{
+													<input type="text" class="form-control" style="width:100%;" disabled asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
+												}
+												else
+												{
+													@conta.Descricao
 
 
 
-                                        }
+													<input disabled type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@conta.Descricao" />
+												}
+											}
+										</td>
+										<td class="valor">
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
+											@if (conta.TipoLancamento == "C")
+											{
+												@if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
+												{
 
-                                        <td>
-                                            <input type="text" name="Receitas[@index].Descricao" value="@item.Descricao" placeholder="Descrição" class="form-control" />
-                                        </td>
-                                        <input type="hidden" name="index" value="@index" />
-                                    </tr>
-
-                                    index++;
-                                }
-                            }
+													<button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
 
 
-                        </tbody>
+												}
+												else
+												{
+													<input type="text" disabled class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+												}
 
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button id="btnOKReceitas" asp-action="SalvarReceitas" type="submit" class="btn btn-plumas-w">Ok</button>
-                </div>
-            </div>
-        </div>
-    </div>
+											}
+											else
+											{
+												@if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
+												{
+
+													<input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+
+
+												}
+												else
+												{
+													<input type="text" class="mask-valor" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].ValorStr" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+												}
+
+											}
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Descricao" value="@Model.Categorias[indexCategoria].Descricao" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Empresa" value="@ViewBag.EmpresaSeleciodaId" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Data" value="@ViewBag.CompetenciasSelecionadaId" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" value="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" />
+											<input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" value="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" />
+										</td>
+
+									</tr>
+								}
+							</tbody>
+						}
+					</table>
+
+
+					indexCategoria++;
+				}
+			</div>
+			numeroSkip += numeroTake;
+		}
+	</div>
+	<div class="row">
+		<div class="col-4 p-1">
+			<table class="table table-bordered mx-auto w-100">
+				<thead>
+					<tr>
+						<th colspan="2" class="bg-categoria text-white">COMPRAS</th>
+						<th class="bg-categoria text-white col-result">Resultado</th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						decimal totalTrimestre = 0;
+						decimal estoqueInicial = 0;
+						decimal estoqueFinal = 0;
+						decimal custoMercadoriaVendida = 0;
+						decimal somaCompraTrimestre = 0;
+
+						if (Model.LancamentosCompra == null)
+						{
+							<tr>
+								<td colspan="2" class="bg-categoria text-white">Compras</td>
+								<td class="bg-categoria text-white"></td>
+							</tr>
+						}
+						else
+						{
+							foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 100))
+							{
+								estoqueInicial += compra.Valor;
+							}
+							<tr><td></td></tr>
+							<tr>
+								<td colspan="2">Estoque Inicial</td>
+								<td class="mask-valor">@estoqueInicial</td>
+							</tr>
+							<tr><td></td></tr>
+							int j = 1;
+							foreach (var trimestre in Model.Trimestre)
+							{
+								decimal somaCompra = 0;
+								foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
+								{
+									somaCompra += compra.Valor;
+								}
+								<tr>
+									<td colspan="2">Total Compras @j o. mês</td>
+									<td class="mask-valor">@somaCompra</td>
+								</tr>
+								somaCompraTrimestre += somaCompra;
+								j++;
+							}
+							<tr>
+								<td colspan="2">Total Trimestre</td>
+								<td class="mask-valor">@somaCompraTrimestre</td>
+							</tr>
+							foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
+							{
+								estoqueFinal += compra.Valor;
+							}
+							<tr><td></td></tr>
+							<tr>
+								<td colspan="2">( - ) Estoque Final</td>
+								<td class="mask-valor">@estoqueFinal</td>
+							</tr>
+							<tr><td></td></tr>
+							custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
+						}
+						<tr>
+							<td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
+							<td class="mask-valor">@custoMercadoriaVendida</td>
+						</tr>
+						<tr><td></td></tr>
+					}
+				</tbody>
+			</table>
+
+			<table class="table table-bordered mx-auto w-100">
+				<thead>
+					<tr>
+						<th colspan="2" class="bg-categoria text-white">RECEITAS</th>
+						<th class="bg-categoria text-white col-result">Resultado</th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						decimal lucroBruto = 0;
+						if (Model.LancamentosReceita == null)
+						{
+							<tr>
+								<td colspan="2"></td>
+								<td></td>
+							</tr>
+						}
+						else
+						{
+							decimal somaReceitaTrimestre = 0;
+							int j = 1;
+							foreach (var trimestre in Model.Trimestre)
+							{
+
+								decimal somaReceita = 0;
+								foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
+								{
+									somaReceita += receita.Valor;
+								}
+								<tr>
+									<td colspan="2">Total Receitas @j o. mês</td>
+									<td class="mask-valor">@somaReceita</td>
+								</tr>
+								somaReceitaTrimestre += somaReceita;
+								j++;
+
+							}
+							 lucroBruto = custoMercadoriaVendida - somaReceitaTrimestre;
+							if (somaReceitaTrimestre == 0)
+							{
+								<tr>
+									<td colspan="2">Total Receitas Trimestre</td>
+									<td class="mask-valor">@somaReceitaTrimestre</td>
+								</tr>
+								<tr>
+									<td colspan="2">( = ) Lucro Bruto (R$)</td>
+									<td class="mask-valor">@lucroBruto</td>
+								</tr>
+								<tr><td></td></tr>
+								<tr>
+									<td colspan="2">( = ) Margem Bruta Total em %</td>
+									<td class="mask-valor"></td>
+								</tr>
+							}
+							else
+							{
+								var margemLucroBruto = (lucroBruto / somaReceitaTrimestre) * 100;
+								<tr>
+									<td colspan="2">Total Receitas Trimestre</td>
+									<td class="mask-valor">@somaReceitaTrimestre</td>
+								</tr>
+
+								<tr><td></td></tr>
+								<tr>
+									<td colspan="2">( = ) Lucro Bruto (R$)</td>
+									<td class="mask-valor">@lucroBruto</td>
+								</tr>
+								<tr><td></td></tr>
+								<tr>
+									<td colspan="2">( = ) Margem Bruta Total em %</td>
+									<td class="mask-valorDecimal">@margemLucroBruto</td>
+								</tr>
+								<tr><td></td></tr>
+							}
+						}
+					}
+				</tbody>
+			</table>
+
+
+
+
+		</div>
+		<div class="col-4 p-1">
+			<table class="table table-bordered mx-auto w-100">
+				<thead>
+					<tr>
+						<th colspan="3" class="bg-categoria text-white">PREJUÍZOS E COMPENSAÇÕES</th>
+						<th class="bg-categoria text-white col-result">Resultado</th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						var provisoesDepreciacoes = Model.ProvisoesDepreciacoes;
+						decimal somaDespesaTrimestre = 0;
+
+						<tr>
+							<td colspan="3">
+								( - ) Provisão de 13° Salário
+								<input type="hidden" name="ProvisoesDepreciacoes.Id" value="@provisoesDepreciacoes.Id" />
+								<input type="hidden" name="ProvisoesDepreciacoes.Data" value="@provisoesDepreciacoes.Data" />
+								<input type="hidden" name="ProvisoesDepreciacoes.Empresa" value="@provisoesDepreciacoes.Empresa" />
+							</td>
+							<td>
+								<input type="text" class="mask-valor" name="ProvisoesDepreciacoes.DecimoTerceiroVlr" value="@provisoesDepreciacoes.DecimoTerceiro" onfocus="this.setSelectionRange(0, this.value.length);" />
+							</td>
+						</tr>
+						<tr><td></td></tr>
+						<tr>
+							<td colspan="3">( - ) Provisão de Férias</td>
+							<td>
+								<input type="text" class="mask-valor" name="ProvisoesDepreciacoes.FeriasVlr" value="@provisoesDepreciacoes.Ferias" onfocus="this.setSelectionRange(0, this.value.length);" />
+							</td>
+						</tr>
+						<tr><td></td></tr>
+						<tr>
+							<td colspan="3">( - ) Depreciações</td>
+							<td>
+								<input type="text" class="mask-valor" name="ProvisoesDepreciacoes.DepreciacaoVlr" value="@provisoesDepreciacoes.Depreciacao" onfocus="this.setSelectionRange(0, this.value.length);" />
+							</td>
+						</tr>
+						<tr><td></td></tr>
+						<tr>
+							<td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
+							<td>
+								<input type="text" class="mask-valor" name="ProvisoesDepreciacoes.SaldoPrejuizoVlr" value="@provisoesDepreciacoes.SaldoPrejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />
+							</td>
+						</tr>
+
+						<tr><td></td></tr>
+						<tr>
+							<th colspan="3" class="bg-categoria text-white"> Calcular Compensação </th>
+							<td class="bg-categoria text-white "><input type="checkbox" asp-for="@provisoesDepreciacoes.CalcularCompesacao" /></td>
+						</tr>
+						<tr><td></td></tr>
+						double prejuizoCompensado = 0;
+						var lucroPeriodo = lucroBruto - somaDespesaTrimestre -
+						(provisoesDepreciacoes.DecimoTerceiro != null ? provisoesDepreciacoes.DecimoTerceiro : 0) -
+						((provisoesDepreciacoes.Ferias != null ? provisoesDepreciacoes.Ferias : 0)) -
+						(provisoesDepreciacoes.Depreciacao.HasValue ? provisoesDepreciacoes.Depreciacao.Value : 0);
+						if (provisoesDepreciacoes.CalcularCompesacao)
+						{
+							prejuizoCompensado = (double)lucroPeriodo * 0.3;
+						}
+						<tr>
+							<td colspan="3"> Compesação Prejuízo (30% Lucro do Período) </td>
+							<td>
+								<output class="mask-valor">@prejuizoCompensado</output>
+							</td>
+						</tr>
+					}
+
+				</tbody>
+			</table>
+
+		</div>
+		<div class="col-4 p-1">
+
+			<table class="table table-bordered mx-auto w-100">
+				<thead>
+					<tr>
+						<th colspan="2" class="bg-categoria text-white">DESPESAS</th>
+						<th class="bg-categoria text-white col-result">Resultado</th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+
+						if (Model.LancamentosDespesa == null)
+						{
+							<tr>
+								<td colspan="2"></td>
+								<td></td>
+							</tr>
+						}
+						else
+						{
+							int j = 1;
+							foreach (var trimestre in Model.Trimestre)
+							{
+
+								decimal somaDespesa = 0;
+								foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
+								{
+									somaDespesa += despesa.Valor;
+								}
+								<tr>
+									<td colspan="2">Total Despesas @j o. mês</td>
+									<td class="mask-valor">@Math.Abs(somaDespesa/0</td>
+								</tr>
+								somaDespesaTrimestre += somaDespesa;
+								j++;
+
+							}
+							<tr>
+								<td colspan="2">Total trimestre</td>
+								<td>@Math.Abs(somaDespesaTrimestre)</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+
+			<table class="table table-bordered mx-auto w-100">
+
+				@{
+					var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
+					<thead>
+						<tr>
+							<td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
+							<td>
+								<output class="mask-valor"> @(csll) </output>
+							</td>
+						</tr>
+						<tr>
+							<th colspan="3" class="bg-categoria text-white">APURAR - S/N </th>
+							<td class="bg-categoria text-white col-result"><input type="checkbox" asp-for="@provisoesDepreciacoes.Apurar" /></td>
+						</tr>
+					</thead>
+					double contribuicaoSocial = 0;
+					double impostoRenda = 0;
+					double adcionalIr = 0;
+					if (provisoesDepreciacoes.Apurar)
+					{
+						contribuicaoSocial = (double)csll * 0.09;
+						impostoRenda = (double)csll * 0.15;
+						if (csll > 60000)
+						{
+							adcionalIr = (double)csll * 0.10;
+						}
+					}
+					<tbody>
+
+						<tr>
+							<td colspan="3">( - ) Contribuição Social - 9%</td>
+							<td>
+								<output class="mask-valor"> @(contribuicaoSocial) </output>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">( - ) Imposto de Renda - 15%</td>
+							<td>
+								<output class="mask-valor">@impostoRenda </output>
+							</td>
+						</tr>
+						<tr><td colspan="3"></td></tr>
+						<tr>
+							<td colspan="3">( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do lucro)</td>
+							<td>
+								<output class="mask-valor"> @adcionalIr </output>
+							</td>
+						</tr>
+						<tr><td colspan="3"></td></tr>
+					</tbody>
+				}
+			</table>
+			<table class="table table-bordered mx-auto w-100">
+				<thead>
+					<tr>
+						<th colspan="3" class="bg-categoria text-white">Lucro</th>
+						<th class="bg-categoria text-white col-result">Resultado</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td colspan="3"> ( = ) Lucro do Período </td>
+						<td>
+							<output class="mask-valor">
+								@lucroPeriodo
+							</output>
+						</td>
+					</tr>
+					@{
+						double lucroReal = 0;
+						if (csll != null)
+						{
+							if (provisoesDepreciacoes.Apurar)
+							{
+								lucroReal = (double)csll - (double)contribuicaoSocial - (double)impostoRenda - (double)adcionalIr;
+								<tr>
+									<td colspan="3"> ( = ) Lucro Real </td>
+									<td>
+										<output class="mask-valor">@lucroReal</output>
+									</td>
+								</tr>
+							}
+							else
+							{
+								<tr>
+									<td colspan="3"> ( = ) Lucro Real </td>
+									<td>
+										<output class="mask-valor">@csll</output>
+									</td>
+								</tr>
+							}
+						}
+					}
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12 px-1">
+			<table class="table table-bordered mx-auto ">
+				<thead>
+					<tr>
+						<th colspan="4" class="bg-categoria text-white ">Estoque Combustível</th>
+					</tr>
+					<tr>
+						<th class="bg-light">Combustíveis</th>
+						<th class="bg-light">Estoque Final (LT)</th>
+						<th class="bg-light">Valor Unitário (R$)</th>
+						<th class="bg-light">Estoque Final</th>
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						for (int j = 0; j < Model.EstoqueVendas.Produtos.Count; j++)
+						{
+							var produtos = Model.EstoqueVendas.Produtos[j];
+
+							var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
+
+							<tr>
+								<th>
+									@produtos.Nome<input type="hidden" name="EstoqueVendas.Data" value="@ViewBag.CompetenciasSelecionadaId" />
+
+									<input type="hidden" name="EstoqueVendas.Empresa" value="@ViewBag.EmpresaSeleciodaId" />
+								</th>
+								<td><input type="text" id="qtdProd_@j" class="mask-decimal" name="EstoqueVendas.ItensVendas[@j].Quantidade" value="@itemVenda?.Quantidade" /></td>
+								<td>
+									<input type="text" id="vlrProd_@j" class="mask-valor" name="EstoqueVendas.ItensVendas[@j].PrecoVlr" value="@itemVenda?.Preco" />
+									<input type="hidden" name="EstoqueVendas.ItensVendas[@j].ProdutoId" value="@produtos.Id" />
+									<input type="hidden" name="EstoqueVendas.ItensVendas[@j].Id" value="@itemVenda?.Id" />
+									<input type="hidden" name="EstoqueVendas.Id" value="@Model.EstoqueVendas.Id" />
+								</td>
+								<td id="vlr_@j" class="mask-valor text-center">
+									@(itemVenda?.Preco * itemVenda?.Quantidade)
+								</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-12">
+			<hr>
+			<div class="mx-auto">
+				<h3>Observações:</h3>
+				<textarea class="form-control " name="EstoqueVendas.Observacao" value="@Model.EstoqueVendas.Observacao">@Model.EstoqueVendas.Observacao</textarea>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="modalContasReceber" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl m-auto modal-dialog-scrollable" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					Contas a receber
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<table class="w-100 mx-auto table-bordered">
+						<thead>
+							<tr>
+								<td class="bg-categoria text-white p-2">CÓDIGOS</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>CONTAS</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>DÉBITO</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>CRÉDITO</td>
+								<td class="bg-categoria text-white p-2"><sup>*</sup>DESCRIÇÃO</td>
+							</tr>
+						</thead>
+
+						<tbody>
+
+							@{
+								var index = 0;
+								foreach (var item in Model.Receitas)
+								{
+
+									<tr>
+										<input type="hidden" name="Receitas[@index].Id" value="@Model.Receitas[index].Id" />
+										<input type="hidden" name="Receitas[@index].IdConta" value="@item.IdConta" />
+										<input type="hidden" name="Receitas[@index].Conta" value="@item.Conta" />
+										<input type="hidden" name="Receitas[@index].TipoLancamento" value="@item.TipoLancamento" />
+										<input type="hidden" name="Receitas[@index].Empresa" value="@item.Empresa" />
+										<input type="hidden" name="Receitas[@index].Data" value="@item.Data" />
+										<td class="codigo">@item.Codigo</td>
+										<td>@item.Conta</td>
+
+										@if (item.TipoConta == 0)
+										{
+											<td>
+												<input type="text" name="Receitas[@index].ValorDebitoStr" disabled value="@item.ValorDebitoStr" class="mask-valor form-control" />
+											</td>
+											<td>
+												<input type="text" name="Receitas[@index].ValorCreditoStr" value="@item.ValorCreditoStr" class="mask-valor form-control" />
+											</td>
+										}
+										else
+										{
+											<td>
+												<input type="text" name="Receitas[@index].ValorDebitoStr" value="@item.ValorDebitoStr" class="mask-valor form-control" />
+											</td>
+											<td>
+												<input type="text" name="Receitas[@index].ValorCreditoStr" disabled value="@item.ValorCreditoStr" class="mask-valor form-control" />
+											</td>
+
+
+
+										}
+
+										<td>
+											<input type="text" name="Receitas[@index].Descricao" value="@item.Descricao" placeholder="Descrição" class="form-control" />
+										</td>
+										<input type="hidden" name="index" value="@index" />
+									</tr>
+
+									index++;
+								}
+							}
+
+
+						</tbody>
+
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					<button id="btnOKReceitas" asp-action="SalvarReceitas" type="submit" class="btn btn-plumas-w">Ok</button>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 @section Scripts {
-    <script type="text/javascript">
-        $("input[id*='qtdProd']").change((event) => {
-            const valor = Number(event.target.value);
-            console.log(valor);
-            let ids = '#vlrProd_' + event.target.id.split('_')[1];
-            const qtd = $(ids).val();
+	<script type="text/javascript">
+		$("input[id*='qtdProd']").change((event) => {
+			const valor = Number(event.target.value);
+			console.log(valor);
+			let ids = '#vlrProd_' + event.target.id.split('_')[1];
+			const qtd = $(ids).val();
 
-            if (qtd && valor) {
-                const real = qtd * valor;
-                $("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
-            }
-        });
-        $("input[id*='vlrProd']").change((event) => {
-            const valor = event.target.value;
-            console.log(valor);
+			if (qtd && valor) {
+				const real = qtd * valor;
+				$("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
+			}
+		});
+		$("input[id*='vlrProd']").change((event) => {
+			const valor = event.target.value;
+			console.log(valor);
 
-            let ids = '#qtdProd_' + event.target.id.split('_')[1];
-            const qtd = $(ids).val();
+			let ids = '#qtdProd_' + event.target.id.split('_')[1];
+			const qtd = $(ids).val();
 
-            console.log(qtd);
-            if (qtd && valor) {
-                const real = qtd * valor;
-                $("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
-            }
-        });
+			console.log(qtd);
+			if (qtd && valor) {
+				const real = qtd * valor;
+				$("#vlr_" + event.target.id.split('_')[1]).html(real.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
+			}
+		});
 
-        $("#btnOKReceitas").click((event) => {
+		$("#btnOKReceitas").click((event) => {
 
-            var deb = 0;
-            var cred = 0;
-
-
-
-            $('input[name*="ValorDebitoStr"').each((index, el) => {
-
-                deb += $(el).val() == "" ? 0 : Number($(el).val());
-
-                console.log($(el).val());
-                console.log(deb);
-
-            });
-
-            $('input[name*="ValorCreditoStr"').each((index, el) => {
-
-                cred += $(el).val() == "" ? 0 : Number($(el).val());
-                console.log($(el).val());
-                console.log(cred);
-            });
+			var deb = 0;
+			var cred = 0;
 
 
-            console.log(deb);
-            console.log(cred);
 
-            if ((cred - deb) != 0) {
-                event.preventDefault();
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atenção',
-                    text: "Existe uma diferença no saldo de R$" + (cred - deb).toFixed(2),
+			$('input[name*="ValorDebitoStr"').each((index, el) => {
 
-                })
-            }
-        });
-        function handleContasReceber(e) {
-            e.preventDefault()
-            $('#modalContasReceber').modal('toggle')
+				deb += $(el).val() == "" ? 0 : Number($(el).val());
 
-        }
-    </script>
-}
+				console.log($(el).val());
+				console.log(deb);
+
+			});
+
+			$('input[name*="ValorCreditoStr"').each((index, el) => {
+
+				cred += $(el).val() == "" ? 0 : Number($(el).val());
+				console.log($(el).val());
+				console.log(cred);
+			});
+
+
+			console.log(deb);
+			console.log(cred);
+
+			if ((cred - deb) != 0) {
+				event.preventDefault();
+				Swal.fire({
+					icon: 'warning',
+					title: 'Atenção',
+					text: "Existe uma diferença no saldo de R$" + (cred - deb).toFixed(2),
+
+				})
+			}
+		});
+		function handleContasReceber(e) {
+			e.preventDefault()
+			$('#modalContasReceber').modal('toggle')
+
+		}
+	</script>
+	}
