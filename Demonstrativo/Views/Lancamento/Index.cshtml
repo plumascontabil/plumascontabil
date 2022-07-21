@@ -225,7 +225,7 @@
                             foreach (var trimestre in Model.Trimestre)
                             {
                                 decimal somaCompra = 0;
-                                foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
+                                foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre && l.Conta == null))
                                 {
                                     somaCompra += compra.Valor;
                                 }
@@ -250,7 +250,7 @@
                                 <td class="mask-valor">@estoqueFinal</td>
                             </tr>
                             <tr><td></td></tr>
-                            custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
+                            custoMercadoriaVendida = estoqueInicial + somaCompraTrimestre - estoqueFinal;
                         }
                         <tr>
                             <td colspan="2">( = ) Custo das Mercadorias Vendidas</td>
@@ -299,7 +299,7 @@
                                 j++;
 
                             }
-                            lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
+                            lucroBruto = custoMercadoriaVendida - somaReceitaTrimestre;
                             if (somaReceitaTrimestre == 0)
                             {
                                 <tr>
@@ -332,7 +332,7 @@
                                 <tr><td></td></tr>
                                 <tr>
                                     <td colspan="2">( = ) Margem Bruta Total em %</td>
-                                    <td class="mask-valorDecimal">@margemLucroBruto</td>
+                                    <td class="mask-valorDecimal">@Math.Round(margemLucroBruto, 2)</td>
                                 </tr>
                                 <tr><td></td></tr>
                             }
@@ -373,7 +373,7 @@
                                 }
                                 <tr>
                                     <td colspan="2">Total Despesas @j o. mês</td>
-                                    <td class="mask-valor">@somaDespesa</td>
+                                    <td class="mask-valor">@Math.Abs(somaDespesa)</td>
                                 </tr>
                                 somaDespesaTrimestre += somaDespesa;
                                 j++;
@@ -381,7 +381,7 @@
                             }
                             <tr>
                                 <td colspan="2">Total trimestre</td>
-                                <td>@somaDespesaTrimestre</td>
+                                <td class="mask-valor">@Math.Abs(somaDespesaTrimestre)</td>
                             </tr>
                         }
                     }
@@ -444,7 +444,7 @@
                         double prejuizoCompensado = 0;
                         var lucroPeriodo = lucroBruto - somaDespesaTrimestre -
                             (provisoesDepreciacoes.DecimoTerceiro != null ? provisoesDepreciacoes.DecimoTerceiro : 0) -
-                            ((provisoesDepreciacoes.Ferias != null ? provisoesDepreciacoes.Ferias : 0)) - 
+                            ((provisoesDepreciacoes.Ferias != null ? provisoesDepreciacoes.Ferias : 0)) -
                             (provisoesDepreciacoes.Depreciacao.HasValue ? provisoesDepreciacoes.Depreciacao.Value : 0);
                         if (provisoesDepreciacoes.CalcularCompesacao)
                         {

@@ -27,72 +27,60 @@
     categorias.Add(caraDaMorte02);
     var emp = Model.Empresas.FirstOrDefault(f => Convert.ToInt32(f.Value) == Model.EmpresaSelecionada);
 
-    decimal totalTrimestre = 0;
-    decimal estoqueInicial = 0;
-    decimal estoqueFinal = 0;
-    decimal lucroBruto = 0;
-    decimal custoMercadoriaVendida = 0;
-    decimal somaReceitaTrimestre = 0;
-    decimal somaCompraTrimestre = 0;
-    decimal somaDespesaTrimestre = 0;
-    foreach (var trimestre in Model.Trimestre)
-    {
+    //decimal totalTrimestre = 0;
+    //decimal estoqueInicial = 0;
+    //decimal estoqueFinal = 0;
+    //decimal lucroBruto = 0;
+    //decimal custoMercadoriaVendida = 0;
+    //decimal somaReceitaTrimestre = 0;
+    //decimal somaCompraTrimestre = 0;
+    //decimal somaDespesaTrimestre = 0;
+    //foreach (var trimestre in Model.Trimestre)
+    //{
 
-        decimal somaReceita = 0;
-        foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
-        {
-            somaReceita += receita.Valor;
-        }
-        somaReceitaTrimestre += somaReceita;
+    //    decimal somaReceita = 0;
+    //    foreach (var receita in Model.LancamentosReceita.Where(l => l.Data.Month == trimestre))
+    //    {
+    //        somaReceita += receita.Valor;
+    //    }
+    //    somaReceitaTrimestre += somaReceita;
 
-    }
-    if (Model.LancamentosCompra != null)
-    {
-        foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
-        {
-            estoqueFinal += compra.Valor;
-        }
-        foreach (var trimestre in Model.Trimestre)
-        {
-            decimal somaCompra = 0;
-            foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
-            {
-                somaCompra += compra.Valor;
-            }
-            somaCompraTrimestre += somaCompra;
+    //}
+    //if (Model.LancamentosCompra != null)
+    //{
+    //    foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
+    //    {
+    //        estoqueFinal += compra.Valor;
+    //    }
+    //    foreach (var trimestre in Model.Trimestre)
+    //    {
+    //        decimal somaCompra = 0;
+    //        foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
+    //        {
+    //            somaCompra += compra.Valor;
+    //        }
+    //        somaCompraTrimestre += somaCompra;
 
-        }
+    //    }
 
-    }
-    if (Model.LancamentosDespesa != null)
-    {
-        foreach (var trimestre in Model.Trimestre)
-        {
-            decimal somaDespesa = 0;
-            foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
-            {
-                somaDespesa += despesa.Valor;
-            }
+    //}
+    //if (Model.LancamentosDespesa != null)
+    //{
+    //    foreach (var trimestre in Model.Trimestre)
+    //    {
+    //        decimal somaDespesa = 0;
+    //        foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
+    //        {
+    //            somaDespesa += despesa.Valor;
+    //        }
 
-            somaDespesaTrimestre += somaDespesa;
-        }
-    }
-    custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
-    lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
+    //        somaDespesaTrimestre += somaDespesa;
+    //    }
+    //}
+    //custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
+    //lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
 
-    var csll = lucroBruto - somaDespesaTrimestre - Model.ProvisoesDepreciacoes.DecimoTerceiro - Model.ProvisoesDepreciacoes.Ferias - Model.ProvisoesDepreciacoes.Depreciacao - Model.ProvisoesDepreciacoes.SaldoPrejuizo;
-    double contribuicaoSocial = 0;
-    double impostoRenda = 0;
-    double adcionalIr = 0;
-    if (Model.ProvisoesDepreciacoes.Apurar)
-    {
-        contribuicaoSocial = (double)csll * 0.09;
-        impostoRenda = (double)csll * 0.15;
-        if (csll > 60000)
-        {
-            adcionalIr = (double)csll * 0.10;
-        }
-    }
+
 }
 
 <div id="dre" class="row text-small mx-auto">
@@ -201,10 +189,10 @@
             <tbody>
                 @{
                     //decimal totalTrimestre = 0;
-                    //decimal estoqueInicial = 0;
-                    //decimal estoqueFinal = 0;
-                    //decimal custoMercadoriaVendida = 0;
-                    //decimal somaCompraTrimestre = 0;
+                    decimal estoqueInicial = 0;
+                    decimal estoqueFinal = 0;
+                    decimal custoMercadoriaVendida = 0;
+                    decimal somaCompraTrimestre = 0;
 
                     if (Model.LancamentosCompra == null)
                     {
@@ -237,7 +225,7 @@
                     foreach (var trimestre in Model.Trimestre)
                     {
                         decimal somaCompra = 0;
-                        foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre))
+                        foreach (var compra in Model.LancamentosCompra.Where(l => l.Data.Month == trimestre && l.Conta == null))
                         {
                             somaCompra += compra.Valor;
                         }
@@ -263,25 +251,25 @@
                         <td class="mask-valor">@estoqueFinal</td>
                     </tr>
                     <tr><td colspan="3"></td></tr>
-                    custoMercadoriaVendida = estoqueInicial + totalTrimestre - estoqueFinal;
+                    custoMercadoriaVendida = estoqueInicial + somaCompraTrimestre - estoqueFinal;
 
                     <tr>
                         <td colspan="3" class="descricao" style="border-right-color: transparent">
-                            Total Trimestre
+                            ( = ) Custo das Mercadorias Vendidas
                         </td>
 
-                        <td class="valor mask-valor">@estoqueFinal</td>
+                        <td class="valor mask-valor">@custoMercadoriaVendida</td>
                     </tr>
 
-                    //decimal lucroBruto = 0;
+                    decimal lucroBruto = 0;
                     if (Model.LancamentosReceita == null)
                     {
                         <tr><td colspan="3"></td></tr>
                     }
                     else
                     {
-                        //decimal somaReceitaTrimestre = 0;
-                        //int j = 1;
+                        decimal somaReceitaTrimestre = 0;
+                        j = 1;
                         foreach (var trimestre in Model.Trimestre)
                         {
 
@@ -298,7 +286,7 @@
                             j++;
 
                         }
-                        lucroBruto = somaReceitaTrimestre - custoMercadoriaVendida;
+                        lucroBruto = custoMercadoriaVendida - somaReceitaTrimestre;
                         if (somaReceitaTrimestre == 0)
                         {
                             <tr>
@@ -331,14 +319,13 @@
                             <tr><td colspan="3"></td></tr>
                             <tr>
                                 <td colspan="3">( = ) Margem Bruta Total em %</td>
-                                <td class="mask-valorDecimal">@margemLucroBruto</td>
+                                <td class="mask-valorDecimal">@Math.Round(margemLucroBruto,2)</td>
                             </tr>
                             <tr><td colspan="3"></td></tr>
                         }
                     }
 
-
-                    //decimal somaDespesaTrimestre = 0;
+                    decimal somaDespesaTrimestre = 0;
                     if (Model.LancamentosDespesa == null)
                     {
                         <tr><td colspan="3"></td></tr>
@@ -356,16 +343,16 @@
                             }
                             <tr>
                                 <td colspan="3">Total Despesas @j o. mês</td>
-                                <td class="mask-valor">@somaDespesa</td>
+                                <td class="mask-valor">@Math.Abs(somaDespesa)</td>
                             </tr>
-                            <tr><td colspan="3"></td></tr>
+
                             somaDespesaTrimestre += somaDespesa;
                             j++;
 
                         }
                         <tr>
                             <td colspan="3">Total trimestre</td>
-                            <td class="mask-valor">@somaDespesaTrimestre</td>
+                            <td class="mask-valor">@Math.Abs(somaDespesaTrimestre) </td>
                         </tr>
                         <tr><td colspan="3"></td></tr>
                     }
@@ -380,7 +367,6 @@
                             @Model.ProvisoesDepreciacoes.DecimoTerceiro
                         </td>
                     </tr>
-                    <tr><td colspan="3"></td></tr>
 
                     <tr>
                         <td colspan="3">( - ) Provisão de Férias</td>
@@ -389,7 +375,6 @@
                             @Model.ProvisoesDepreciacoes.Ferias
                         </td>
                     </tr>
-                    <tr><td colspan="3"></td></tr>
                     <tr>
                         <td colspan="3">( - ) Depreciações</td>
                         <td class="mask-valor">
@@ -421,7 +406,19 @@
                     </tr>
                     <tr><td colspan="3"></td></tr>
                     //var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
-
+                    var csll = lucroBruto - somaDespesaTrimestre - Model.ProvisoesDepreciacoes.DecimoTerceiro - Model.ProvisoesDepreciacoes.Ferias - Model.ProvisoesDepreciacoes.Depreciacao - Model.ProvisoesDepreciacoes.SaldoPrejuizo;
+                    double contribuicaoSocial = 0;
+                    double impostoRenda = 0;
+                    double adcionalIr = 0;
+                    if (Model.ProvisoesDepreciacoes.Apurar)
+                    {
+                        contribuicaoSocial = (double)csll * 0.09;
+                        impostoRenda = (double)csll * 0.15;
+                        if (csll > 60000)
+                        {
+                            adcionalIr = (double)csll * 0.10;
+                        }
+                    }
                     <tr>
                         <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
                         <td>
@@ -488,7 +485,7 @@
                             ( = ) Prejuízo Real
                         </td>
 
-                        <td class="mask-valor"> @(lucroBruto + somaDespesaTrimestre)</td>
+                        <td class="mask-valor"> @(lucroBruto + Math.Abs(somaDespesaTrimestre))</td>
                     </tr>
 
                 }
@@ -879,7 +876,7 @@
             </div>
             <div class="col-6 text-center">
                 <p class="mb-0">@ViewBag.Consultor</p>
-               @* <p>Última exportação(Contábil): 09/02/2022 11:37:27</p>*@
+                @* <p>Última exportação(Contábil): 09/02/2022 11:37:27</p>*@
             </div>
         </div>
     </div>

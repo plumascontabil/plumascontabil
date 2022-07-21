@@ -200,8 +200,9 @@ namespace Demonstrativo.Controllers
 
                 if(ofx.Contains("<DTASOF>00000000") || ofx.Contains("<DTASOF>00000000000000"))
                 {
-                    ofx = ofx.Replace("<DTASOF>00000000", $"<DTASOF>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
                     ofx = ofx.Replace("<DTASOF>00000000000000", $"<DTASOF>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
+                    ofx = ofx.Replace("<DTASOF>00000000", $"<DTASOF>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
+                    
                 }
 
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
