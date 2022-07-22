@@ -306,7 +306,17 @@ namespace Demonstrativo.Controllers
 
                 }
 
+                if (categoria.Descricao == "CONTAS RESULTADOS")
+                {
+                    var compras = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("COMPRA")).ToList();
+                    var estoqueInicial = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("INICIAL")).ToList();
+                    var estoqueFinal = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("FINAL")).ToList();
+                    contasViewModel = new List<ContaViewModel>();
+                    contasViewModel.AddRange(compras);
+                    contasViewModel.AddRange(estoqueInicial);
+                    contasViewModel.AddRange(estoqueFinal);
 
+                }
 
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
@@ -315,18 +325,28 @@ namespace Demonstrativo.Controllers
                     Contas = contasViewModel
                 });
             });
-            if (trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault() != null)
+            if (trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 51203)).FirstOrDefault() != null)
             {
-                var contax = trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault()?.Contas.Where(c => c.Codigo == 53).FirstOrDefault();
+                decimal valor = 0;
+                trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 51203 || x.Codigo == 51201 || x.Codigo == 51202)).ToList().ForEach(f =>
+                {
+                    f.Contas.Where(x => x.Codigo == 51203 || x.Codigo == 51201 || x.Codigo == 51202).ToList().ForEach(el =>
+                     {
+                         valor += el.Lancamentos.Sum(v => v.Valor);
+                     });
+                });
+
+
+                //.Sum(x=>x.Contas.Where(f=>))?.Contas.Where(c => c.Codigo == 53).FirstOrDefault();
                 var indx = trimestreViewModel.Categorias.FindIndex(f => f.Descricao == "CONTAS A PAGAR");
                 trimestreViewModel.Categorias.Where(f => f.Descricao == "CONTAS A PAGAR").ToList().ForEach(el =>
                 {
 
                     var contaF = el.Contas.FindIndex(f => f.Descricao.ToUpper() == "FORNECEDORES");
 
-                    if (contax != null)
+                    if (valor != 0)
                     {
-                        var valores = contax.Lancamentos.Sum(x => x.Valor);
+                        var valores = valor;
                         trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos[0].ValorStr = Convert.ToString(valores - trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos.FirstOrDefault().Valor);
                     }
                 });
@@ -601,7 +621,8 @@ namespace Demonstrativo.Controllers
                         Depreciacao = provisoesDepreciacoes.Depreciacao,
                         SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo,
                         CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao,
-                        Apurar = provisoesDepreciacoes.Apurar
+                        Apurar = provisoesDepreciacoes.Apurar,
+                        CompesacaoPrejuizo = provisoesDepreciacoes.CompesacaoPrejuizo
                     };
 
                     _context.ProvisoesDepreciacoes.Add(insertProvisoes);
@@ -619,6 +640,7 @@ namespace Demonstrativo.Controllers
                     updateProvisoes.SaldoPrejuizo = provisoesDepreciacoes.SaldoPrejuizo;
                     updateProvisoes.CalcularCompensacao = provisoesDepreciacoes.CalcularCompesacao;
                     updateProvisoes.Apurar = provisoesDepreciacoes.Apurar;
+                    updateProvisoes.CompesacaoPrejuizo = provisoesDepreciacoes.CompesacaoPrejuizo;
 
                     _context.ProvisoesDepreciacoes.Update(updateProvisoes);
                     _context.SaveChanges();
@@ -664,14 +686,15 @@ namespace Demonstrativo.Controllers
 
                 foreach (var lancamento in lancamentos)
                 {
-                    if (lancamento.Id == 0 && lancamento.Valor == 0)
+                    var updateLancamento = _context.Lancamentos.Where(f => f.ContaId == lancamento.ContaId && f.DataCompetencia == competencia && f.EmpresaId == empresaId).FirstOrDefault();
+                    if (updateLancamento == null && lancamento.Valor == 0)
                     {
                         continue;
                     }
 
-                    if (lancamento.Id != 0 && lancamento.Valor == 0)
+                    if (updateLancamento != null && lancamento.Valor == 0)
                     {
-                        _context.Lancamentos.Remove(lancamento);
+                        _context.Lancamentos.Remove(updateLancamento);
                         _context.SaveChanges();
                         continue;
                     }
@@ -693,7 +716,7 @@ namespace Demonstrativo.Controllers
                     }
                     else
                     {
-                        var updateLancamento = _context.Lancamentos.Where(f => f.ContaId == lancamento.ContaId && f.DataCompetencia == competencia && f.EmpresaId == empresaId).FirstOrDefault();
+
 
                         updateLancamento.Descricao = lancamento.Descricao;
                         updateLancamento.Valor = lancamento.Valor;
