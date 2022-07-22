@@ -14,6 +14,8 @@ body {
     font-family: 'Montserrat', sans-serif;
     color: #022c5c;
 }
+    
+
 
 a.navbar-brand {
     white-space: normal;
@@ -77,6 +79,7 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    print-color-adjust: exact;
 }
 
 button {
@@ -418,12 +421,10 @@ th, td {
 }
 
 #dre .table-bordered td, #dre .table-bordered th {
-    border: 1px solid black !important;
+    border: 1px solid #000 !important;
 }
 
-#dre .table thead th {
-    font-weight: 400 !important;
-}
+
 
 #dre th, #dre td {
     padding: 0px !important;
@@ -448,9 +449,13 @@ th, td {
     color: #fff;
 }
 
+.th-dre {
+    border: 2px solid black !important;
+    font-weight:bold;
+}
+
 @media (max-width: 768px) {
     .select2-container {
         width: 96% !important;
     }
 }
-

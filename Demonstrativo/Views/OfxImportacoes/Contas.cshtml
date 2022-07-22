@@ -158,6 +158,7 @@
 					<input type="hidden" asp-for="@Model.ContasCorrentes.NumeroConta" />
 				</output>
 
+                <div class="table-responsive">
                 <table class="table table-bordered d-lg-table">
                     <thead>
                         <tr>
@@ -264,6 +265,7 @@
 						}
 					</tbody>
 				</table>
+                </div>
 				<button class="btn btn-plumas-w" asp-action="index">Voltar</button>
 				<input type="submit" class="btn btn-plumas-w" asp-action="OfxSalvar" />
 
