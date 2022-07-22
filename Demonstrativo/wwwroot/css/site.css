@@ -125,9 +125,11 @@ input {
 .codigo {
 	width: 40px;
 	font-weight: 500 !important;
+	text-align:center!important;
 }
 
 .descricao {
+	text-align: center!important;
 }
 
 .valor {
@@ -437,7 +439,7 @@ th, td {
 
 #dre td {
 	height: 23.5px;
-	text-align: center !important;
+	text-align: right;
 }
 
 .right {

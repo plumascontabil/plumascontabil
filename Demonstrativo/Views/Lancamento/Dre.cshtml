@@ -197,7 +197,7 @@
 					if (Model.LancamentosCompra == null)
 					{
                     <tr>
-                        <td colspan="3" class="th-dre p-2">Compras</td>
+                        <td colspan="3" class="th-dre descricao p-2">Compras</td>
                         <td class="th-dre p-2"></td>
                     </tr>
 					}
@@ -221,7 +221,7 @@
                         estoqueFinal += compra.Valor;
                     }
                     <tr>
-                        <td colspan="3">( - ) Estoque Final</td>
+                        <td class="descricao" colspan="3">( - ) Estoque Final</td>
                         <td class="mask-valor">@estoqueFinal</td>
                     </tr>
 
@@ -237,7 +237,7 @@
 							somaCompra += compra.Valor;
 						}
                     <tr>
-                        <td colspan="3">Total Compras @j o. mês</td>
+                        <td class="descricao" colspan="3">Total Compras @j o. mês</td>
                         <td class="mask-valor">@somaCompra</td>
                     </tr>
 						somaCompraTrimestre += somaCompra;
@@ -245,7 +245,7 @@
 					}
 
                     <tr>
-                        <td colspan="3">Total Trimestre</td>
+                        <td class="descricao" colspan="3">Total Trimestre</td>
                         <td class="mask-valor">@somaCompraTrimestre</td>
                     </tr>
 
@@ -278,7 +278,7 @@
 								somaReceita += receita.Valor;
 							}
                     <tr>
-                        <td colspan="3">Total Receitas @j o. mês</td>
+                        <td class="descricao" colspan="3">Total Receitas @j o. mês</td>
                         <td class="mask-valor">@somaReceita</td>
                     </tr>
 							somaReceitaTrimestre += somaReceita;
@@ -289,16 +289,16 @@
                         if (somaReceitaTrimestre == 0)
                         {
                     <tr>
-                        <td colspan="3">Total Receitas Trimestre</td>
+                        <td class="descricao" colspan="3">Total Receitas Trimestre</td>
                         <td class="mask-valor">@somaReceitaTrimestre</td>
                     </tr>
                     <tr><td colspan="3"></td></tr>
                     <tr>
-                        <td colspan="3">( = ) Lucro Bruto (R$)</td>
+                        <td class="descricao" colspan="3">( = ) Lucro Bruto (R$)</td>
                         <td class="mask-valor">@lucroBruto</td>
                     </tr>
                     <tr>
-                        <td colspan="3">( = ) Margem Bruta Total em %</td>
+                        <td class="descricao" colspan="3">( = ) Margem Bruta Total em %</td>
                         <td class="mask-valor"></td>
                     </tr>
                         }
@@ -306,16 +306,16 @@
                         {
                             var margemLucroBruto = (lucroBruto / somaReceitaTrimestre) * 100;
                     <tr>
-                        <td colspan="3">Total Receitas Trimestre</td>
+                        <td class="descricao" colspan="3">Total Receitas Trimestre</td>
                         <td class="mask-valor">@somaReceitaTrimestre</td>
                     </tr>
                     <tr><td colspan="3"></td></tr>
                     <tr>
-                        <td colspan="3">( = ) Lucro Bruto (R$)</td>
+                        <td colspan="3" class="descricao">( = ) Lucro Bruto (R$)</td>
                         <td class="mask-valor">@lucroBruto</td>
                     </tr>
                     <tr>
-                        <td colspan="3">( = ) Margem Bruta Total em %</td>
+                        <td class="descricao" colspan="3">( = ) Margem Bruta Total em %</td>
                         <td class="mask-valorDecimal">@Math.Round(margemLucroBruto, 2)</td>
                     </tr>
 
@@ -339,7 +339,7 @@
 								somaDespesa += despesa.Valor;
 							}
                     <tr>
-                        <td colspan="3">Total Despesas @j o. mês</td>
+                        <td class="descricao" colspan="3">Total Despesas @j o. mês</td>
                         <td class="mask-valor">@Math.Abs(somaDespesa)</td>
                     </tr>
 
@@ -348,7 +348,7 @@
 
                         }
                     <tr>
-                        <td colspan="3">Total trimestre</td>
+                        <td class="descricao" colspan="3">Total trimestre</td>
                         <td class="mask-valor">@Math.Abs(somaDespesaTrimestre) </td>
                     </tr>
 
@@ -357,7 +357,7 @@
 
 
                     <tr>
-                        <td colspan="3">
+                        <td class="descricao" colspan="3">
                             ( - ) Provisão de 13° Salário
                         </td>
                         <td class="mask-valor">
@@ -367,14 +367,14 @@
                     </tr>
 
                     <tr>
-                        <td colspan="3">( - ) Provisão de Férias</td>
+                        <td class="descricao" colspan="3">( - ) Provisão de Férias</td>
                         <td class="mask-valor">
                             @* <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.FeriasVlr" value="@provisoesDepreciacoes.Ferias" onfocus="this.setSelectionRange(0, this.value.length);" />*@
                             @Model.ProvisoesDepreciacoes.Ferias
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3">( - ) Depreciações</td>
+                        <td class="descricao" colspan="3">( - ) Depreciações</td>
                         <td class="mask-valor">
                             @* <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.DepreciacaoVlr" value="@provisoesDepreciacoes.Depreciacao" onfocus="this.setSelectionRange(0, this.value.length);" />*@
                             @Model.ProvisoesDepreciacoes.Depreciacao
@@ -382,7 +382,7 @@
                     </tr>
                     <tr><td colspan="3"></td></tr>
                     <tr>
-                        <td colspan="3"> ( = ) Lucro / Prejuízo do Periodo</td>
+                        <td class="descricao" colspan="3"> ( = ) Lucro / Prejuízo do Periodo</td>
                         @{ var lucroPrj = lucroBruto - Math.Abs(somaDespesaTrimestre)
 - (Model.ProvisoesDepreciacoes.DecimoTerceiro.HasValue ? Model.ProvisoesDepreciacoes.DecimoTerceiro.Value : 0)
 - (Model.ProvisoesDepreciacoes.Ferias.HasValue ? Model.ProvisoesDepreciacoes.Ferias.Value : 0)
@@ -393,14 +393,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
+                        <td class="descricao" colspan="3"> ( - ) Saldo Prejuízos Acumulados </td>
                         <td class="mask-valor">
                             @*<input type="text" class="mask-valor" name="ProvisoesDepreciacoes.SaldoPrejuizoVlr" value="@provisoesDepreciacoes.SaldoPrejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />*@
                             @Model.ProvisoesDepreciacoes.SaldoPrejuizo
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3"> Compensação Prejuízo (30% Lucro do Periodo) </td>
+                        <td class="descricao" colspan="3"> Compensação Prejuízo (30% Lucro do Periodo) </td>
                         <td class="mask-valor">
                             @*<input type="text" class="mask-valor" name="ProvisoesDepreciacoes.SaldoPrejuizoVlr" value="@provisoesDepreciacoes.SaldoPrejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />*@
                             @Model.ProvisoesDepreciacoes.CompesacaoPrejuizo
@@ -421,7 +421,7 @@
                         adcionalIr = (double)(baseCalcCSLLIRPJ - (decimal)60000) * 0.10;
                     }
                     <tr>
-                        <td colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
+                        <td class="descricao" colspan="3">( = ) Base de Cálculo do CSLL/IRPJ</td>
                         <td>
                             <output class="mask-valor"> @(baseCalcCSLLIRPJ) </output>
                         </td>
@@ -450,7 +450,7 @@
                                 <label class="m-0" for="apurar">Apurar imposto</label>
                             </div>
                         </th>
-                        <td colspan="2">( - ) Contribuição Social - 9%</td>
+                        <td class="descricao" colspan="2">( - ) Contribuição Social - 9%</td>
                         <td><output class="mask-valor"> @(contribuicaoSocial) </output></td>
                     </tr>
                     <tr>
@@ -458,15 +458,15 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="2">( - ) Imposto de Renda - 15%</td>
+                        <td class="descricao" colspan="2">( - ) Imposto de Renda - 15%</td>
                         <td><output class="mask-valor">@impostoRenda </output></td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="py-2"></td>
+                        <td class="descricao" colspan="2" class="py-2"></td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="2">
+                        <td class="descricao" colspan="2">
                             ( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
                             lucro)
                         </td>
@@ -477,7 +477,7 @@
 
 
                     <tr>
-                        <td colspan="3" style="border-right-color: transparent">
+                        <td class="descricao" colspan="3" style="border-right-color: transparent">
                             ( = ) Lucro | Prejuízo Real
                         </td>
 
@@ -831,7 +831,7 @@
 						var itemVenda = Model.EstoqueVendas.ItensVendas?.FirstOrDefault(x => x.ProdutoId == produtos.Id);
 
                     <tr>
-                        <th class="text-center ">
+                        <th class="text-center descricao ">
                             @produtos.Nome
                         </th>
                         <td class="mask-decimal right" style="text-align:right !important;">
