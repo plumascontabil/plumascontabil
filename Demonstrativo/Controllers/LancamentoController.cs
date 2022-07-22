@@ -325,18 +325,28 @@ namespace Demonstrativo.Controllers
                     Contas = contasViewModel
                 });
             });
-            if (trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault() != null)
+            if (trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 51203)).FirstOrDefault() != null)
             {
-                var contax = trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 53)).FirstOrDefault()?.Contas.Where(c => c.Codigo == 53).FirstOrDefault();
+                decimal valor = 0;
+                trimestreViewModel.Categorias.Where(f => f.Contas.Any(x => x.Codigo == 51203 || x.Codigo == 51201 || x.Codigo == 51202)).ToList().ForEach(f =>
+                {
+                    f.Contas.Where(x => x.Codigo == 51203 || x.Codigo == 51201 || x.Codigo == 51202).ToList().ForEach(el =>
+                     {
+                         valor += el.Lancamentos.Sum(v => v.Valor);
+                     });
+                });
+
+
+                //.Sum(x=>x.Contas.Where(f=>))?.Contas.Where(c => c.Codigo == 53).FirstOrDefault();
                 var indx = trimestreViewModel.Categorias.FindIndex(f => f.Descricao == "CONTAS A PAGAR");
                 trimestreViewModel.Categorias.Where(f => f.Descricao == "CONTAS A PAGAR").ToList().ForEach(el =>
                 {
 
                     var contaF = el.Contas.FindIndex(f => f.Descricao.ToUpper() == "FORNECEDORES");
 
-                    if (contax != null)
+                    if (valor != 0)
                     {
-                        var valores = contax.Lancamentos.Sum(x => x.Valor);
+                        var valores = valor;
                         trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos[0].ValorStr = Convert.ToString(valores - trimestreViewModel.Categorias[indx].Contas[contaF].Lancamentos.FirstOrDefault().Valor);
                     }
                 });
