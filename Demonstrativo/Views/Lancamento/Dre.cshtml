@@ -21,8 +21,14 @@
 	var caraDaMorte01 = Model.Categorias.Where(f => f.Descricao == "DESPESAS MENSAIS FIXAS").FirstOrDefault();
 	var caraDaMorte02 = Model.Categorias.Where(f => f.Descricao == "OUTRAS DESPESAS OPERACIONAIS").FirstOrDefault();
 	var caraDaMorte = Model.Categorias.Where(f => f.Descricao == "CONTAS A RECEBER").FirstOrDefault();
-	var categorias = Model.Categorias.Where(f => f.Descricao != "CONTAS A RECEBER" && f.Descricao != "OUTRAS DESPESAS OPERACIONAIS" && f.Descricao != "DESPESAS MENSAIS FIXAS").ToList();
-	categorias.Add(caraDaMorte);
+    var caraDaMorte03 = Model.Categorias.Where(f => f.Descricao == "SALDO FINAL EM BANCOS").FirstOrDefault();
+    var caraDaMorte04 = Model.Categorias.Where(f => f.Descricao == "PROVISÕES SALÁRIOS").FirstOrDefault();
+    var caraDaMorte05 = Model.Categorias.Where(f => f.Descricao == "PROVISÕES DE ALUGUÉIS").FirstOrDefault();
+	var categorias = Model.Categorias.Where(f => f.Descricao != "CONTAS A RECEBER" && f.Descricao != "PROVISÕES DE ALUGUÉIS" && f.Descricao != "PROVISÕES SALÁRIOS" && f.Descricao != "SALDO FINAL EM BANCOS" && f.Descricao != "OUTRAS DESPESAS OPERACIONAIS" && f.Descricao != "DESPESAS MENSAIS FIXAS").ToList();
+	categorias.Add(caraDaMorte05);
+    categorias.Add(caraDaMorte04);
+    categorias.Add(caraDaMorte03);
+    categorias.Add(caraDaMorte);
 	categorias.Add(caraDaMorte01);
 	categorias.Add(caraDaMorte02);
 	var emp = Model.Empresas.FirstOrDefault(f => Convert.ToInt32(f.Value) == Model.EmpresaSelecionada);
@@ -156,7 +162,7 @@
 	}
 
 
-    <div class="col-12">
+    <div style="padding-top:130px" class="col-12">
         <div class="row">
             <div class="col-6">
                 <p class="mb-0">
@@ -486,330 +492,14 @@
 
                 }
 
-                @*<tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor"></td>
-                    </tr>*@
-
-
-                @*<tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor"></td>
-                    </tr>*@
-                @*<tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( = ) Lucro Bruto (R$)
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">1000</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( = ) Margem Bruta Total em %
-                    </td>
-                    <td></td>
-                    <td class="valor">10,20%</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor"></td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Despesas - 1º. mês
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Despesas - 2º. mês
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Despesas - 3º. mês
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    Total Trimestre
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">1020</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor"></td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Provisão de 13° Salário
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">2500</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor"></td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Provisão de Férias
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">2500</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor"></td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Depreciações
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">-2500</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor"></td>
-                    </tr>*@
-                @*<tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( = ) Prejuízo do Período
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">-2500</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    <td class="valor"></td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( - ) Saldo Prejuízos Acumulados R$ 0,00
-                    </td>
-                    <td> Compesação Prejuízo (30% Lucro do Período)</td>
-                    <td class="valor mask-valor">0</td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    </td>
-                    <td></td>
-                    </tr>
-                    <tr>
-                    <td class="descricao" style="border-right-color: transparent">
-                    ( = ) Base de Cálculo do CSLL/IRPJ
-                    </td>
-                    <td></td>
-                    <td class="valor mask-valor">-14500</td>
-                    </tr>
-
-                    <tr>
-                    <th rowspan="5">
-                    <div style="margin-top: 44px; margin-left: 63px" class="d-flex">
-                    <input style="width: 43px !important; margin: 0"
-                    id="apurar" disabled
-                    type="checkbox" asp-for="@Model.ProvisoesDepreciacoes.Apurar" />
-                    <label for="apurar">Apurar imposto</label>
-                    </div>
-                    </th>
-                    <td>( - ) Contribuição Social - 9%</td>
-                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", contribuicaoSocial)</td>
-                    </tr>
-                    <tr>
-                    <td class="py-2"></td>
-                    <td class="py-2"></td>
-                    </tr>
-                    <tr>
-                    <td>( - ) Imposto de Renda - 15%</td>
-                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", impostoRenda)</td>
-                    </tr>
-                    <tr>
-                    <td class="py-2"></td>
-                    <td class="py-2"></td>
-                    </tr>
-                    <tr>
-                    <td>
-                    ( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
-                    lucro)
-                    </td>
-                    <td class="mask-valor">@string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", adcionalIr)</td>
-                    </tr>*@
+               
 
 
             </tbody>
         </table>
     </div>
 
-    @*<div class="col-12" style="font-size: 15px">
-            <div class="row">
-                <div class="col-6"><h3>Escrita Fiscal</h3></div>
-                <div class="col-6"><h3>Verificação</h3></div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Responsável</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 60px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                        width: 220px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Líder</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 60px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                        width: 220px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Fernando</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 60px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                        width: 220px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Luiz</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 60px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                        width: 220px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between ass-area">
-                        <p class="m-0">Fabiana</p>
-                        <div class="ml-3">
-                            <span class="d-inline-block"
-                                  style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 35px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span><span class="mb-1 d-inline-block">/</span><span class="d-inline-block"
-                                                                               style="
-                        width: 60px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                            <span class="d-inline-block ml-2"
-                                  style="
-                        width: 220px;
-                        height: 24px;
-                        border-bottom: solid 1px black;
-                      "></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+    
 
     <div class="col-12">
         <table class="table table-bordered">
