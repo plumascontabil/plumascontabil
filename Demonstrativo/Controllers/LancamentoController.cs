@@ -241,12 +241,30 @@ namespace Demonstrativo.Controllers
                     }
                     else
                     {
+                        if (lancamentosViewModelBancos.Count > 0)
+                        {
+                            lancamentosViewModelBancos.ForEach(f =>
+                            {
+                                var xxx = new List<LancamentoViewModel>();
+                                xxx.Add(f);
+                                contasViewModel.Add(new ContaViewModel()
+                                {
+                                    Id = conta.Id,
+                                    Codigo = conta.Codigo,
+                                    Descricao = conta.Descricao,
+                                    TipoLancamento = conta.TipoLancamento,
+                                    Lancamentos = xxx
+                                });
 
-
-                        lancamentosViewModelBancos.ForEach(f =>
+                            });
+                        }
+                        else
                         {
                             var xxx = new List<LancamentoViewModel>();
-                            xxx.Add(f);
+                            xxx.Add(new LancamentoViewModel()
+                            {
+                                Descricao = "Não Há Conta Corrente"
+                            });
                             contasViewModel.Add(new ContaViewModel()
                             {
                                 Id = conta.Id,
@@ -255,16 +273,57 @@ namespace Demonstrativo.Controllers
                                 TipoLancamento = conta.TipoLancamento,
                                 Lancamentos = xxx
                             });
-
-                        });
+                        }
                     }
+
+
 
 
 
                 });
 
 
+                if (categoria.Descricao.ToUpper() == "PROVISÕES SALÁRIOS".ToUpper())
+                {
+                    var idx = contasViewModel.FindIndex(f => f.Id == 182);
 
+
+                    var bruto = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "Salário Bruto".ToUpper());
+                    var totDescontos = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "TOTAL DE DESCONTOS".ToUpper());
+                    decimal brutoVLR = 0;
+                    decimal totDescontosVLR = 0;
+                    bruto.Lancamentos.ForEach(el =>
+                    {
+                        brutoVLR = el != null ? el.Valor : 0;
+                    });
+                    totDescontos.Lancamentos.ForEach(el =>
+                    {
+                        totDescontosVLR = el != null ? el.Valor : 0;
+                    });
+                    contasViewModel[idx].Lancamentos[0].ValorStr = (brutoVLR - totDescontosVLR).ToString();
+                    var total = new ContaViewModel()
+                    {
+                        Codigo = null,
+                        Descricao = "Total despesas Folha".ToUpper(),
+                        Lancamentos = new List<LancamentoViewModel>(),
+                        TipoLancamento = "C"
+                    };
+                    //var dd = new LancamentoViewModel();
+                    //dd.Id = 777;
+                    //dd.ValorStr = (
+                    //contasViewModel.Where(f => f.Descricao.ToUpper() == "Salário Bruto".ToUpper()
+                    //|| f.Descricao.ToUpper() == "INSS(TOTAL FOLHA)".ToUpper()
+                    //|| f.Descricao.ToUpper() == "FGTS".ToUpper()).Sum(x => x.Lancamentos[0].Valor)
+
+                    //- contasViewModel.Where(f => f.Descricao.ToUpper() == "INSS - SEGURADOS".ToUpper()
+                    // || f.Descricao.ToUpper() == "FÉRIAS".ToUpper()
+                    // || f.Descricao.ToUpper() == "DESCONTOS / ATRASOS".ToUpper()).Sum(x => x.Lancamentos[0].Valor)
+
+                    //).ToString();
+                    //total.Lancamentos.Add(dd);
+                    //contasViewModel.Add(total);
+
+                }
 
 
                 if (categoria.Descricao == "CONTAS A RECEBER")
@@ -682,7 +741,7 @@ namespace Demonstrativo.Controllers
                     Descricao = x.Descricao,
                     EmpresaId = x.Empresa,
                     Valor = x.Valor
-                }).ToList();
+                }).OrderBy(x => x.Valor).ToList();
 
                 foreach (var lancamento in lancamentos)
                 {
@@ -785,8 +844,8 @@ namespace Demonstrativo.Controllers
                 .Where(f => contasCorrentes.Any(x => x.Id == f.ContaCorrenteId)
                 && f.Data.Year == competenciasId.Value.Year
                 && trimestre.Any(x => x == f.Data.Month)).ToList();
-            var lancamentos = _context.Lancamentos.Where(f => f.DataCompetencia.Year == competenciasId.Value.Year &&
-            f.EmpresaId == empresaId.Value && trimestre.Any(x => x == f.DataCompetencia.Month)
+            var lancamentos = _context.Lancamentos.Include(x => x.Conta).Where(f => f.DataCompetencia.Year == competenciasId.Value.Year &&
+              f.EmpresaId == empresaId.Value && trimestre.Any(x => x == f.DataCompetencia.Month)
             ).ToList();
             List<LancamentoPadrao> contas = _context.LancamentosPadroes.ToList();
             var provisaoDepreciacao = _context.ProvisoesDepreciacoes.Where(f => f.EmpresaId == empresaId && f.DataCompetencia == competenciasId.Value).FirstOrDefault();
@@ -799,9 +858,21 @@ namespace Demonstrativo.Controllers
 
 
             var categoriasDespesas = _context.Categorias.Where(f => f.Descricao.ToUpper() == "ENCARGOS SOCIAIS".ToUpper()).FirstOrDefault();
-            var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper()) || f.Codigo == 180).ToList();
+            var CategoriaAluguel = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES DE ALUGUÉIS".ToUpper()).FirstOrDefault();
+            var CategoriaPis = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES PIS/COFINS/ISS/SIMPLES".ToUpper()).FirstOrDefault();
+            var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper())).ToList();
 
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == categoriasDespesas.Id).ToList());
+            contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaAluguel.Id).ToList());
+            contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaPis.Id).ToList());
+
+
+
+
+
+
+
+
 
 
 
@@ -864,6 +935,7 @@ namespace Demonstrativo.Controllers
                         });
                     });
 
+
                 });
 
 
@@ -872,6 +944,8 @@ namespace Demonstrativo.Controllers
                 {
                     lancamentos.Where(f => f.ContaId == xel.Id && f.DataCompetencia.Month == el).ToList().ForEach(lancamento =>
                     {
+
+
                         trimestreViewModel.LancamentosDespesa.Add(new LancamentoViewModel()
                         {
                             Id = lancamento.Id,
@@ -895,6 +969,27 @@ namespace Demonstrativo.Controllers
                               ValorStr = lancamento.ValorOfx.ToString()
                           });
                       });
+                });
+
+                var dd = new LancamentoViewModel();
+                dd.ValorStr = (
+(lancamentos.Where(f => f.DataCompetencia.Month == el).Where(f => f.Conta.Descricao.ToUpper() == "Salário Bruto".ToUpper()
+|| f.Conta.Descricao.ToUpper() == "INSS(TOTAL FOLHA)".ToUpper()
+|| f.Conta.Descricao.ToUpper() == "FGTS".ToUpper()).Sum(x => x.Valor)
+
+                - lancamentos.Where(f => f.DataCompetencia.Month == el).Where(f => f.Conta.Descricao.ToUpper() == "INSS - SEGURADOS".ToUpper()
+                 || f.Conta.Descricao.ToUpper() == "FÉRIAS".ToUpper()
+                 || f.Conta.Descricao.ToUpper() == "DESCONTOS / ATRASOS".ToUpper()).Sum(x => x.Valor)
+                 ) * -1
+                ).ToString();
+                trimestreViewModel.LancamentosDespesa.Add(new LancamentoViewModel()
+                {
+                    Id = 777,
+                    Data = new DateTime(competenciasId.Value.Year, el, 1),
+                    Empresa = empresaId.Value,
+                    Conta = null,
+                    Descricao = "Total despesas Folha".ToUpper(),
+                    ValorStr = dd.ValorStr
                 });
 
             });
