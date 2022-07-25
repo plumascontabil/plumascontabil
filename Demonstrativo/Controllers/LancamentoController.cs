@@ -819,7 +819,7 @@ namespace Demonstrativo.Controllers
 
 
             var categoriasDespesas = _context.Categorias.Where(f => f.Descricao.ToUpper() == "ENCARGOS SOCIAIS".ToUpper()).FirstOrDefault();
-            var CategoriaAluguel = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES DE ALUGUEIS".ToUpper()).FirstOrDefault();
+            var CategoriaAluguel = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES DE ALUGUÉIS".ToUpper()).FirstOrDefault();
             var CategoriaPis = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES PIS/COFINS/ISS/SIMPLES".ToUpper()).FirstOrDefault();
             var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper()) || f.Codigo == 180).ToList();
 
