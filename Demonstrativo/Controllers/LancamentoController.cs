@@ -241,12 +241,30 @@ namespace Demonstrativo.Controllers
                     }
                     else
                     {
+                        if (lancamentosViewModelBancos.Count > 0)
+                        {
+                            lancamentosViewModelBancos.ForEach(f =>
+                            {
+                                var xxx = new List<LancamentoViewModel>();
+                                xxx.Add(f);
+                                contasViewModel.Add(new ContaViewModel()
+                                {
+                                    Id = conta.Id,
+                                    Codigo = conta.Codigo,
+                                    Descricao = conta.Descricao,
+                                    TipoLancamento = conta.TipoLancamento,
+                                    Lancamentos = xxx
+                                });
 
-
-                        lancamentosViewModelBancos.ForEach(f =>
+                            });
+                        }
+                        else
                         {
                             var xxx = new List<LancamentoViewModel>();
-                            xxx.Add(f);
+                            xxx.Add(new LancamentoViewModel()
+                            {
+                                Descricao = "Não Há Conta Corrente"
+                            });
                             contasViewModel.Add(new ContaViewModel()
                             {
                                 Id = conta.Id,
@@ -255,9 +273,10 @@ namespace Demonstrativo.Controllers
                                 TipoLancamento = conta.TipoLancamento,
                                 Lancamentos = xxx
                             });
-
-                        });
+                        }
                     }
+
+
 
 
 
@@ -722,7 +741,7 @@ namespace Demonstrativo.Controllers
                     Descricao = x.Descricao,
                     EmpresaId = x.Empresa,
                     Valor = x.Valor
-                }).ToList();
+                }).OrderBy(x => x.Valor).ToList();
 
                 foreach (var lancamento in lancamentos)
                 {
