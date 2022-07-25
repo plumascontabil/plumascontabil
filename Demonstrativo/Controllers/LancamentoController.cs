@@ -264,7 +264,27 @@ namespace Demonstrativo.Controllers
                 });
 
 
+                if (categoria.Descricao == "PROVISÕES SALARIOS")
+                {
+                    var idx = contasViewModel.FindIndex(f => f.Id == 182);
 
+
+                    var bruto = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "Salário Bruto".ToUpper());
+                    var totDescontos = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "Total Descontos".ToUpper());
+                    decimal brutoVLR = 0;
+                    decimal totDescontosVLR = 0;
+                    bruto.Lancamentos.ForEach(el =>
+                    {
+                        brutoVLR = el.Valor;
+                    });
+
+                    totDescontos.Lancamentos.ForEach(el =>
+                    {
+                        totDescontosVLR = el.Valor;
+                    });
+                    contasViewModel[idx].Lancamentos[0].ValorStr = (brutoVLR - totDescontosVLR).ToString();
+
+                }
 
 
                 if (categoria.Descricao == "CONTAS A RECEBER")
@@ -799,9 +819,13 @@ namespace Demonstrativo.Controllers
 
 
             var categoriasDespesas = _context.Categorias.Where(f => f.Descricao.ToUpper() == "ENCARGOS SOCIAIS".ToUpper()).FirstOrDefault();
+            var CategoriaAluguel = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES DE ALUGUEIS".ToUpper()).FirstOrDefault();
+            var CategoriaPis = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES PIS/COFINS/ISS/SIMPLES".ToUpper()).FirstOrDefault();
             var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper()) || f.Codigo == 180).ToList();
 
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == categoriasDespesas.Id).ToList());
+            contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaAluguel.Id).ToList());
+            contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaPis.Id).ToList());
 
 
 
