@@ -264,25 +264,44 @@ namespace Demonstrativo.Controllers
                 });
 
 
-                if (categoria.Descricao == "PROVISÕES SALARIOS")
+                if (categoria.Descricao.ToUpper() == "PROVISÕES SALÁRIOS".ToUpper())
                 {
                     var idx = contasViewModel.FindIndex(f => f.Id == 182);
 
 
                     var bruto = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "Salário Bruto".ToUpper());
-                    var totDescontos = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "Total Descontos".ToUpper());
+                    var totDescontos = contasViewModel.FirstOrDefault(f => f.Descricao.ToUpper() == "TOTAL DE DESCONTOS".ToUpper());
                     decimal brutoVLR = 0;
                     decimal totDescontosVLR = 0;
                     bruto.Lancamentos.ForEach(el =>
                     {
-                        brutoVLR = el.Valor;
+                        brutoVLR = el != null ? el.Valor : 0;
                     });
-
                     totDescontos.Lancamentos.ForEach(el =>
                     {
-                        totDescontosVLR = el.Valor;
+                        totDescontosVLR = el != null ? el.Valor : 0;
                     });
                     contasViewModel[idx].Lancamentos[0].ValorStr = (brutoVLR - totDescontosVLR).ToString();
+                    //var total = new ContaViewModel()
+                    //{
+                    //    Codigo = null,
+                    //    Descricao = "Total despesas Folha".ToUpper(),
+                    //    Lancamentos = new List<LancamentoViewModel>(),
+                    //    TipoLancamento = "C"
+                    //};
+                    //var dd = contasViewModel[idx].Lancamentos[0];
+                    //dd.ValorStr = (
+                    //contasViewModel.Where(f => f.Descricao.ToUpper() == "Salário Bruto".ToUpper()
+                    //|| f.Descricao.ToUpper() == "INSS(TOTAL FOLHA)".ToUpper()
+                    //|| f.Descricao.ToUpper() == "FGTS".ToUpper()).Sum(x => x.Lancamentos[0].Valor)
+
+                    //- contasViewModel.Where(f => f.Descricao.ToUpper() == "INSS - SEGURADOS".ToUpper()
+                    // || f.Descricao.ToUpper() == "FÉRIAS".ToUpper()
+                    // || f.Descricao.ToUpper() == "DESCONTOS / ATRASOS".ToUpper()).Sum(x => x.Lancamentos[0].Valor)
+
+                    //).ToString();
+                    //total.Lancamentos.Add(dd);
+                    //contasViewModel.Add(total);
 
                 }
 
@@ -821,12 +840,11 @@ namespace Demonstrativo.Controllers
             var categoriasDespesas = _context.Categorias.Where(f => f.Descricao.ToUpper() == "ENCARGOS SOCIAIS".ToUpper()).FirstOrDefault();
             var CategoriaAluguel = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES DE ALUGUÉIS".ToUpper()).FirstOrDefault();
             var CategoriaPis = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES PIS/COFINS/ISS/SIMPLES".ToUpper()).FirstOrDefault();
-            var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper()) || f.Codigo == 180).ToList();
+            var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper())).ToList();
 
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == categoriasDespesas.Id).ToList());
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaAluguel.Id).ToList());
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaPis.Id).ToList());
-
 
 
             trimestre.ToList().ForEach(el =>
