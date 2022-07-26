@@ -466,6 +466,25 @@ th, td {
 	font-weight: bold;
 }
 
+
+@page {
+	size: A4;
+	margin: 0 auto;
+}
+@media print {
+	html, body {
+		width: 210mm;
+		height: 297mm;
+	}
+	.newPage {	
+		margin-top: 450px;
+	}
+	footer{
+		display:none;
+	}
+}
+
+
 @media (max-width: 768px) {
 	.select2-container {
 		width: 96% !important;
