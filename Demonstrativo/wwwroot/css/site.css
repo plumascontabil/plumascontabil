@@ -443,12 +443,12 @@ th, td {
 }
 
 #dre td {
-	height: 23.5px;
+	height: 23px;
+	line-height:23px;
 	text-align: right;
 }
 
 .right {
-	height: 23.5px;
 	text-align: right !important;
 }
 
@@ -471,20 +471,25 @@ th, td {
 	font-weight: bold;
 }
 
+.n-page{
+	display:none!important;
+}
 
-@page {
+
+/*@page {
 	size: A4;
 	margin: 0 auto;
-}
+}*/
 @media print {
 	html, body {
 		height: 297mm;
 		font-size:12px;
 	}
 
-	.newPage {	
-		margin-top: 450px;
+	.n-page{
+		display: flex!important;
 	}
+
 	footer{
 		display:none;
 	}
@@ -500,6 +505,15 @@ th, td {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
+		#dre td {
+			height: 20px;
+			line-height: 20px;
+			text-align: right;
+			background: yellow;
+		}
+		.tooltip{
+			visibility: hidden;
+		}
 }
 
 
