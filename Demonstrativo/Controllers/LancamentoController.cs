@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using HttpPostAttribute = System.Web.Http.HttpPostAttribute;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using System.Globalization;
 
 namespace Demonstrativo.Controllers
 {
@@ -1182,47 +1183,109 @@ namespace Demonstrativo.Controllers
 
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
             var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
-            var contas = _context.LancamentosPadroes.ToList();
-            var lancamentos = _context.Lancamentos.Where(l => l.DataCompetencia == competenciasId &&
-                                                                 l.EmpresaId == empresaId).ToList();
+            //var contas = _context.LancamentosPadroes.ToList();
+            var lancamentos = _context.Lancamentos
+                .Include(f => f.Empresa)
+                .Include(f => f.Conta)
+                .Where(l => l.DataCompetencia == competenciasId && l.EmpresaId == empresaId && l.Valor > 0)
+                .OrderBy(f => f.DataCompetencia)
+                .ToList();
+
+            var ofxLancamentos = _context.OfxLancamentos
+                .Include(f => f.ContaCorrente)
+                .ThenInclude(x => x.Empresa)
+                .Include(f => f.LancamentoPadrao)
+                .Include(f => f.Lote)
+                .Where(l => l.Lote.CompetenciaId == competenciasId && l.Lote.EmpresaId == empresaId)
+                .OrderBy(f => f.Data)
+                .ThenBy(f => f.Documento)
+                .ToList();
+
+            Empresa empresa = null;
+
+            if (lancamentos.Count > 0)
+            {
+                empresa = lancamentos.FirstOrDefault().Empresa;
+            }
+            else if (ofxLancamentos.Count > 0)
+            {
+                empresa = ofxLancamentos.FirstOrDefault().ContaCorrente.Empresa;
+            }
+            else
+            {
+                empresa = _context.Empresas.FirstOrDefault(f => f.Codigo == empresaId);
+            }
+
             var lancamentosContabeis = new List<TextoViewModel>();
 
-            foreach (var conta in contas)
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine($"|0000|{empresa.Cnpj.Replace(".", string.Empty).Replace("-", string.Empty).Replace("/", string.Empty)}|");
+            CultureInfo pt = new CultureInfo("pt-BR");
+            string documentoAux = string.Empty;
+            ofxLancamentos.ForEach(f =>
             {
-                foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
+
+                if (documentoAux.Equals(f.Documento))
                 {
-                    lancamentosContabeis.Add(new TextoViewModel()
-                    {
-                        Data = competenciasId,
-                        CodigoContaDebito = conta.ContaDebitoId,
-                        CodigoContaCredito = conta.ContaCreditoId,
-                        Valor = lancamento.Valor,
-                        CodigoHistorico = 10,
-                        ComplementoHistorico = string.Empty,
-                        IniciaLote = 1,
-                        CodigoMatrizFilial = empresaId,
-                        CentroCustoDebito = 1,
-                        CentroCustoCredito = 1,
-                    });
+                    builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{f.LancamentoPadrao.ContaDebitoId}|{f.LancamentoPadrao.ContaCreditoId}|{f.ValorOfx.ToString(pt)}||{f.Descricao}||||");
                 }
-            }
+                else
+                {
+                    var qtd = ofxLancamentos.Where(x => x.Documento == f.Documento).Count();
+                    var tipo = f.TipoLancamento == "DEBIT" ? qtd > 1 ? "V" : "D" : qtd > 1 ? "C" : "X";
 
-            var conteudoArquivo = string.Empty;
 
-            foreach (var lancamento in lancamentosContabeis)
+                    builder.AppendLine($"|6000|{tipo}||||");
+                    builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{f.LancamentoPadrao.ContaDebitoId}|{f.LancamentoPadrao.ContaCreditoId}|{f.ValorOfx.ToString(pt)}||{f.Descricao}||||");
+                }
+
+
+                documentoAux = f.Documento;
+            });
+            lancamentos.ForEach(el =>
             {
-                conteudoArquivo += $"{lancamento.Data.Value.ToShortDateString()};{lancamento.CodigoContaDebito};{lancamento.CodigoContaCredito};" +
-                    $"{lancamento.Valor};{lancamento.CodigoHistorico};{lancamento.ComplementoHistorico};" +
-                    $"{lancamento.IniciaLote};{lancamento.CodigoMatrizFilial};{lancamento.CentroCustoDebito};" +
-                    $"{lancamento.CentroCustoCredito};{Environment.NewLine}";
-            }
+                var tipo = "X";
+                builder.AppendLine($"|6000|{tipo}||||");
+                builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
+            });
+
+            //foreach (var conta in contas)
+            //{
+            //    foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))
+            //    {
+            //        lancamentosContabeis.Add(new TextoViewModel()
+            //        {
+            //            Data = competenciasId,
+            //            CodigoContaDebito = conta.ContaDebitoId,
+            //            CodigoContaCredito = conta.ContaCreditoId,
+            //            Valor = lancamento.Valor,
+            //            CodigoHistorico = 10,
+            //            ComplementoHistorico = string.Empty,
+            //            IniciaLote = 1,
+            //            CodigoMatrizFilial = empresaId,
+            //            CentroCustoDebito = 1,
+            //            CentroCustoCredito = 1,
+            //        });
+            //    }
+            //}
+
+            //var conteudoArquivo = string.Empty;
+
+            //foreach (var lancamento in lancamentosContabeis)
+            //{
+            //    conteudoArquivo += $"{lancamento.Data.Value.ToShortDateString()};{lancamento.CodigoContaDebito};{lancamento.CodigoContaCredito};" +
+            //        $"{lancamento.Valor};{lancamento.CodigoHistorico};{lancamento.ComplementoHistorico};" +
+            //        $"{lancamento.IniciaLote};{lancamento.CodigoMatrizFilial};{lancamento.CentroCustoDebito};" +
+            //        $"{lancamento.CentroCustoCredito};{Environment.NewLine}";
+            //}
 
             //var conteudoArquivo = _lancamentoDomainService.GerarArquivo(empresaId, competenciasId);
 
-            var stream = new MemoryStream(Encoding.ASCII.GetBytes(conteudoArquivo));
+            var stream = new MemoryStream(Encoding.ASCII.GetBytes(builder.ToString()));
             return new FileStreamResult(stream, "text/plain")
             {
-                FileDownloadName = "test.txt"
+                FileDownloadName = $"Movimento_Financeiro_{empresa.RazaoSocial}_{competenciasId.ToString("MM-yyyy")}_Dominio.txt"
             };
         }
     }
