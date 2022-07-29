@@ -1184,12 +1184,21 @@ namespace Demonstrativo.Controllers
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
             var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
             //var contas = _context.LancamentosPadroes.ToList();
-            var lancamentos = _context.Lancamentos
-                .Include(f => f.Empresa)
-                .Include(f => f.Conta)
-                .Where(l => l.DataCompetencia == competenciasId && l.EmpresaId == empresaId && l.Valor > 0)
-                .OrderBy(f => f.DataCompetencia)
-                .ToList();
+            //var lancamentos = _context.Lancamentos
+            //    .Include(f => f.Empresa)
+            //    .Include(f => f.Conta).ThenInclude(f => f.Categoria)
+            //    .Where(l => l.DataCompetencia == competenciasId && l.EmpresaId == empresaId && l.Valor > 0)
+            //    .OrderBy(f => f.DataCompetencia)
+            //    .ToList();
+
+            //lancamentos = lancamentos.Where(f => (f.Conta.Categoria.Descricao == "PROVISOES PIS/COFINS/ISS/SIMPLES"
+            //|| f.Conta.Categoria.Descricao == "ADIÇÕES NO LALUR"
+            //|| f.Conta.Categoria.Descricao == "EMPRÉSTIMOS FINANCEIROS"
+            //|| f.Conta.Categoria.Descricao == "IMOBILIZADO"
+            //|| f.Conta.Codigo == 155
+            //|| f.Conta.Codigo == 99
+            //|| f.Conta.Codigo == 98
+            //)).ToList();
 
             var ofxLancamentos = _context.OfxLancamentos
                 .Include(f => f.ContaCorrente)
@@ -1203,11 +1212,12 @@ namespace Demonstrativo.Controllers
 
             Empresa empresa = null;
 
-            if (lancamentos.Count > 0)
-            {
-                empresa = lancamentos.FirstOrDefault().Empresa;
-            }
-            else if (ofxLancamentos.Count > 0)
+            //if (lancamentos.Count > 0)
+            //{
+            //    empresa = lancamentos.FirstOrDefault().Empresa;
+            //}
+            //else
+            if (ofxLancamentos.Count > 0)
             {
                 empresa = ofxLancamentos.FirstOrDefault().ContaCorrente.Empresa;
             }
@@ -1226,29 +1236,33 @@ namespace Demonstrativo.Controllers
             ofxLancamentos.ForEach(f =>
             {
 
+                var contaCredito = f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
+                var contaDebito = f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
                 if (documentoAux.Equals(f.Documento))
                 {
-                    builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{f.LancamentoPadrao.ContaDebitoId}|{f.LancamentoPadrao.ContaCreditoId}|{f.ValorOfx.ToString(pt)}||{f.Descricao}||||");
+
+
+                    builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
                 }
                 else
                 {
                     var qtd = ofxLancamentos.Where(x => x.Documento == f.Documento).Count();
-                    var tipo = f.TipoLancamento == "DEBIT" ? qtd > 1 ? "V" : "D" : qtd > 1 ? "C" : "X";
+                    var tipo = qtd > 1 ? "V" : "X";
 
 
                     builder.AppendLine($"|6000|{tipo}||||");
-                    builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{f.LancamentoPadrao.ContaDebitoId}|{f.LancamentoPadrao.ContaCreditoId}|{f.ValorOfx.ToString(pt)}||{f.Descricao}||||");
+                    builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
                 }
 
 
                 documentoAux = f.Documento;
             });
-            lancamentos.ForEach(el =>
-            {
-                var tipo = "X";
-                builder.AppendLine($"|6000|{tipo}||||");
-                builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
-            });
+            //lancamentos.ForEach(el =>
+            //{
+            //    var tipo = "X";
+            //    builder.AppendLine($"|6000|{tipo}||||");
+            //    builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
+            //});
 
             //foreach (var conta in contas)
             //{
