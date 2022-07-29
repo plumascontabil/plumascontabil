@@ -93,8 +93,8 @@
 }
 <div id="dre" class="w-100">
 	<div class="row text-small mx-auto">
-		<div class="col-12 px-5 mb-3">
-			<div class="d-flex justify-content-between align-items-center">
+		<div class="col-12 mb-3">
+			<div class="d-flex justify-content-between align-items-center text-empresa">
 				<img width="250"
 					 src="https://plumascontabil.com.br/wp-content/uploads/2019/06/LOGO_AJUSTADO_NOVO.png" />
 				<div class=text-right>
@@ -169,18 +169,18 @@
 		<div class="col-12 d-flex justify-content-end n-page"><small>Página 1 de 2</small></div>
 	</div>
 	<div class="new-page"></div>
-	<div class="row">
+	<div class="row dre-page-2">
 		<div class="w-100 pt-4">
 			<div class="col-12">
 				<div class="row">
-					<div class="col-6">
+					<div class="col-6 text-empresa">
 						<p class="mb-0">
 							Plumas Contábil <br />
 							Contabil@plumascontabil.com.br<br />
 							Tel.: (11) 2023-9999
 						</p>
 					</div>
-					<div class="col-6 mb-3">
+					<div class="col-6 mb-3 text-empresa">
 						<p class="mb-0 float-right text-right">
 							Demonstrativo de Pré-Fechamento Contábil
 							por Centro de Custo <br />
@@ -225,19 +225,15 @@
 									<td class="valor mask-valor"><strong>@estoqueInicial</strong></td>
 								</tr>
 								<tr>
-									<td colspan="4" class="descricao">
+									<td colspan="5">
 									</td>
-									<td class=""></td>
 								</tr>
 							}
 							foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
 							{
 								estoqueFinal += compra.Valor;
 							}
-							<tr>
-								<td class="descricao" colspan="4">( - ) Estoque Final</td>
-								<td class="mask-valor"><strong>@estoqueFinal</strong></td>
-							</tr>
+							
 							int j = 1;
 							foreach (var trimestre in Model.Trimestre)
 							{
@@ -257,7 +253,12 @@
 								<td class="descricao" colspan="4"><strong>Total Trimestre</strong></td>
 								<td class="mask-valor font-weight-bold"><strong>@somaCompraTrimestre</strong></td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
+							<tr>
+								<td class="descricao" colspan="4">( - ) Estoque Final</td>
+								<td class="mask-valor"><strong>@estoqueFinal</strong></td>
+							</tr>
+							<tr><td colspan="5"></td></tr>
 							custoMercadoriaVendida = estoqueInicial + somaCompraTrimestre - estoqueFinal;
 							<tr>
 								<td colspan="4" class="descricao" style="border-right-color: transparent">
@@ -265,11 +266,11 @@
 								</td>
 								<td class="valor mask-valor font-weight-bold">@custoMercadoriaVendida</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 							decimal lucroBruto = 0;
 							if (Model.LancamentosReceita == null)
 							{
-								<!-- <tr><td colspan="4"></td><td></td></tr> -->
+								<!-- <tr><td colspan="5"></td></tr> -->
 							}
 							else
 							{
@@ -296,18 +297,18 @@
 										<td class="descricao" colspan="4"><strong>Total Receitas Trimestre</strong></td>
 										<td class="mask-valor"><strong>@somaReceitaTrimestre</strong></td>
 									</tr>
-									<tr><td colspan="4"></td><td></td></tr>
+									<tr><td colspan="5"></td></tr>
 									<tr>
 										<td class="descricao" colspan="4"><strong>( = ) Lucro Bruto (R$)</strong></td>
 										<td class="mask-valor font-weight-bold"><strong>@lucroBruto</strong></td>
 									</tr>
-									<tr><td colspan="4"></td><td></td></tr>
+									<tr><td colspan="5"></td></tr>
 
 									<tr>
 										<td class="descricao" colspan="4">( = ) Margem Bruta Total em %</td>
 										<td class="mask-valor"></td>
 									</tr>
-									<tr><td colspan="4"></td><td></td></tr>
+									<tr><td colspan="5"></td></tr>
 
 								}
 								else
@@ -317,22 +318,24 @@
 										<td class="descricao" colspan="4"><strong>Total Receitas Trimestre</strong></td>
 										<td class="mask-valor"><strong>@somaReceitaTrimestre</strong></td>
 									</tr>
-									<!-- <tr><td colspan="4"></td><td></td></tr> -->
+									<tr><td colspan="5"></td></tr>
 									<tr>
 										<td colspan="4" class="descricao"><strong>( = ) Lucro Bruto (R$)</strong></td>
 										<td class="mask-valor font-weight-bold"><strong>@lucroBruto</strong></td>
 									</tr>
+									<tr><td colspan="5"></td></tr>
 									<tr>
 										<td class="descricao" colspan="4">( = ) Margem Bruta Total em %</td>
 										<td class="mask-valorDecimal">@Math.Round(margemLucroBruto, 2)</td>
 									</tr>
+									<tr><td colspan="5"></td></tr>
 								}
 							}
-							<!-- <tr><td colspan="4"></td><td></td></tr> -->
+							<!-- <tr><td colspan="5"></td></tr> -->
 							decimal somaDespesaTrimestre = 0;
 							if (Model.LancamentosDespesa == null)
 							{
-								<!-- <tr><td colspan="4"></td><td></td></tr> -->
+								<!-- <tr><td colspan="5"></td></tr> -->
 							}
 							else
 							{
@@ -356,7 +359,7 @@
 									<td class="mask-valor font-weight-bold"><strong>@Math.Abs(somaDespesaTrimestre) </strong></td>
 								</tr>
 							}
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 							<tr>
 								<td class="descricao" colspan="4">
 									( - ) Provisão de 13° Salário
@@ -366,7 +369,7 @@
 									@Model.ProvisoesDepreciacoes.DecimoTerceiro
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 
 							<tr>
 								<td class="descricao" colspan="4">( - ) Provisão de Férias</td>
@@ -375,7 +378,7 @@
 									@Model.ProvisoesDepreciacoes.Ferias
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 
 							<tr>
 								<td class="descricao" colspan="4">( - ) Depreciações</td>
@@ -384,7 +387,7 @@
 									@Model.ProvisoesDepreciacoes.Depreciacao
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 							<tr>
 								<td class="descricao" colspan="4"> <strong>( = ) Lucro / Prejuízo do Periodo</strong></td>
 								@{
@@ -397,7 +400,7 @@
 									<strong>@lucroPrj</strong>
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 
 							<tr>
 								<td class="descricao" colspan="4"> ( - ) Saldo Prejuízos Acumulados </td>
@@ -406,7 +409,7 @@
 									@Model.ProvisoesDepreciacoes.SaldoPrejuizo
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 
 							<tr>
 								<td class="descricao" colspan="4"> Compensação Prejuízo (30% Lucro do Periodo) </td>
@@ -415,7 +418,7 @@
 									@Model.ProvisoesDepreciacoes.CompesacaoPrejuizo
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 							var baseCalcCSLLIRPJ = lucroPrj - (Model.ProvisoesDepreciacoes.CompesacaoPrejuizo.HasValue ? Model.ProvisoesDepreciacoes.CompesacaoPrejuizo.Value : 0);
 							double contribuicaoSocial = 0;
 							double impostoRenda = 0;
@@ -432,7 +435,7 @@
 									<output class="mask-valor"> @(baseCalcCSLLIRPJ) </output>
 								</td>
 							</tr>
-							<tr><td colspan="4"></td><td></td></tr>
+							<tr><td colspan="5"></td></tr>
 
 							@*double prejuizoCompensado = 0;
 						var lucroPeriodo = lucroBruto - somaDespesaTrimestre - @Model.ProvisoesDepreciacoes.DecimoTerceiro - @Model.ProvisoesDepreciacoes.Ferias - @Model.ProvisoesDepreciacoes.Depreciacao;
@@ -447,7 +450,7 @@
 						</td>
 						</tr>*@
 							//var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
-							<!-- <tr><td colspan="4"></td><td></td></tr> -->
+							<!-- <tr><td colspan="5"></td></tr> -->
 							<tr>
 								<th rowspan="5">
 									<div style="margin-top: 44px; margin-left: 63px" class="d-flex align-items-center">
@@ -458,18 +461,16 @@
 								<td class="descricao" colspan="3">( - ) Contribuição Social - 9%</td>
 								<td><output class="mask-valor"> @(contribuicaoSocial) </output></td>
 							</tr>
-							<!-- <tr>
-								<td colspan="3" class="py-2"></td>
-								<td></td>
-							</tr> -->
+							<tr>
+								<td colspan="4" class="py-2"></td>
+							</tr>
 							<tr>
 								<td class="descricao" colspan="3">( - ) Imposto de Renda - 15%</td>
 								<td><output class="mask-valor">@impostoRenda </output></td>
 							</tr>
-							<!-- <tr>
-								<td class="descricao" colspan="3" class="py-2"></td>
-								<td></td>
-							</tr> -->
+							<tr>
+								<td class="descricao" colspan="4" class="py-2"></td>
+							</tr>
 							<tr>
 								<td class="descricao" colspan="3">
 									( - ) Adicional do IR (10% sobre excedente de R$60.000,00 do
@@ -478,8 +479,9 @@
 								<td><output class="mask-valor"> @adcionalIr </output></td>
 							</tr>
 							double lucroPrejuizoReal = (double)baseCalcCSLLIRPJ - contribuicaoSocial - adcionalIr - adcionalIr;
+							<tr><td colspan="5"></td></tr>
 							<tr>
-								<td class="descricao" colspan="3" style="border-right-color: transparent">
+								<td colspan="4" style="border-right-color: transparent; text-align: left;">
 									<strong>( = ) Lucro | Prejuízo Real</strong>
 								</td>
 								<td class="mask-valor font-weight-bold"> <strong>@lucroPrejuizoReal</strong></td>
@@ -537,7 +539,7 @@
 								style="border-right: transparent; border-bottom: transparent">
 								<p class="text-left mb-0 mt-5">Observações</p>
 								<div class="w-100">
-									<textarea rows="5" disabled class="w-100">@Model.EstoqueVendas.Observacao</textarea>
+									<textarea rows="10" disabled class="w-100">@Model.EstoqueVendas.Observacao</textarea>
 								</div>
 							</td>
 						</tr>
@@ -562,7 +564,7 @@
 					</div>
 				</div>
 			</div>
-			<div style="margin-top:600px" class="col-12 d-flex justify-content-end n-page"><small>Página 2 de 2</small></div>
+			<div style="margin-top:85px" class="col-12 d-flex justify-content-end n-page"><small>Página 2 de 2</small></div>
 		</div>
 	</div>
 </div>
