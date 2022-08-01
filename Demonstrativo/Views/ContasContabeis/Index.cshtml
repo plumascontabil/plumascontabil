@@ -29,26 +29,29 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Classificacao)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Historico)
-                        </td>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Codigo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Classificacao)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Historico)
+                    </td>
 
-                        <td>
+                    <td>
 
-                            @*							<button data-toggle="tooltip" title="Editar" asp-action="Edit" asp-route-id="@item.Codigo"> <i class="fa fa-edit"></i></button>
-                                <button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Codigo"><i class="fa fa-info-circle"></i></button>
-                                <button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Codigo"> <i class="fa fa-trash"></i></button>
-                            *@
-                            <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-edit"></i></button>
-                            <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "ContasContabeis",new { id = item.Codigo })'"><i class="fa fa-info-circle"></i></button>
-                            <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-trash"></i></button>
+                        @*							<button data-toggle="tooltip" title="Editar" asp-action="Edit" asp-route-id="@item.Codigo"> <i class="fa fa-edit"></i></button>
+            <button data-toggle="tooltip" title="Detalhes" asp-action="Details" asp-route-id="@item.Codigo"><i class="fa fa-info-circle"></i></button>
+            <button data-toggle="tooltip" title="Ecluir" asp-action="Delete" asp-route-id="@item.Codigo"> <i class="fa fa-trash"></i></button>
+                        *@
+                        <button data-toggle="tooltip" title="Editar" onclick="location.href='@Url.Action("Edit", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-edit"></i></button>
+                        <button data-toggle="tooltip" title="Detalhes" onclick="location.href='@Url.Action("Details", "ContasContabeis",new { id = item.Codigo })'"><i class="fa fa-info-circle"></i></button>
+                        <button data-toggle="tooltip" title="Excluir" onclick="location.href='@Url.Action("Delete", "ContasContabeis",new { id = item.Codigo })'"> <i class="fa fa-trash"></i></button>
 
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

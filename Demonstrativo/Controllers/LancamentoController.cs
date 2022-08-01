@@ -1236,8 +1236,8 @@ namespace Demonstrativo.Controllers
             ofxLancamentos.ForEach(f =>
             {
 
-                var contaCredito = f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
-                var contaDebito = f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
+                var contaCredito = f.LancamentoPadrao.ContaCreditoId;  // f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
+                var contaDebito = f.LancamentoPadrao.ContaDebitoId;//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
                 if (documentoAux.Equals(f.Documento))
                 {
 
