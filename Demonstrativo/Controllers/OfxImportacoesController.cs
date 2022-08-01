@@ -655,6 +655,13 @@ namespace Demonstrativo.Controllers
             var lancamentos = _context.OfxLancamentos.Include(f => f.ContaCorrente).ThenInclude(f => f.BancoOfx).Where(f => f.LoteLancamentoId == lote.Id).ToList();
 
 
+            if(lancamentos.Count == 0)
+            {
+                ViewBag.Message = "Não tem nenhum lançamento!";
+                _context.OfxLoteLancamento.Remove(lote);
+                return View("Index");
+            }
+
             ExtratoBancarioViewModel extratoViewModel = new ExtratoBancarioViewModel()
             {
                 Empresas = ConstruirEmpresas(empresas),

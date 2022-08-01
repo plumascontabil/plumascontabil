@@ -1230,7 +1230,7 @@ namespace Demonstrativo.Controllers
 
             StringBuilder builder = new StringBuilder();
 
-            builder.AppendLine($"|0000|{empresa.Cnpj.Replace(".", string.Empty).Replace("-", string.Empty).Replace("/", string.Empty)}|");
+            //builder.AppendLine($"|0000|{empresa.Cnpj.Replace(".", string.Empty).Replace("-", string.Empty).Replace("/", string.Empty)}|");
             CultureInfo pt = new CultureInfo("pt-BR");
             string documentoAux = string.Empty;
             ofxLancamentos.ForEach(f =>
