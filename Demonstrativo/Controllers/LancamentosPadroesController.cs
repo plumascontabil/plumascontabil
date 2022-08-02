@@ -84,10 +84,19 @@ namespace Demonstrativo.Controllers
             if (ModelState.IsValid)
             {
                 //await _lancamentoPadroesDomainService.Adicionar(lancamentoPadrao);
+                try
+                {
+                    _context.Add(lancamentoPadrao);
+                    _logger.LogInformation(((int)EEventLog.Post), "lancamento Padrao Id {Id} created.", lancamentoPadrao.Id);
+                    await _context.SaveChangesAsync();
 
-                _context.Add(lancamentoPadrao);
-                _logger.LogInformation(((int)EEventLog.Post), "lancamento Padrao Id {Id} created.", lancamentoPadrao.Id);
-                await _context.SaveChangesAsync();
+                }
+                catch (System.Exception ex)
+                {
+
+                    throw ex;
+                }
+               
                 return RedirectToAction(nameof(Index));
             }
             AdicionarCompetenciaMesAtual();

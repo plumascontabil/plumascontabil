@@ -1203,6 +1203,8 @@ namespace Demonstrativo.Controllers
             var ofxLancamentos = _context.OfxLancamentos
                 .Include(f => f.ContaCorrente)
                 .ThenInclude(x => x.Empresa)
+                .Include(f => f.ContaCorrente)
+                .ThenInclude(f => f.BancoOfx)
                 .Include(f => f.LancamentoPadrao)
                 .Include(f => f.Lote)
                 .Where(l => l.Lote.CompetenciaId == competenciasId && l.Lote.EmpresaId == empresaId)
@@ -1236,8 +1238,8 @@ namespace Demonstrativo.Controllers
             ofxLancamentos.ForEach(f =>
             {
 
-                var contaCredito = f.LancamentoPadrao.ContaCreditoId;  // f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
-                var contaDebito = f.LancamentoPadrao.ContaDebitoId;//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
+                var contaCredito = f.LancamentoPadrao.ContaCreditoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);  // f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
+                var contaDebito = f.LancamentoPadrao.ContaDebitoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
                 if (documentoAux.Equals(f.Documento))
                 {
 

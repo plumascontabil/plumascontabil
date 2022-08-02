@@ -17,5 +17,8 @@ namespace Demonstrativo.Models
         [Column(TypeName = "varchar(200)")]
         public string UrlImagem { get; set; }
         public List<OfxContaCorrente> ContasCorrentes { get; set; }
+      
+        [Column(TypeName = "varchar(20)")]
+        public string CodigoContabil { get; set; }
     }
 }

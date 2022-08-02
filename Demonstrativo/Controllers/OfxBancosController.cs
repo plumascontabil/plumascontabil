@@ -76,7 +76,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Codigo,Nome")] OfxBanco ofxBanco, IFormFile file)
+        public async Task<IActionResult> Create([Bind("Id,Codigo,Nome,CodigoContabil")] OfxBanco ofxBanco, IFormFile file)
         {
             if (file == null)
             {
@@ -142,7 +142,7 @@ namespace Demonstrativo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Nome")] OfxBanco ofxBanco, IFormFile file)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Codigo,Nome,CodigoContabil")] OfxBanco ofxBanco, IFormFile file)
         {
             var bank = _context.OfxBancos.SingleOrDefault(f => f.Id == id);
 
@@ -155,6 +155,7 @@ namespace Demonstrativo.Controllers
             bank.Id = ofxBanco.Id;
             bank.Codigo = ofxBanco.Codigo;
             bank.Nome = ofxBanco.Nome;
+            bank.CodigoContabil = ofxBanco.CodigoContabil;
             if (ModelState.IsValid)
             {
                 try
