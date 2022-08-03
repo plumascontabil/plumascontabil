@@ -414,9 +414,6 @@ th, td {
     height: 200px;
 }
 
-#dre .text-small {
-    font-size: 16px !important;
-}
 
 #dre .table-bordered {
     /*border: 1px solid black !important;*/
@@ -443,8 +440,8 @@ th, td {
 }
 
 #dre td {
-    height: 20px;
-    line-height: 20px;
+    height: 15px;
+    line-height: 15px;
     text-align: right;
 }
 
@@ -475,7 +472,7 @@ th, td {
     display: none !important;
 }
 .text-empresa {
-    font-size: 21px;
+    font-size: 18px;
 }
 
 /*@page {
@@ -484,10 +481,12 @@ th, td {
 }*/
 @media print {
     html, body {
-        height: 297mm;
-        font-size: 16px;
+        height: 99%;
+        font-size: 14px;
     }
-
+    #dre .text-small {
+        font-size: 12px !important;
+    }
     .n-page {
         display: flex !important;
     }
@@ -512,8 +511,8 @@ th, td {
     }
 
         #dre .dre-page-2 td {
-            height: 24px;
-            line-height: 24px;
+            height: 17px;
+            line-height: 17px;
             text-align: right;
             background: yellow;
         }
