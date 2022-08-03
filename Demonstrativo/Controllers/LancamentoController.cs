@@ -1203,6 +1203,8 @@ namespace Demonstrativo.Controllers
             var ofxLancamentos = _context.OfxLancamentos
                 .Include(f => f.ContaCorrente)
                 .ThenInclude(x => x.Empresa)
+                .Include(f => f.ContaCorrente)
+                .ThenInclude(f => f.BancoOfx)
                 .Include(f => f.LancamentoPadrao)
                 .Include(f => f.Lote)
                 .Where(l => l.Lote.CompetenciaId == competenciasId && l.Lote.EmpresaId == empresaId)
@@ -1230,14 +1232,14 @@ namespace Demonstrativo.Controllers
 
             StringBuilder builder = new StringBuilder();
 
-            builder.AppendLine($"|0000|{empresa.Cnpj.Replace(".", string.Empty).Replace("-", string.Empty).Replace("/", string.Empty)}|");
+            //builder.AppendLine($"|0000|{empresa.Cnpj.Replace(".", string.Empty).Replace("-", string.Empty).Replace("/", string.Empty)}|");
             CultureInfo pt = new CultureInfo("pt-BR");
             string documentoAux = string.Empty;
             ofxLancamentos.ForEach(f =>
             {
 
-                var contaCredito = f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
-                var contaDebito = f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
+                var contaCredito = f.LancamentoPadrao.ContaCreditoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);  // f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
+                var contaDebito = f.LancamentoPadrao.ContaDebitoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
                 if (documentoAux.Equals(f.Documento))
                 {
 
