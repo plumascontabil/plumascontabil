@@ -169,7 +169,8 @@ namespace Demonstrativo.Controllers
                 {
                     ValorStr = (saldoBanco?.Saldo ?? 0).ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = $"{banco.Codigo} - {banco.Nome}  Ag.: {contaCorrente.NumeroAgencia} C/c.: {contaCorrente.NumeroConta}",
-                    Conta = contas.FirstOrDefault(f => f.Codigo == 200).Id
+                    Conta = contas.FirstOrDefault(f => f.Codigo == Convert.ToInt32(banco.CodigoContabil)).Id,
+                    
                 });
 
 
@@ -1242,15 +1243,12 @@ namespace Demonstrativo.Controllers
                 var contaDebito = f.LancamentoPadrao.ContaDebitoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
                 if (documentoAux.Equals(f.Documento))
                 {
-
-
                     builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
                 }
                 else
                 {
                     var qtd = ofxLancamentos.Where(x => x.Documento == f.Documento).Count();
                     var tipo = qtd > 1 ? "V" : "X";
-
 
                     builder.AppendLine($"|6000|{tipo}||||");
                     builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
