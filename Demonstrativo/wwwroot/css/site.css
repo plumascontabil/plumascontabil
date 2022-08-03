@@ -481,7 +481,7 @@ th, td {
 }*/
 @media print {
     html, body {
-        height: 297mm;
+        height: 99%;
         font-size: 14px;
     }
     #dre .text-small {
