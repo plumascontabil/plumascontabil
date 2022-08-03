@@ -169,8 +169,8 @@ namespace Demonstrativo.Controllers
                 {
                     ValorStr = (saldoBanco?.Saldo ?? 0).ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = $"{banco.Codigo} - {banco.Nome}  Ag.: {contaCorrente.NumeroAgencia} C/c.: {contaCorrente.NumeroConta}",
-                    Conta = contas.FirstOrDefault(f => f.Codigo == Convert.ToInt32(banco.CodigoContabil)).Id,
-                    
+                    Conta = contas.FirstOrDefault(f => f.Codigo == Convert.ToInt32(banco.CodigoContabil)).Codigo,
+
                 });
 
 
@@ -230,7 +230,7 @@ namespace Demonstrativo.Controllers
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel());
                     }
-                    if (conta.Codigo != 200)
+                    if (conta.Codigo != 200 && !categoria.Descricao.ToUpper().Equals("Saldo Final em Bancos".ToUpper()))
                     {
                         contasViewModel.Add(new ContaViewModel()
                         {
@@ -245,20 +245,21 @@ namespace Demonstrativo.Controllers
                     {
                         if (lancamentosViewModelBancos.Count > 0)
                         {
-                            lancamentosViewModelBancos.ForEach(f =>
-                            {
-                                var xxx = new List<LancamentoViewModel>();
-                                xxx.Add(f);
-                                contasViewModel.Add(new ContaViewModel()
-                                {
-                                    Id = conta.Id,
-                                    Codigo = conta.Codigo,
-                                    Descricao = conta.Descricao,
-                                    TipoLancamento = conta.TipoLancamento,
-                                    Lancamentos = xxx
-                                });
+                            //.ForEach(f =>
+                            //{
 
+                            //});
+                            //var xxx = new List<LancamentoViewModel>();
+                            //xxx.Add(f);
+                            contasViewModel.Add(new ContaViewModel()
+                            {
+                                Id = conta.Id,
+                                Codigo = conta.Codigo,
+                                Descricao = conta.Descricao,
+                                TipoLancamento = conta.TipoLancamento,
+                                Lancamentos = lancamentosViewModelBancos.Where(f => f.Conta.Value == conta.Codigo).ToList()
                             });
+
                         }
                         else
                         {
