@@ -336,19 +336,20 @@
 							if (Model.LancamentosDespesa == null)
 							{
 								<!-- <tr><td colspan="5"></td></tr> -->
-							}
-							else
-							{
-								j = 1;
-								foreach (var trimestre in Model.Trimestre)
-								{
-									decimal somaDespesa = 0;
-									foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
-									{
-										somaDespesa += despesa.Valor;
-									}
+                            }
+                            else
+                            {
+                                j = 1;
+                                foreach (var trimestre in Model.Trimestre)
+                                {
+                                    decimal somaDespesa = 0;
+                                    foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre && l.Id != 777))
+                                    {
+                                        somaDespesa += despesa.Valor;
+                                    }
 									<tr>
-										<td class="descricao" colspan="4">Total Despesas @j o. mês</td>
+										<td class="descricao" colspan="4">
+											pesas @j o. mês</td>
 										<td class="mask-valor">@Math.Abs(somaDespesa)</td>
 									</tr>
 									somaDespesaTrimestre += somaDespesa;

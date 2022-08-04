@@ -378,7 +378,7 @@
                             {
 
                                 decimal somaDespesa = 0;
-                                foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
+                                foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre && l.Id != 777))
                                 {
                                     somaDespesa += despesa.Valor;
                                 }

@@ -876,7 +876,7 @@ namespace Demonstrativo.Controllers
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaAluguel.Id).ToList());
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaPis.Id).ToList());
 
-
+            contasDespesas = contasDespesas.Where(f => f.Codigo != 156 && f.Codigo != 181 && f.Codigo != 182 && f.Codigo != 183 && f.Codigo != 184 && f.Codigo != 185 && f.Codigo != 13601 && f.Codigo != 13644 && f.Codigo != 21904).ToList();
 
 
 
@@ -932,15 +932,30 @@ namespace Demonstrativo.Controllers
                 // Receitas
                 contasReceitas.ForEach(xel =>
                 {
+                    ofxLancamentos.Where(f => f.LancamentoPadraoId == xel.Id && f.Data.Month == el).ToList().ForEach(lancamento =>
+                    {
+                        trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Data = lancamento.Data,
+                            Empresa = empresaId.Value,
+                            Conta = xel.Id,
+                            Descricao = lancamento.Descricao,
+                            ValorStr = lancamento.ValorOfx.ToString()
+                        });
+                    });
+
                     lancamentos.Where(f => f.ContaId == xel.Id && f.DataCompetencia.Month == el).ToList().ForEach(lancamento =>
                     {
+
+
                         trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
                         {
                             Id = lancamento.Id,
                             Data = lancamento.DataCompetencia,
                             Empresa = lancamento.EmpresaId,
                             Conta = xel.Id,
-                            Descricao = lancamento.Descricao,
+                            Descricao = xel.Descricao,
                             ValorStr = lancamento.Valor.ToString()
                         });
                     });
@@ -1208,6 +1223,7 @@ namespace Demonstrativo.Controllers
             || f.Conta.Codigo == 51403
             || f.Conta.Codigo == 51103
             || f.Conta.Codigo == 51203
+            || f.Conta.Categoria.Descricao.ToUpper() == "CONTAS A RECEBER"
             )).ToList();
 
             var ofxLancamentos = _context.OfxLancamentos
