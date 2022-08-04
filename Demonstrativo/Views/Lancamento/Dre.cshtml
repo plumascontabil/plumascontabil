@@ -182,12 +182,12 @@
 						</p>
 					</div>
 					<div class="col-6 mb-3 text-empresa">
-						<p class="mb-0 float-right text-right">
-							Demonstrativo de Pré-Fechamento Contábil
-							por Centro de Custo <br />
-							<strong>@emp.Text</strong> <br />
-							@dataComp
-						</p>
+                        <p class="mb-0 float-right text-right">
+                            Demonstrativo de Pré-Fechamento Contábil
+                            por Centro de Custo <br />
+                            <strong>@emp.Text</strong> <br />
+                            @dataComp
+                        </p>
 					</div>
 				</div>
 			</div>
@@ -337,19 +337,20 @@
 							if (Model.LancamentosDespesa == null)
 							{
 								<!-- <tr><td colspan="5"></td></tr> -->
-							}
-							else
-							{
-								j = 1;
-								foreach (var trimestre in Model.Trimestre)
-								{
-									decimal somaDespesa = 0;
-									foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre))
-									{
-										somaDespesa += despesa.Valor;
-									}
+                            }
+                            else
+                            {
+                                j = 1;
+                                foreach (var trimestre in Model.Trimestre)
+                                {
+                                    decimal somaDespesa = 0;
+                                    foreach (var despesa in Model.LancamentosDespesa.Where(l => l.Data.Month == trimestre && l.Id != 777))
+                                    {
+                                        somaDespesa += despesa.Valor;
+                                    }
 									<tr>
-										<td class="descricao" colspan="4">Total Despesas @j o. mês</td>
+										<td class="descricao" colspan="4">
+											pesas @j o. mês</td>
 										<td class="mask-valor">@Math.Abs(somaDespesa)</td>
 									</tr>
 									somaDespesaTrimestre += somaDespesa;

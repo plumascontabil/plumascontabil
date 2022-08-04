@@ -165,11 +165,19 @@ namespace Demonstrativo.Controllers
             {
                 var banco = _context.OfxBancos.FirstOrDefault(c => c.Id == contaCorrente.BancoOfxId);
                 var saldoBanco = _context.SaldoMensal.FirstOrDefault(c => c.Competencia == competenciasId && c.ContaCorrenteId == contaCorrente.Id);
+                var conta = string.IsNullOrEmpty(banco.CodigoContabil) ? contas.FirstOrDefault(f => f.Codigo == 200) : contas.FirstOrDefault(f => f.Codigo == Convert.ToInt32(banco.CodigoContabil));
+
+
+                if (conta == null)
+                {
+                    conta = contas.FirstOrDefault(f => f.Codigo == 200);
+                }
                 lancamentosViewModelBancos.Add(new LancamentoViewModel()
                 {
                     ValorStr = (saldoBanco?.Saldo ?? 0).ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = $"{banco.Codigo} - {banco.Nome}  Ag.: {contaCorrente.NumeroAgencia} C/c.: {contaCorrente.NumeroConta}",
-                    Conta = contas.FirstOrDefault(f => f.Codigo == 200).Id
+                    Conta = conta.Codigo
+
                 });
 
 
@@ -229,7 +237,7 @@ namespace Demonstrativo.Controllers
                     {
                         lancamentosViewModel.Add(new LancamentoViewModel());
                     }
-                    if (conta.Codigo != 200)
+                    if (conta.Codigo != 200 && !categoria.Descricao.ToUpper().Equals("Saldo Final em Bancos".ToUpper()))
                     {
                         contasViewModel.Add(new ContaViewModel()
                         {
@@ -244,20 +252,21 @@ namespace Demonstrativo.Controllers
                     {
                         if (lancamentosViewModelBancos.Count > 0)
                         {
-                            lancamentosViewModelBancos.ForEach(f =>
-                            {
-                                var xxx = new List<LancamentoViewModel>();
-                                xxx.Add(f);
-                                contasViewModel.Add(new ContaViewModel()
-                                {
-                                    Id = conta.Id,
-                                    Codigo = conta.Codigo,
-                                    Descricao = conta.Descricao,
-                                    TipoLancamento = conta.TipoLancamento,
-                                    Lancamentos = xxx
-                                });
+                            //.ForEach(f =>
+                            //{
 
+                            //});
+                            //var xxx = new List<LancamentoViewModel>();
+                            //xxx.Add(f);
+                            contasViewModel.Add(new ContaViewModel()
+                            {
+                                Id = conta.Id,
+                                Codigo = conta.Codigo,
+                                Descricao = conta.Descricao,
+                                TipoLancamento = conta.TipoLancamento,
+                                Lancamentos = lancamentosViewModelBancos.Where(f => f.Conta.Value == conta.Codigo).ToList()
                             });
+
                         }
                         else
                         {
@@ -867,7 +876,7 @@ namespace Demonstrativo.Controllers
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaAluguel.Id).ToList());
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaPis.Id).ToList());
 
-
+            contasDespesas = contasDespesas.Where(f => f.Codigo != 156 && f.Codigo != 181 && f.Codigo != 182 && f.Codigo != 183 && f.Codigo != 184 && f.Codigo != 185 && f.Codigo != 13601 && f.Codigo != 13644 && f.Codigo != 21904).ToList();
 
 
 
@@ -923,15 +932,30 @@ namespace Demonstrativo.Controllers
                 // Receitas
                 contasReceitas.ForEach(xel =>
                 {
+                    ofxLancamentos.Where(f => f.LancamentoPadraoId == xel.Id && f.Data.Month == el).ToList().ForEach(lancamento =>
+                    {
+                        trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
+                        {
+                            Id = lancamento.Id,
+                            Data = lancamento.Data,
+                            Empresa = empresaId.Value,
+                            Conta = xel.Id,
+                            Descricao = lancamento.Descricao,
+                            ValorStr = lancamento.ValorOfx.ToString()
+                        });
+                    });
+
                     lancamentos.Where(f => f.ContaId == xel.Id && f.DataCompetencia.Month == el).ToList().ForEach(lancamento =>
                     {
+
+
                         trimestreViewModel.LancamentosReceita.Add(new LancamentoViewModel()
                         {
                             Id = lancamento.Id,
                             Data = lancamento.DataCompetencia,
                             Empresa = lancamento.EmpresaId,
                             Conta = xel.Id,
-                            Descricao = lancamento.Descricao,
+                            Descricao = xel.Descricao,
                             ValorStr = lancamento.Valor.ToString()
                         });
                     });
@@ -1184,21 +1208,23 @@ namespace Demonstrativo.Controllers
             var competenciasId = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
             var empresaId = Convert.ToInt32($"{ViewBag.EmpresaSeleciodaId}");
             //var contas = _context.LancamentosPadroes.ToList();
-            //var lancamentos = _context.Lancamentos
-            //    .Include(f => f.Empresa)
-            //    .Include(f => f.Conta).ThenInclude(f => f.Categoria)
-            //    .Where(l => l.DataCompetencia == competenciasId && l.EmpresaId == empresaId && l.Valor > 0)
-            //    .OrderBy(f => f.DataCompetencia)
-            //    .ToList();
+            var lancamentos = _context.Lancamentos
+                .Include(f => f.Empresa)
+                .Include(f => f.Conta).ThenInclude(f => f.Categoria)
+                .Where(l => l.DataCompetencia == competenciasId && l.EmpresaId == empresaId && l.Valor > 0)
+                .OrderBy(f => f.DataCompetencia)
+                .ToList();
 
-            //lancamentos = lancamentos.Where(f => (f.Conta.Categoria.Descricao == "PROVISOES PIS/COFINS/ISS/SIMPLES"
-            //|| f.Conta.Categoria.Descricao == "ADIÇÕES NO LALUR"
-            //|| f.Conta.Categoria.Descricao == "EMPRÉSTIMOS FINANCEIROS"
-            //|| f.Conta.Categoria.Descricao == "IMOBILIZADO"
-            //|| f.Conta.Codigo == 155
-            //|| f.Conta.Codigo == 99
-            //|| f.Conta.Codigo == 98
-            //)).ToList();
+            lancamentos = lancamentos.Where(f => (f.Conta.Descricao.ToUpper().Trim() == "( + ) COMPRAS DE MERCADORIAS"
+            || f.Conta.Descricao.ToUpper().Trim() == "( = ) ESTOQUE INICIAL MERCADORIAS"
+            || f.Conta.Descricao.ToUpper().Trim() == "( - ) ESTOQUE FINAL MERCADORIAS"
+            || f.Conta.Descricao.ToUpper().Trim() == "VENDAS DE MERCADORIAS - COMBUSTÍVEIS"
+            || f.Conta.Codigo == 119
+            || f.Conta.Codigo == 51403
+            || f.Conta.Codigo == 51103
+            || f.Conta.Codigo == 51203
+            || f.Conta.Categoria.Descricao.ToUpper() == "CONTAS A RECEBER"
+            )).ToList();
 
             var ofxLancamentos = _context.OfxLancamentos
                 .Include(f => f.ContaCorrente)
@@ -1214,11 +1240,11 @@ namespace Demonstrativo.Controllers
 
             Empresa empresa = null;
 
-            //if (lancamentos.Count > 0)
-            //{
-            //    empresa = lancamentos.FirstOrDefault().Empresa;
-            //}
-            //else
+            if (lancamentos.Count > 0)
+            {
+                empresa = lancamentos.FirstOrDefault().Empresa;
+            }
+            else
             if (ofxLancamentos.Count > 0)
             {
                 empresa = ofxLancamentos.FirstOrDefault().ContaCorrente.Empresa;
@@ -1242,15 +1268,12 @@ namespace Demonstrativo.Controllers
                 var contaDebito = f.LancamentoPadrao.ContaDebitoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
                 if (documentoAux.Equals(f.Documento))
                 {
-
-
                     builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
                 }
                 else
                 {
                     var qtd = ofxLancamentos.Where(x => x.Documento == f.Documento).Count();
                     var tipo = qtd > 1 ? "V" : "X";
-
 
                     builder.AppendLine($"|6000|{tipo}||||");
                     builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
@@ -1259,12 +1282,12 @@ namespace Demonstrativo.Controllers
 
                 documentoAux = f.Documento;
             });
-            //lancamentos.ForEach(el =>
-            //{
-            //    var tipo = "X";
-            //    builder.AppendLine($"|6000|{tipo}||||");
-            //    builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
-            //});
+            lancamentos.ForEach(el =>
+            {
+                var tipo = "X";
+                builder.AppendLine($"|6000|{tipo}||||");
+                builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
+            });
 
             //foreach (var conta in contas)
             //{
