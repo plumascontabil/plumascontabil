@@ -32,7 +32,7 @@
 	//categorias.Add(caraDaMorte01);
 	//categorias.Add(caraDaMorte02);
 	var emp = Model.Empresas.FirstOrDefault(f => Convert.ToInt32(f.Value) == Model.EmpresaSelecionada);
-
+	var dataComp = @Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId).ToString("MMMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
 	var categorias = Model.Categorias.ToList();
 
 
@@ -101,7 +101,8 @@
 					Demonstrativo de Pré-Fechamento Contábil <br />
 					<p>
 						<strong>@emp.Text</strong> <br />
-						(@Model.CompetenciaSelecionadaId.ToString("MMMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))
+					
+					@dataComp
 					</p>
 				</div>
 			</div>
@@ -185,7 +186,7 @@
                             Demonstrativo de Pré-Fechamento Contábil
                             por Centro de Custo <br />
                             <strong>@emp.Text</strong> <br />
-                            (@Model.CompetenciaSelecionadaId.ToString("MMMM/yyyy", System.Globalization.CultureInfo.GetCultureInfo("pt-BR")))
+                            @dataComp
                         </p>
 					</div>
 				</div>
