@@ -1229,6 +1229,9 @@ namespace Demonstrativo.Controllers
             || f.Conta.Codigo == 51403
             || f.Conta.Codigo == 51103
             || f.Conta.Codigo == 51203
+            || f.Conta.Codigo == 98
+            || f.Conta.Codigo == 99
+            || f.Conta.Codigo == 155
             || f.Conta.Categoria.Descricao.ToUpper() == "CONTAS A RECEBER"
             )).ToList();
 
