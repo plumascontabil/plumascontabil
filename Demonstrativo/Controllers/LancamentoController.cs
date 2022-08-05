@@ -1242,10 +1242,12 @@ namespace Demonstrativo.Controllers
                 .ThenInclude(f => f.BancoOfx)
                 .Include(f => f.LancamentoPadrao)
                 .Include(f => f.Lote)
-                .Where(l => l.Lote.CompetenciaId == competenciasId && l.Lote.EmpresaId == empresaId && (!l.Inativar.HasValue || !l.Inativar.Value))
+                .Where(l => l.Data.Month == competenciasId.Month && l.Data.Year == competenciasId.Year)
                 .OrderBy(f => f.Data)
                 .ThenBy(f => f.Documento)
                 .ToList();
+            ofxLancamentos = ofxLancamentos.Where(f => f.Lote.EmpresaId == empresaId).ToList();
+            ofxLancamentos = ofxLancamentos.Where(f => (f.Inativar.HasValue == false || f.Inativar.Value == false)).ToList();
 
             Empresa empresa = null;
 
