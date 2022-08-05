@@ -870,7 +870,7 @@ namespace Demonstrativo.Controllers
             var categoriasDespesas = _context.Categorias.Where(f => f.Descricao.ToUpper() == "ENCARGOS SOCIAIS".ToUpper()).FirstOrDefault();
             var CategoriaAluguel = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES DE ALUGUÉIS".ToUpper()).FirstOrDefault();
             var CategoriaPis = _context.Categorias.Where(f => f.Descricao.ToUpper() == "PROVISÕES PIS/COFINS/ISS/SIMPLES".ToUpper()).FirstOrDefault();
-            var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper())).ToList();
+            var contasDespesas = contas.Where(f => f.Descricao.ToUpper().Contains("DESP".ToUpper()) || f.Codigo == 9 || f.Codigo == 10 || f.Codigo == 11).ToList();
 
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == categoriasDespesas.Id).ToList());
             contasDespesas.AddRange(contas.Where(f => f.CategoriaId == CategoriaAluguel.Id).ToList());
@@ -879,8 +879,14 @@ namespace Demonstrativo.Controllers
             contasDespesas = contasDespesas.Where(f => f.Codigo != 156 && f.Codigo != 181 && f.Codigo != 182 && f.Codigo != 183 && f.Codigo != 184 && f.Codigo != 185 && f.Codigo != 13601 && f.Codigo != 13644 && f.Codigo != 21904).ToList();
 
 
+            contasDespesas = contasDespesas.Where(f => !(f.Descricao.ToUpper() == "IRRF Aluguel".ToUpper())).ToList();
+            //contasDespesas = contasDespesas.Where(f => !(f.Descricao.ToUpper() == "COFINS (5856/2172)".ToUpper())).ToList();
+            //contasDespesas = contasDespesas.Where(f => !(f.Descricao.ToUpper() == "Pis (6912/8109)".ToUpper())).ToList();
+            //contasDespesas = contasDespesas.Where(f => !(f.Descricao.ToUpper() == "ISS Outros".ToUpper())).ToList();
 
 
+            contasDespesas = contasDespesas.Distinct().ToList();
+            var teste = string.Join(",", contasDespesas.Select(f => $"{f.Codigo}-{f.Descricao}").ToList());
 
 
 
@@ -1233,7 +1239,7 @@ namespace Demonstrativo.Controllers
                 .ThenInclude(f => f.BancoOfx)
                 .Include(f => f.LancamentoPadrao)
                 .Include(f => f.Lote)
-                .Where(l => l.Lote.CompetenciaId == competenciasId && l.Lote.EmpresaId == empresaId)
+                .Where(l => l.Lote.CompetenciaId == competenciasId && l.Lote.EmpresaId == empresaId && (!l.Inativar.HasValue || !l.Inativar.Value))
                 .OrderBy(f => f.Data)
                 .ThenBy(f => f.Documento)
                 .ToList();
