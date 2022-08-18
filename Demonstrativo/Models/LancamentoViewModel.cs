@@ -9,6 +9,7 @@ namespace Demonstrativo.Models
         public DateTime Data { get; set; }
         public int Empresa { get; set; }
         public int? Conta { get; set; }
+        public int? ContaCorrenteId { get; set; }
         public string Descricao { get; set; }
         public decimal Valor
         {

@@ -88,6 +88,16 @@ namespace Demonstrativo.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (_context.Empresas.SingleOrDefault(f => f.Codigo == empresa.Codigo) != null)
+                    {
+                        AdicionarCompetenciaMesAtual();
+                        CarregarEmpresasCompetencias();
+                        TempData["erro"] = "Já existe empresa cadastrada com esse Número Informado.";
+                        return View(empresa);
+
+                    }
+
+
                     //var Empresa = await _EmpresasDomainService.CreateValidar(Empresa);
                     empresa.Situacao = "A";
                     _context.Add(empresa);
@@ -138,7 +148,7 @@ namespace Demonstrativo.Controllers
         {
             try
             {
-             
+
                 if (ModelState.IsValid)
                 {
                     var empresaDeletada = await _context.Empresas.FindAsync(id);

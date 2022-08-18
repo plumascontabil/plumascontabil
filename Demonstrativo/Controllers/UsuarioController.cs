@@ -72,14 +72,19 @@ namespace Demonstrativo.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(((int)EEventLog.Post), "User {email} created.", viewModel.Email);
-                    foreach (var id in viewModel.EmpresasId)
+
+                    if (viewModel.EmpresasId != null)
                     {
-                        var usuarioEmpresa = new UsuarioEmpresa();
-                        usuarioEmpresa.EmpresaId = id;
-                        usuarioEmpresa.UsuarioId = user.Id;
-                        _context.UsuarioEmpresa.Add(usuarioEmpresa);
-                        _context.SaveChanges();
+                        foreach (var id in viewModel.EmpresasId)
+                        {
+                            var usuarioEmpresa = new UsuarioEmpresa();
+                            usuarioEmpresa.EmpresaId = id;
+                            usuarioEmpresa.UsuarioId = user.Id;
+                            _context.UsuarioEmpresa.Add(usuarioEmpresa);
+                            _context.SaveChanges();
+                        }
                     }
+
                     await _userManager.AddToRoleAsync(user, role.Name);
                     TempData["criado"] = "criado";
                     return RedirectToAction("CarregarUsuario");
@@ -146,14 +151,19 @@ namespace Demonstrativo.Controllers
                         _context.UsuarioEmpresa.Remove(empresa);
                         _context.SaveChanges();
                     }
-                    foreach (var id in viewModel.EmpresasId)
+
+                    if (viewModel.EmpresasId != null)
                     {
-                        var usuarioEmpresa = new UsuarioEmpresa();
-                        usuarioEmpresa.EmpresaId = id;
-                        usuarioEmpresa.UsuarioId = user.Id;
-                        _context.UsuarioEmpresa.Add(usuarioEmpresa);
-                        _context.SaveChanges();
+                        foreach (var id in viewModel.EmpresasId)
+                        {
+                            var usuarioEmpresa = new UsuarioEmpresa();
+                            usuarioEmpresa.EmpresaId = id;
+                            usuarioEmpresa.UsuarioId = user.Id;
+                            _context.UsuarioEmpresa.Add(usuarioEmpresa);
+                            _context.SaveChanges();
+                        }
                     }
+
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);

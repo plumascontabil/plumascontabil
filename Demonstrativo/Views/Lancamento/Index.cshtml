@@ -99,6 +99,7 @@
                                 <th colspan="3" class="bg-categoria text-white">@categoria.Descricao</th>
                             </tr>
                         </thead>
+                        <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Id" value="@categoria.Id" />
                         @for (var indexConta = 0; indexConta < categoria.Contas.Count; indexConta++)
                         {
                             var conta = categoria.Contas[indexConta];
@@ -107,7 +108,8 @@
                                 {
                                     var lancamento = conta.Lancamentos[indexLancamento];
                                     var valorLanc = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", lancamento.Valor);
-
+                                    <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].TipoLancamento" value="@conta.TipoLancamento" />
+                                    <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].ContaCorrenteId" value="@conta.ContaCorrenteId" />
                                     @if (categoria.Descricao == "RECEITAS" && indexConta == 0)
                                     {
                                         <tr><td colspan="3"><div class="inptable mx-auto d-flex justify-content-end"><button onclick="handleContasReceber(event)" class="btn btn-plumas-w">Provisão dos recebimentos</button></div></td></tr>
@@ -127,26 +129,33 @@
                                             {
                                                 if (lancamento.Descricao != null)
                                                 {
-                                                    <input type="text" class="form-control" style="width:100%;" disabled asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
+                                                    @lancamento.Descricao
+
+                                                    <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@lancamento.Descricao" />
+                                                    <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Descricao" value="@lancamento.Descricao" />
+
+
+
                                                 }
                                                 else
                                                 {
                                                     @conta.Descricao
 
-
-
-                                                    <input disabled type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@conta.Descricao" />
+                                                    <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@conta.Descricao" />
                                                 }
                                             }
                                         </td>
                                         <td class="valor">
-                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@lancamento.Id" />
+                                            @{var id = lancamento.Id > 0 ? lancamento.Id : conta.Id; }
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Id" value="@id" />
                                             @if (conta.TipoLancamento == "C")
                                             {
                                                 @if (conta.Codigo == 119 || conta.Codigo == 120 || conta.Codigo == 121 || conta.Codigo == 125)
                                                 {
 
-                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos."><input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" /></button>
+                                                    <button onclick="handleContasReceber(event)" data-toggle="tooltip" title="Clique para preencher os recebimentos.">
+                                                        <input disabled data-target="modalContasReceber" type="text" class="mask-valor cursor-pointer" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Lancamentos[indexLancamento].Valor" value="@valorLanc" onfocus="this.setSelectionRange(0, this.value.length);" />
+                                                    </button>
 
 
                                                 }
@@ -178,6 +187,7 @@
                                             <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id" />
                                             <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" value="@Model.Categorias[indexCategoria].Contas[indexConta].Descricao" />
                                             <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" value="@Model.Categorias[indexCategoria].Contas[indexConta].Codigo" />
+                                            <input type="hidden" asp-for="@Model.Categorias[indexCategoria].Contas[indexConta].Id" value="@Model.Categorias[indexCategoria].Contas[indexConta].Id" />
                                         </td>
 
                                     </tr>
@@ -792,26 +802,14 @@
 
 
             $('input[name*="ValorDebitoStr"').each((index, el) => {
-
                 deb += $(el).val() == "" ? 0 : Number($(el).val());
-
-                console.log($(el).val());
-                console.log(deb);
-
             });
 
             $('input[name*="ValorCreditoStr"').each((index, el) => {
-
                 cred += $(el).val() == "" ? 0 : Number($(el).val());
-                console.log($(el).val());
-                console.log(cred);
             });
 
-
-            console.log(deb);
-            console.log(cred);
-
-            if ((cred - deb) != 0) {
+            if ((Math.round(cred, 2) - Math.round(deb, 2)) != 0) {
                 event.preventDefault();
                 Swal.fire({
                     icon: 'warning',

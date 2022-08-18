@@ -176,7 +176,8 @@ namespace Demonstrativo.Controllers
                 {
                     ValorStr = (saldoBanco?.Saldo ?? 0).ToString(),//contasCorrentesLancamentos.Where(f => f.ContaCorrenteId == contaCorrente.Id).Sum(x => x.ValorOfx).ToString(),
                     Descricao = $"{banco.Codigo} - {banco.Nome}  Ag.: {contaCorrente.NumeroAgencia} C/c.: {contaCorrente.NumeroConta}",
-                    Conta = conta.Codigo
+                    Conta = conta.Codigo,
+                    ContaCorrenteId = contaCorrente.Id
 
                 });
 
@@ -258,14 +259,25 @@ namespace Demonstrativo.Controllers
                             //});
                             //var xxx = new List<LancamentoViewModel>();
                             //xxx.Add(f);
-                            contasViewModel.Add(new ContaViewModel()
+                            if (conta.Codigo != 200)
                             {
-                                Id = conta.Id,
-                                Codigo = conta.Codigo,
-                                Descricao = conta.Descricao,
-                                TipoLancamento = conta.TipoLancamento,
-                                Lancamentos = lancamentosViewModelBancos.Where(f => f.Conta.Value == conta.Codigo).ToList()
-                            });
+                                var ximbolio = lancamentosViewModelBancos.Where(f => f.Conta.Value == conta.Codigo).FirstOrDefault();
+                                if (ximbolio != null)
+                                {
+                                    contasViewModel.Add(new ContaViewModel()
+                                    {
+                                        Id = conta.Id,
+                                        Codigo = conta.Codigo,
+                                        Descricao = conta.Descricao,
+                                        TipoLancamento = conta.TipoLancamento,
+                                        ContaCorrenteId = ximbolio.ContaCorrenteId.Value,
+                                        Lancamentos = lancamentosViewModelBancos.Where(f => f.Conta.Value == conta.Codigo).ToList()
+                                    });
+
+                                }
+
+
+                            }
 
                         }
                         else
@@ -380,16 +392,26 @@ namespace Demonstrativo.Controllers
                     var compras = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("COMPRA")).ToList();
                     var estoqueInicial = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("INICIAL")).ToList();
                     var estoqueFinal = contasViewModel.Where(f => f.Descricao.ToUpper().Contains("FINAL")).ToList();
+                    var Resto = contasViewModel.Where(f => !compras.Any(ff => f.Id == ff.Id)
+                    && !estoqueInicial.Any(ff => f.Id == ff.Id)
+                    && !estoqueFinal.Any(ff => f.Id == ff.Id)).ToList();
+
+
+
                     contasViewModel = new List<ContaViewModel>();
                     contasViewModel.AddRange(compras);
                     contasViewModel.AddRange(estoqueInicial);
                     contasViewModel.AddRange(estoqueFinal);
+                    contasViewModel.AddRange(Resto);
+
+
 
                 }
 
 
                 trimestreViewModel.Categorias.Add(new CategoriaViewModel()
                 {
+                    Id = categoria.Id,
                     Descricao = categoria.Descricao,
                     Contas = contasViewModel
                 });
@@ -591,7 +613,7 @@ namespace Demonstrativo.Controllers
                 var estoqueVendas = trimestreViewModel.EstoqueVendas;
 
                 #region ItensVenda
-                if (lancamentoCompetencia.Count() == 0)
+                if (lancamentoCompetencia.Count == 0)
                 {
                     var insertEstoqueVendas = new Venda()
                     {
@@ -638,40 +660,44 @@ namespace Demonstrativo.Controllers
                 else
                 {
                     var updateEstoqueVendas = _context.Vendas.Find(Convert.ToInt32(estoqueVendas.Id));
-
-                    updateEstoqueVendas.DataCompetencia = competencia;
-                    updateEstoqueVendas.EmpresaId = empresaId;
-                    updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
-
-                    foreach (var itemVenda in estoqueVendas.ItensVendas)
+                    if (updateEstoqueVendas != null)
                     {
-                        if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
-                        {
-                            continue;
-                        }
 
-                        if (itemVenda.Id == 0)
+
+                        updateEstoqueVendas.DataCompetencia = competencia;
+                        updateEstoqueVendas.EmpresaId = empresaId;
+                        updateEstoqueVendas.Observacao = estoqueVendas.Observacao;
+
+                        foreach (var itemVenda in estoqueVendas.ItensVendas)
                         {
-                            var insertItemVenda = new ItemVenda()
+                            if (itemVenda.Id == 0 && itemVenda.Quantidade == 0 || itemVenda.Preco == 0)
                             {
-                                VendaId = updateEstoqueVendas.Id,
-                                ProdutoId = itemVenda.ProdutoId,
-                                Quantidade = itemVenda.Quantidade,
-                                Preco = itemVenda.Preco
-                            };
+                                continue;
+                            }
 
-                            _context.ItensVendas.Add(insertItemVenda);
-                            _context.SaveChanges();
-                        }
-                        else
-                        {
-                            var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
+                            if (itemVenda.Id == 0)
+                            {
+                                var insertItemVenda = new ItemVenda()
+                                {
+                                    VendaId = updateEstoqueVendas.Id,
+                                    ProdutoId = itemVenda.ProdutoId,
+                                    Quantidade = itemVenda.Quantidade,
+                                    Preco = itemVenda.Preco
+                                };
 
-                            updateItemVenda.Quantidade = itemVenda.Quantidade;
-                            updateItemVenda.Preco = itemVenda.Preco;
+                                _context.ItensVendas.Add(insertItemVenda);
+                                _context.SaveChanges();
+                            }
+                            else
+                            {
+                                var updateItemVenda = _context.ItensVendas.Find(Convert.ToInt32(itemVenda.Id));
 
-                            _context.ItensVendas.Update(updateItemVenda);
-                            _context.SaveChanges();
+                                updateItemVenda.Quantidade = itemVenda.Quantidade;
+                                updateItemVenda.Preco = itemVenda.Preco;
+
+                                _context.ItensVendas.Update(updateItemVenda);
+                                _context.SaveChanges();
+                            }
                         }
                     }
                 }
@@ -737,10 +763,17 @@ namespace Demonstrativo.Controllers
                 //      });
                 //});
                 #endregion
+                var saldos = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper().Contains("SALDO FINAL EM BANCOS")).FirstOrDefault();
+                var armando = trimestreViewModel.Categorias
+                       .Where(f => f.Contas != null)
+                       .Where(f => f.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").Count() > 0)
+                       .ToList();
 
-                var lancamentosViewModel = trimestreViewModel.Categorias.SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
+                var lancamentosViewModel = armando.Where(f => f.Id != saldos.Id).SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
 
-                var tste = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper().Contains("RESULTADOS")).ToList();
+                //var saldos = trimestreViewModel.Categorias.Where(f => f.Descricao.ToUpper().Contains("SALDO FINAL EM BANCOS")).ToList();
+
+                var lancamentosSaldo = armando.Where(f => f.Id == saldos.Id).SelectMany(x => x.Contas.Where(x => string.IsNullOrEmpty(x.TipoLancamento) || x.TipoLancamento == "L").SelectMany(x => x.Lancamentos)).ToList();
 
 
                 var lancamentos = lancamentosViewModel.Select(x => new Lancamento()
@@ -752,6 +785,18 @@ namespace Demonstrativo.Controllers
                     EmpresaId = x.Empresa,
                     Valor = x.Valor
                 }).OrderBy(x => x.Valor).ToList();
+
+
+                //var lancamentosSaldoS = lancamentosSaldo.Select(x => new Lancamento()
+                //{
+                //    Id = x.Id,
+                //    ContaId = x.Conta,
+                //    DataCompetencia = x.Data,
+                //    Descricao = x.Descricao,
+                //    EmpresaId = x.Empresa,
+                //    Valor = x.Valor
+                //}).OrderBy(x => x.Valor).ToList();
+
 
                 foreach (var lancamento in lancamentos)
                 {
@@ -795,6 +840,25 @@ namespace Demonstrativo.Controllers
                     }
                 }
 
+
+                var cat = armando.Where(f => f.Id == saldos.Id).FirstOrDefault();
+
+                cat.Contas.ForEach(cont =>
+                {
+
+
+                    cont.Lancamentos.ForEach(x =>
+                    {
+
+                        var saldoReal = _context.SaldoMensal.Where(f => f.Competencia == x.Data && f.ContaCorrenteId == cont.ContaCorrenteId).FirstOrDefault();
+                        saldoReal.Saldo = x.Valor;
+                    });
+
+
+
+
+                });
+                _context.SaveChanges();
                 var primeiroLancamento = lancamentos.FirstOrDefault();
                 _logger.LogInformation(((int)EEventLog.Post), "Lançamento Id: {lancamento} created.", primeiroLancamento.Id);
 
@@ -1225,6 +1289,7 @@ namespace Demonstrativo.Controllers
             || f.Conta.Descricao.ToUpper().Trim() == "( = ) ESTOQUE INICIAL MERCADORIAS"
             || f.Conta.Descricao.ToUpper().Trim() == "( - ) ESTOQUE FINAL MERCADORIAS"
             || f.Conta.Descricao.ToUpper().Trim() == "VENDAS DE MERCADORIAS - COMBUSTÍVEIS"
+            || f.Conta.Descricao.ToUpper().Trim().Contains("DESP")
             || f.Conta.Codigo == 119
             || f.Conta.Codigo == 51403
             || f.Conta.Codigo == 51103
@@ -1275,8 +1340,8 @@ namespace Demonstrativo.Controllers
             ofxLancamentos.ForEach(f =>
             {
 
-                var contaCredito = f.LancamentoPadrao.ContaCreditoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);  // f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
-                var contaDebito = f.LancamentoPadrao.ContaDebitoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
+                var contaCredito = f.LancamentoPadrao.ContaDebitoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);//f.ValorOfx < 0 ? f.LancamentoPadrao.ContaCreditoId : f.LancamentoPadrao.ContaDebitoId;
+                var contaDebito = f.LancamentoPadrao.ContaCreditoId.ToString().Replace("11201", f.ContaCorrente.BancoOfx.CodigoContabil);  // f.ValorOfx < 0 ? f.LancamentoPadrao.ContaDebitoId : f.LancamentoPadrao.ContaCreditoId;
                 if (documentoAux.Equals(f.Documento))
                 {
                     builder.AppendLine($"|6100|{f.Data.ToString("dd/MM/yyyy")}|{contaDebito}|{contaCredito}|{Math.Abs(f.ValorOfx).ToString(pt)}|{f.LancamentoPadrao.LancamentoHistorico}|{f.Descricao}||||");
@@ -1297,9 +1362,24 @@ namespace Demonstrativo.Controllers
             {
                 var tipo = "X";
                 builder.AppendLine($"|6000|{tipo}||||");
-                builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
-            });
 
+                if (el.Conta.Categoria.Descricao.ToUpper() == "CONTAS A RECEBER")
+                {
+                    builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|11402|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
+                }
+                else
+                {
+                    builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|{el.Conta.ContaDebitoId}|{el.Conta.ContaCreditoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
+                }
+
+            });
+            //lancamentos.Where(f => f.Conta.Categoria.Descricao.ToUpper() == "CONTAS A RECEBER").ToList().ForEach(el =>
+            //  {
+            //      var tipo = "X";
+            //      builder.AppendLine($"|6000|{tipo}||||");
+            //      builder.AppendLine($"|6100|{el.DataCompetencia.ToString("dd/MM/yyyy")}|11402|{el.Conta.ContaDebitoId}|{el.Valor.ToString(pt)}||{el.Conta.Descricao}||||");
+
+            //  });
             //foreach (var conta in contas)
             //{
             //    foreach (var lancamento in lancamentos.Where(l => l.ContaId == conta.Id))

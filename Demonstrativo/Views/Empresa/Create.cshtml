@@ -34,7 +34,7 @@
                 <input asp-for="Apelido" class="form-control" />
                 <span asp-validation-for="Apelido" class="text-danger"></span>
             </div>
-         
+
 
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-plumas-w">Voltar</a>
@@ -49,19 +49,19 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-         @if ((string)TempData["erro"] == "erro")
+        @if (!string.IsNullOrEmpty((string)TempData["erro"]))
         {
             <script type="text/javascript">
                 window.onload = function() {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Oops...',
-                        text: 'Não foi possível cadastrar a empresa',
+                        text: '@Html.Raw(((string)TempData["erro"] != "erro" ? (string)TempData["erro"]: "Não foi possível cadastrar a empresa" ))',
 
                     })
                 };
             </script>
         }
-       
+
     }
-	}
+}

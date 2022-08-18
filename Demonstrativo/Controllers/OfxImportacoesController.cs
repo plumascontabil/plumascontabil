@@ -654,8 +654,8 @@ namespace Demonstrativo.Controllers
             var lote = _context.OfxLoteLancamento.Where(f => f.Id == LoteLancamentoId).FirstOrDefault();
             var lancamentos = _context.OfxLancamentos.Include(f => f.ContaCorrente).ThenInclude(f => f.BancoOfx).Where(f => f.LoteLancamentoId == lote.Id).ToList();
 
-
-            if(lancamentos.Count == 0)
+            var saldo = _context.SaldoMensal.Where(f => f.ContaCorrenteId == lancamentos.FirstOrDefault().ContaCorrenteId && f.Competencia == competenciasId).FirstOrDefault();
+            if (lancamentos.Count == 0)
             {
                 ViewBag.Message = "Não tem nenhum lançamento!";
                 _context.OfxLoteLancamento.Remove(lote);
@@ -680,7 +680,7 @@ namespace Demonstrativo.Controllers
             extratoViewModel.ContasCorrentes = new OfxContaCorrenteViewModel()
             {
                 OfxLancamentos = new List<OfxLancamentoViewModel>(),
-                NumeroConta = lancamentos.FirstOrDefault().ContaCorrente.NumeroConta
+                NumeroConta = lancamentos.FirstOrDefault().ContaCorrente.Acctid
             };
             lancamentos.ForEach(el =>
             {
@@ -694,9 +694,9 @@ namespace Demonstrativo.Controllers
                     Inativar = el.Inativar,
                     SaldoMensal = new SaldoMensalViewModel()
                     {
-                        SaldoMensal = lote.Valor,
-                        Competencia = lote.CompetenciaId,
-                        ContaCorrenteId = el.ContaCorrente.Id,
+                        SaldoMensal = saldo.Saldo,
+                        Competencia = saldo.Competencia,
+                        ContaCorrenteId = saldo.ContaCorrenteId,
 
                     },
                     Id = el.Documento,
@@ -734,7 +734,14 @@ namespace Demonstrativo.Controllers
                     LancamentosPadroes = ConstruirLancamentosPadroesSelectList(lancamentosPadroes),
                     LancamentoPadraoSelecionado = dados.LancamentoPadraoSelecionado,
                     Mostrar = ((dados.Date.Month == competenciasId.Month) && (dados.Date.Year == competenciasId.Year)),
-                    Inativar = dados.Inativar
+                    Inativar = dados.Inativar,
+                    SaldoMensal = new SaldoMensalViewModel()
+                    {
+                        SaldoMensal = saldo.Saldo,
+                        Competencia = saldo.Competencia,
+                        ContaCorrenteId = saldo.ContaCorrenteId,
+
+                    },
 
                 }); ;
 
@@ -780,6 +787,8 @@ namespace Demonstrativo.Controllers
             _logger.LogInformation(((int)EEventLog.Post), "ReImport Lote created.");
 
             extratoBancarioViewModel.DescricaoLote = extratoViewModel.DescricaoLote;
+            extratoBancarioViewModel.LoteLancamentoid = lote.Id;
+            extratoBancarioViewModel.EmpresaSelecionada = lote.EmpresaId;
             AdicionarCompetenciaMesAtual();
             CarregarEmpresasCompetencias();
             //
@@ -869,7 +878,7 @@ namespace Demonstrativo.Controllers
                     var saldo = new SaldoMensal()
                     {
                         Competencia = Convert.ToDateTime(ViewBag.CompetenciasSelecionadaId),// dado.SaldoMensal.Competencia,
-                        Saldo = lote.Valor,
+                        Saldo = dados.ContasCorrentes.OfxLancamentos.FirstOrDefault().SaldoMensal.SaldoMensal,
                         ContaCorrenteId = contaCorrente.Id
                     };
                     _context.SaldoMensal.Add(saldo);
