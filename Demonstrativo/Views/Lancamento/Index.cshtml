@@ -220,6 +220,7 @@
                         decimal custoMercadoriaVendida = 0;
                         decimal somaCompraTrimestre = 0;
 
+
                         if (Model.LancamentosCompra == null)
                         {
                             <tr>
@@ -229,7 +230,14 @@
                         }
                         else
                         {
-                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 100))
+                            DateTime compe = DateTime.Now;
+
+                            if (ViewBag.CompetenciasSelecionadaId != null)
+                            {
+                                compe = Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}");
+                            }
+
+                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 100 && l.Data.Month == compe.Month && l.Data.Year == compe.Year))
                             {
                                 estoqueInicial += compra.Valor;
                             }
@@ -258,7 +266,7 @@
                                 <td colspan="2">Total Trimestre</td>
                                 <td class="mask-valor">@somaCompraTrimestre</td>
                             </tr>
-                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101))
+                            foreach (var compra in Model.LancamentosCompra.Where(l => l.Conta == 101 && l.Data.Month == compe.Month && l.Data.Year == compe.Year))
                             {
                                 estoqueFinal += compra.Valor;
                             }
