@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using DomainService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
+using System.Globalization;
 
 namespace Demonstrativo.Controllers
 {
@@ -193,6 +195,10 @@ namespace Demonstrativo.Controllers
                 }
                 ofx = System.IO.File.ReadAllText(caminhoDestinoArquivo);
 
+                var dados = ofx.Split("\n");
+
+
+
                 if (ofx.Contains("<DTSERVER>00000000000000"))
                 {
                     ofx = ofx.Replace("<DTSERVER>00000000000000", $"<DTSERVER>{DateTime.Now.ToString("yyyyMMddhhmmss")}");
@@ -212,15 +218,38 @@ namespace Demonstrativo.Controllers
                 }
 
 
+                //if (ofx.Contains("[-3:GMT]"))
+                //{
+                //    ofx = ofx.Replace("")
+                //}
+
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
                 Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
                 try
                 {
                     if (extratoBancario != null)
                     {
-                        var documento = new OFXDocumentParser();
-                        var dadoDocumento = documento.Import(ofx);
-                        saldo = dadoDocumento.Balance.LedgerBalance;
+
+                        if (!dados.FirstOrDefault().Contains("<"))
+                        {
+                            var arioi = dados.ToList();
+
+                            for (int i = 0; i < 10; i++)
+                            {
+                                arioi.RemoveAt(0);
+                            }
+                           
+                          
+                            ofx = string.Join("\n", arioi);
+                        }
+                        XElement doc = XElement.Parse(ofx);
+                        //queryiny the XElement
+                        var imps = (from c in doc.Descendants("LEDGERBAL")
+                                    select decimal.Parse(c.Element("BALAMT").Value.Replace(",", "."),
+                                                               NumberFormatInfo.InvariantInfo)).FirstOrDefault();
+                        //var documento = new OFXDocumentParser();
+                        //var dadoDocumento = documento.Import(ofx);
+                        saldo = imps;
                     }
 
                     //if (extratoBancario.
