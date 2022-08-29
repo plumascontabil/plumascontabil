@@ -462,16 +462,29 @@
                             <td colspan="3">(=) Lucro / Prejuízo do Periodo </td>
                             <td class="mask-valor">
                                 @{
-                                    var lucroPrj = lucroBruto - Math.Abs(somaDespesaTrimestre)
+                                    var despMes = Model.LancamentosDespesa.Where(l => l.Data.Month == Convert.ToDateTime($"{ViewBag.CompetenciasSelecionadaId}").Month).Sum(x => x.Valor);
+
+
+                                    //if (despMes)
+                                    //{
+                                    //    despMes = 0;
+                                    //}
+
+                                    var lucroPrj = estoqueInicial == 0 ? 0 : lucroBruto - Math.Abs(despMes)
 - (provisoesDepreciacoes.DecimoTerceiro.HasValue ? provisoesDepreciacoes.DecimoTerceiro.Value : 0)
 - (provisoesDepreciacoes.Ferias.HasValue ? provisoesDepreciacoes.Ferias.Value : 0)
 - (provisoesDepreciacoes.Depreciacao.HasValue ? provisoesDepreciacoes.Depreciacao.Value : 0);}
                                 @lucroPrj
                             </td>
+
                         </tr>
+
                         <tr>
+
                             <td colspan="3">(-) Saldo Prejuízo / Acumulado </td>
+
                             <td>
+
                                 <input type="text" class="mask-valor" name="ProvisoesDepreciacoes.SaldoPrejuizoVlr" value="@provisoesDepreciacoes.SaldoPrejuizo" onfocus="this.setSelectionRange(0, this.value.length);" />
                             </td>
                         </tr>
@@ -515,7 +528,7 @@
                 *@
                 @{
                     double prejuizoCompensado = 0;
-                    var lucroPeriodo = lucroBruto - somaDespesaTrimestre -
+                    var lucroPeriodo = lucroBruto - despMes -
                     (provisoesDepreciacoes.DecimoTerceiro != null ? provisoesDepreciacoes.DecimoTerceiro : 0) -
                     ((provisoesDepreciacoes.Ferias != null ? provisoesDepreciacoes.Ferias : 0)) -
                     (provisoesDepreciacoes.Depreciacao.HasValue ? provisoesDepreciacoes.Depreciacao.Value : 0);
@@ -534,7 +547,7 @@
                 }
 
                 @{
-                    var csll = lucroBruto - somaDespesaTrimestre - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
+                    var csll = lucroBruto - despMes - provisoesDepreciacoes.DecimoTerceiro - provisoesDepreciacoes.Ferias - provisoesDepreciacoes.Depreciacao - provisoesDepreciacoes.SaldoPrejuizo;
                     <thead>
                         @*
                             <tr>
@@ -604,7 +617,7 @@
                         <td colspan="3">(=) Lucro | Prejuízo Real </td>
                         <td>
                             <output class="mask-valor">
-                                @lucroPrejuizoReal
+                                @(estoqueInicial == 0 ? 0 :  lucroPrejuizoReal)
                             </output>
                         </td>
                     </tr>

@@ -111,6 +111,7 @@ namespace Demonstrativo.Controllers
             var user = await _userManager.FindByIdAsync(id);
             var roles = await _userManager.GetRolesAsync(user);
             var nameRole = roles.FirstOrDefault();
+            var empresas = _context.UsuarioEmpresa.Where(f => f.UsuarioId == id).ToList();
 
             var role = _contextIdentity.Roles.FirstOrDefault(x => x.Name == nameRole);
             return View(new EditarViewModel()
@@ -118,7 +119,8 @@ namespace Demonstrativo.Controllers
                 Id = id,
                 Email = user.Email,
                 UserRoles = _roleManager.Roles.ToList(),
-                UserRole = role?.Id
+                UserRole = role?.Id,
+                EmpresasId = empresas.Select(f => f.EmpresaId).ToList()
             });
         }
 
