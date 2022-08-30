@@ -219,232 +219,232 @@ namespace Demonstrativo.Controllers
                     ofx = ofx.Replace(Texto, Texto.Replace(",", "."));
                 }
 
-                if (!ofx.Contains("</SEVERITY>"))
-                {
-                    var indx = ofx.IndexOf("<SEVERITY>");
-                    var count = "<SEVERITY>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
+                //if (!ofx.Contains("</SEVERITY>"))
+                //{
+                //    var indx = ofx.IndexOf("<SEVERITY>");
+                //    var count = "<SEVERITY>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
 
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</SEVERITY>"}";
-                    // stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
-
-
-                    var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
-                    if (!stringOfx.Contains("</SEVERITY>"))
-                    {
-                        var indxx = stringOfx.IndexOf("<SEVERITY>");
-                        var countx = "<SEVERITY>".Length;
-                        var indexx = 1;
-                        while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("</"))
-                        {
-                            indexx++;
-                        }
-                        var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
-
-                        stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
-                        stringFf += $"{"</SEVERITY>"}";
-                        stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</SEVERITY>"}";
+                //    // stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
 
 
-                        stringF += stringFf;
-                    }
-                    ofx = stringF;
+                //    var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                //    if (!stringOfx.Contains("</SEVERITY>"))
+                //    {
+                //        var indxx = stringOfx.IndexOf("<SEVERITY>");
+                //        var countx = "<SEVERITY>".Length;
+                //        var indexx = 1;
+                //        while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("</"))
+                //        {
+                //            indexx++;
+                //        }
+                //        var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                //        stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                //        stringFf += $"{"</SEVERITY>"}";
+                //        stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
 
 
-
-
-                }
-
-
-                if (!ofx.Contains("</LANGUAGE>"))
-                {
-                    var indx = ofx.IndexOf("<LANGUAGE>");
-                    var count = "<LANGUAGE>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
-
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</LANGUAGE>"}";
-                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
-
-
-                    //var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
-                    //if (!stringOfx.Contains("</LANGUAGE>"))
-                    //{
-                    //    var indxx = stringOfx.IndexOf("<LANGUAGE>");
-                    //    var countx = "<LANGUAGE>".Length;
-                    //    var indexx = 1;
-                    //    while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("</"))
-                    //    {
-                    //        indexx++;
-                    //    }
-                    //    var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
-
-                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
-                    //    stringFf += $"{"</LANGUAGE>"}";
-                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
-
-
-                    //    stringF += stringFf;
-                    //}
-                    ofx = stringF;
+                //        stringF += stringFf;
+                //    }
+                //    ofx = stringF;
 
 
 
 
-                }
-
-                if (!ofx.Contains("</CODE>"))
-                {
-                    var indx = ofx.IndexOf("<CODE>");
-                    var count = "<CODE>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
-
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</CODE>"}";
-                    // stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+                //}
 
 
-                    var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
-                    if (!stringOfx.Contains("</CODE>"))
-                    {
-                        var indxx = stringOfx.IndexOf("<CODE>");
-                        var countx = "<CODE>".Length;
-                        var indexx = 1;
-                        while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("<"))
-                        {
-                            indexx++;
-                        }
-                        var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+                //if (!ofx.Contains("</LANGUAGE>"))
+                //{
+                //    var indx = ofx.IndexOf("<LANGUAGE>");
+                //    var count = "<LANGUAGE>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
 
-                        stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
-                        stringFf += $"{"</CODE>"}";
-                        stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
-
-
-                        stringF += stringFf;
-                    }
-                    ofx = stringF;
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</LANGUAGE>"}";
+                //    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
 
 
+                //    //var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                //    //if (!stringOfx.Contains("</LANGUAGE>"))
+                //    //{
+                //    //    var indxx = stringOfx.IndexOf("<LANGUAGE>");
+                //    //    var countx = "<LANGUAGE>".Length;
+                //    //    var indexx = 1;
+                //    //    while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("</"))
+                //    //    {
+                //    //        indexx++;
+                //    //    }
+                //    //    var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                //    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                //    //    stringFf += $"{"</LANGUAGE>"}";
+                //    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
 
 
-                }
-
-
-                if (!ofx.Contains("</DTSERVER>"))
-                {
-                    var indx = ofx.IndexOf("<DTSERVER>");
-                    var count = "<DTSERVER>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
-
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</DTSERVER>"}";
-                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
-
-
-                    //var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
-                    //if (!stringOfx.Contains("</DTSERVER>"))
-                    //{
-                    //    var indxx = stringOfx.IndexOf("<CODE>");
-                    //    var countx = "<CODE>".Length;
-                    //    var indexx = 1;
-                    //    while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("<"))
-                    //    {
-                    //        indexx++;
-                    //    }
-                    //    var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
-
-                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
-                    //    stringFf += $"{"</DTSERVER>"}";
-                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
-
-
-                    //    stringF += stringFf;
-                    //}
-                    ofx = stringF;
+                //    //    stringF += stringFf;
+                //    //}
+                //    ofx = stringF;
 
 
 
 
-                }
+                //}
+
+                //if (!ofx.Contains("</CODE>"))
+                //{
+                //    var indx = ofx.IndexOf("<CODE>");
+                //    var count = "<CODE>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</CODE>"}";
+                //    // stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
 
 
-                if (!ofx.Contains("</BANKID>"))
-                {
-                    var indx = ofx.IndexOf("<BANKID>");
-                    var count = "<BANKID>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
+                //    var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                //    if (!stringOfx.Contains("</CODE>"))
+                //    {
+                //        var indxx = stringOfx.IndexOf("<CODE>");
+                //        var countx = "<CODE>".Length;
+                //        var indexx = 1;
+                //        while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("<"))
+                //        {
+                //            indexx++;
+                //        }
+                //        var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
 
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</BANKID>"}";
-                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
-                    ofx = stringF;
-                }
-
-                if (!ofx.Contains("</ACCTID>"))
-                {
-                    var indx = ofx.IndexOf("<ACCTID>");
-                    var count = "<ACCTID>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
-
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</ACCTID>"}";
-                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
-                    ofx = stringF;
-                }
-                if (!ofx.Contains("</ACCTTYPE>"))
-                {
-                    var indx = ofx.IndexOf("<ACCTTYPE>");
-                    var count = "<ACCTTYPE>".Length;
-                    var index = 1;
-                    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
-                    {
-                        index++;
-                    }
-                    var stringF = $"{ofx.Substring(0, indx + count)}";
-
-                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
-                    stringF += $"{"</ACCTTYPE>"}";
-                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+                //        stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                //        stringFf += $"{"</CODE>"}";
+                //        stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
 
 
-                    ofx = stringF;
+                //        stringF += stringFf;
+                //    }
+                //    ofx = stringF;
 
 
 
 
-                }
+                //}
+
+
+                //if (!ofx.Contains("</DTSERVER>"))
+                //{
+                //    var indx = ofx.IndexOf("<DTSERVER>");
+                //    var count = "<DTSERVER>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</DTSERVER>"}";
+                //    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                //    //var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                //    //if (!stringOfx.Contains("</DTSERVER>"))
+                //    //{
+                //    //    var indxx = stringOfx.IndexOf("<CODE>");
+                //    //    var countx = "<CODE>".Length;
+                //    //    var indexx = 1;
+                //    //    while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("<"))
+                //    //    {
+                //    //        indexx++;
+                //    //    }
+                //    //    var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                //    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                //    //    stringFf += $"{"</DTSERVER>"}";
+                //    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
+
+
+                //    //    stringF += stringFf;
+                //    //}
+                //    ofx = stringF;
+
+
+
+
+                //}
+
+
+                //if (!ofx.Contains("</BANKID>"))
+                //{
+                //    var indx = ofx.IndexOf("<BANKID>");
+                //    var count = "<BANKID>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</BANKID>"}";
+                //    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+                //    ofx = stringF;
+                //}
+
+                //if (!ofx.Contains("</ACCTID>"))
+                //{
+                //    var indx = ofx.IndexOf("<ACCTID>");
+                //    var count = "<ACCTID>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</ACCTID>"}";
+                //    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+                //    ofx = stringF;
+                //}
+                //if (!ofx.Contains("</ACCTTYPE>"))
+                //{
+                //    var indx = ofx.IndexOf("<ACCTTYPE>");
+                //    var count = "<ACCTTYPE>".Length;
+                //    var index = 1;
+                //    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
+                //    {
+                //        index++;
+                //    }
+                //    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                //    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                //    stringF += $"{"</ACCTTYPE>"}";
+                //    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                //    ofx = stringF;
+
+
+
+
+                //}
 
 
 
@@ -462,7 +462,8 @@ namespace Demonstrativo.Controllers
 
                     for (int i = 0; i < 10; i++)
                     {
-                        arioi.RemoveAt(0);
+                        if (!arioi[0].Contains("<OFX"))
+                            arioi.RemoveAt(0);
                     }
 
 
@@ -512,7 +513,6 @@ namespace Demonstrativo.Controllers
                     {
                         dados[i] = $"{dados[i].Replace("\r", "</BALAMT>")}\r";
                     }
-
                     if (dados[i].Contains("<DTASOF>") && !dados[i].Contains("</DTASOF>"))
                     {
                         dados[i] = $"{dados[i].Replace("\r", "</DTASOF>")}\r";
@@ -522,6 +522,59 @@ namespace Demonstrativo.Controllers
                     {
                         dados[i] = $"{dados[i].Replace("\r", "</TRNUID>")}\r";
                     }
+                    if (dados[i].Contains("<ACCTTYPE>") && !dados[i].Contains("</ACCTTYPE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</ACCTTYPE>")}\r";
+                    }
+                    if (dados[i].Contains("<ACCTID>") && !dados[i].Contains("</ACCTID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</ACCTID>")}\r";
+                    }
+                    if (dados[i].Contains("<BANKID>") && !dados[i].Contains("</BANKID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</BANKID>")}\r";
+                    }
+                    if (dados[i].Contains("<DTSERVER>") && !dados[i].Contains("</DTSERVER>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTSERVER>")}\r";
+                    }
+                    if (dados[i].Contains("<CODE>") && !dados[i].Contains("</CODE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</CODE>")}\r";
+                    }
+                    if (dados[i].Contains("<LANGUAGE>") && !dados[i].Contains("</LANGUAGE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</LANGUAGE>")}\r";
+                    }
+                    if (dados[i].Contains("<SEVERITY>") && !dados[i].Contains("</SEVERITY>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</SEVERITY>")}\r";
+                    }
+
+                    if (dados[i].Contains("<FID>") && !dados[i].Contains("</FID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</FID>")}\r";
+                    }
+                    if (dados[i].Contains("<ORG>") && !dados[i].Contains("</ORG>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</ORG>")}\r";
+                    }
+
+                    if (dados[i].Contains("<DTACCTUP>") && !dados[i].Contains("</DTACCTUP>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTACCTUP>")}\r";
+                    }
+
+                    if (dados[i].Contains("<MKTGINFO>") && !dados[i].Contains("</MKTGINFO>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</MKTGINFO>")}\r";
+                    }
+
+                    if (dados[i].Contains("<PAYEEID>") && !dados[i].Contains("</PAYEEID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</PAYEEID>")}\r";
+                    }
+
                 }
                 ofx = string.Join("\n", dados.ToList());
 
@@ -551,7 +604,7 @@ namespace Demonstrativo.Controllers
                     }
                     catch (Exception ex)
                     {
-                       
+
                         XElement doc = XElement.Parse(ofx);
 
                         string formatString = "yyyyMMddHHmmss";
