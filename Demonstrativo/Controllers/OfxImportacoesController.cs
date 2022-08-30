@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Demonstrativo.Controllers
 {
@@ -193,9 +195,9 @@ namespace Demonstrativo.Controllers
                 {
                     await ofxArquivo.CopyToAsync(stream);
                 }
+
                 ofx = System.IO.File.ReadAllText(caminhoDestinoArquivo);
 
-                var dados = ofx.Split("\n");
 
 
 
@@ -217,32 +219,363 @@ namespace Demonstrativo.Controllers
                     ofx = ofx.Replace(Texto, Texto.Replace(",", "."));
                 }
 
+                if (!ofx.Contains("</SEVERITY>"))
+                {
+                    var indx = ofx.IndexOf("<SEVERITY>");
+                    var count = "<SEVERITY>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
 
-                //if (ofx.Contains("[-3:GMT]"))
-                //{
-                //    ofx = ofx.Replace("")
-                //}
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</SEVERITY>"}";
+                    // stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                    var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                    if (!stringOfx.Contains("</SEVERITY>"))
+                    {
+                        var indxx = stringOfx.IndexOf("<SEVERITY>");
+                        var countx = "<SEVERITY>".Length;
+                        var indexx = 1;
+                        while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("</"))
+                        {
+                            indexx++;
+                        }
+                        var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                        stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                        stringFf += $"{"</SEVERITY>"}";
+                        stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
+
+
+                        stringF += stringFf;
+                    }
+                    ofx = stringF;
+
+
+
+
+                }
+
+
+                if (!ofx.Contains("</LANGUAGE>"))
+                {
+                    var indx = ofx.IndexOf("<LANGUAGE>");
+                    var count = "<LANGUAGE>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</LANGUAGE>"}";
+                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                    //var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                    //if (!stringOfx.Contains("</LANGUAGE>"))
+                    //{
+                    //    var indxx = stringOfx.IndexOf("<LANGUAGE>");
+                    //    var countx = "<LANGUAGE>".Length;
+                    //    var indexx = 1;
+                    //    while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("</"))
+                    //    {
+                    //        indexx++;
+                    //    }
+                    //    var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                    //    stringFf += $"{"</LANGUAGE>"}";
+                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
+
+
+                    //    stringF += stringFf;
+                    //}
+                    ofx = stringF;
+
+
+
+
+                }
+
+                if (!ofx.Contains("</CODE>"))
+                {
+                    var indx = ofx.IndexOf("<CODE>");
+                    var count = "<CODE>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</CODE>"}";
+                    // stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                    var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                    if (!stringOfx.Contains("</CODE>"))
+                    {
+                        var indxx = stringOfx.IndexOf("<CODE>");
+                        var countx = "<CODE>".Length;
+                        var indexx = 1;
+                        while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("<"))
+                        {
+                            indexx++;
+                        }
+                        var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                        stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                        stringFf += $"{"</CODE>"}";
+                        stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
+
+
+                        stringF += stringFf;
+                    }
+                    ofx = stringF;
+
+
+
+
+                }
+
+
+                if (!ofx.Contains("</DTSERVER>"))
+                {
+                    var indx = ofx.IndexOf("<DTSERVER>");
+                    var count = "<DTSERVER>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</DTSERVER>"}";
+                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                    //var stringOfx = ofx.Substring(indx + count - 1 + index - 2);
+                    //if (!stringOfx.Contains("</DTSERVER>"))
+                    //{
+                    //    var indxx = stringOfx.IndexOf("<CODE>");
+                    //    var countx = "<CODE>".Length;
+                    //    var indexx = 1;
+                    //    while (!stringOfx.Substring(indxx + countx - 1, indexx).Contains("<"))
+                    //    {
+                    //        indexx++;
+                    //    }
+                    //    var stringFf = $"{stringOfx.Substring(0, indxx + countx)}";
+
+                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1, indexx - 2)}";
+                    //    stringFf += $"{"</DTSERVER>"}";
+                    //    stringFf += $"{stringOfx.Substring(indxx + countx - 1 + indexx - 2)}";
+
+
+                    //    stringF += stringFf;
+                    //}
+                    ofx = stringF;
+
+
+
+
+                }
+
+
+                if (!ofx.Contains("</BANKID>"))
+                {
+                    var indx = ofx.IndexOf("<BANKID>");
+                    var count = "<BANKID>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</BANKID>"}";
+                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+                    ofx = stringF;
+                }
+
+                if (!ofx.Contains("</ACCTID>"))
+                {
+                    var indx = ofx.IndexOf("<ACCTID>");
+                    var count = "<ACCTID>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("<"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</ACCTID>"}";
+                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+                    ofx = stringF;
+                }
+                if (!ofx.Contains("</ACCTTYPE>"))
+                {
+                    var indx = ofx.IndexOf("<ACCTTYPE>");
+                    var count = "<ACCTTYPE>".Length;
+                    var index = 1;
+                    while (!ofx.Substring(indx + count - 1, index).Contains("</"))
+                    {
+                        index++;
+                    }
+                    var stringF = $"{ofx.Substring(0, indx + count)}";
+
+                    stringF += $"{ofx.Substring(indx + count - 1, index - 2)}";
+                    stringF += $"{"</ACCTTYPE>"}";
+                    stringF += $"{ofx.Substring(indx + count - 1 + index - 2)}";
+
+
+                    ofx = stringF;
+
+
+
+
+                }
+
+
+
+
+
+
+
 
                 //Extraindo conteudo do arquivo em um objeto do tipo Extract
-                Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
+                var dados = ofx.Split("\n");
+
+                if (!dados.FirstOrDefault().Contains("<"))
+                {
+                    var arioi = dados.ToList();
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        arioi.RemoveAt(0);
+                    }
+
+
+                    ofx = string.Join("\n", arioi);
+                }
+                dados = ofx.Split("\n");
+
+                for (int i = 0; i < dados.Length; i++)
+                {
+                    if (dados[i].Contains("<TRNTYPE>") && !dados[i].Contains("</TRNTYPE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</TRNTYPE>")}\r";
+                    }
+                    if (dados[i].Contains("<DTPOSTED>") && !dados[i].Contains("</DTPOSTED>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTPOSTED>")}\r";
+                    }
+                    if (dados[i].Contains("<TRNAMT>") && !dados[i].Contains("</TRNAMT>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</TRNAMT>")}\r";
+                    }
+                    if (dados[i].Contains("<FITID>") && !dados[i].Contains("</FITID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</FITID>")}\r";
+                    }
+                    if (dados[i].Contains("<CHECKNUM>") && !dados[i].Contains("</CHECKNUM>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</CHECKNUM>")}\r";
+                    }
+                    if (dados[i].Contains("<MEMO>") && !dados[i].Contains("</MEMO>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</MEMO>")}\r";
+                    }
+                    if (dados[i].Contains("<DTSTART>") && !dados[i].Contains("</DTSTART>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTSTART>")}\r";
+                    }
+                    if (dados[i].Contains("<CURDEF>") && !dados[i].Contains("</CURDEF>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</CURDEF>")}\r";
+                    }
+                    if (dados[i].Contains("<DTEND>") && !dados[i].Contains("</DTEND>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTEND>")}\r";
+                    }
+                    if (dados[i].Contains("<BALAMT>") && !dados[i].Contains("</BALAMT>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</BALAMT>")}\r";
+                    }
+
+                    if (dados[i].Contains("<DTASOF>") && !dados[i].Contains("</DTASOF>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTASOF>")}\r";
+                    }
+
+                    if (dados[i].Contains("<TRNUID>") && !dados[i].Contains("</TRNUID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</TRNUID>")}\r";
+                    }
+                }
+                ofx = string.Join("\n", dados.ToList());
+
+
+
+                IList<OFXParser.Entities.Transaction> transactions = new List<OFXParser.Entities.Transaction>();
+                BankAccount bankAccount = null;
                 try
                 {
-                    if (extratoBancario != null)
+                    try
                     {
-
-                        if (!dados.FirstOrDefault().Contains("<"))
+                        Extract extratoBancario = Parser.GenerateExtract(caminhoDestinoArquivo);
+                        if (extratoBancario != null)
                         {
-                            var arioi = dados.ToList();
-
-                            for (int i = 0; i < 10; i++)
-                            {
-                                arioi.RemoveAt(0);
-                            }
-                           
-                          
-                            ofx = string.Join("\n", arioi);
+                            XElement doc = XElement.Parse(ofx);
+                            //queryiny the XElement
+                            var imps = (from c in doc.Descendants("LEDGERBAL")
+                                        select decimal.Parse(c.Element("BALAMT").Value.Replace(",", "."),
+                                                                   NumberFormatInfo.InvariantInfo)).FirstOrDefault();
+                            //var documento = new OFXDocumentParser();
+                            //var dadoDocumento = documento.Import(ofx);
+                            saldo = imps;
+                            //}
+                            bankAccount = extratoBancario.BankAccount;
+                            transactions = extratoBancario.Transactions;
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                       
                         XElement doc = XElement.Parse(ofx);
+
+                        string formatString = "yyyyMMddHHmmss";
+                        transactions = (from c in doc.Descendants("STMTTRN")
+                                        select c).Select(x => new OFXParser.Entities.Transaction()
+                                        {
+                                            Type = x.Element("TRNTYPE").Value,
+                                            TransactionValue = double.Parse(x.Element("TRNAMT").Value),
+                                            Description = x.Element("MEMO").Value,
+                                            Date = DateTime.ParseExact(x.Element("DTPOSTED").Value.Replace("[-3:GMT]", ""), formatString, null),
+                                            Id = x.Element("FITID").Value.Trim().Split("-").FirstOrDefault().Trim(),
+                                            Checksum = long.Parse(x.Element("FITID").Value.Trim().Split("-").LastOrDefault())
+
+                                        }).ToList();
+
+                        bankAccount = (from c in doc.Descendants("BANKACCTFROM")
+                                       select c).Select(x => new OFXParser.Entities.BankAccount()
+                                       {
+                                           Bank = new OFXParser.Entities.Bank(Convert.ToInt32(x.Element("BANKID").Value), x.Element("BANKID").Value),
+                                           Type = x.Element("ACCTTYPE").Value,
+                                           AccountCode = x.Element("ACCTID").Value,
+                                           AgencyCode = ""
+                                       }).FirstOrDefault();
+
                         //queryiny the XElement
                         var imps = (from c in doc.Descendants("LEDGERBAL")
                                     select decimal.Parse(c.Element("BALAMT").Value.Replace(",", "."),
@@ -250,7 +583,14 @@ namespace Demonstrativo.Controllers
                         //var documento = new OFXDocumentParser();
                         //var dadoDocumento = documento.Import(ofx);
                         saldo = imps;
+                        //}
                     }
+
+
+
+
+
+
 
                     //if (extratoBancario.
                     //    Transactions.Where(f => (f.Date.Month != competenciasId.Month && f.Date.Year == competenciasId.Year)
@@ -269,7 +609,10 @@ namespace Demonstrativo.Controllers
                     return View("Index");
                 }
 
-                var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c => (c.NumeroConta == extratoBancario.BankAccount.AccountCode || c.Acctid == extratoBancario.BankAccount.AccountCode) && c.EmpresaId == empresaId);
+                var dadosContaCorrente = _context.ContasCorrentes.FirstOrDefault(c =>
+                (c.NumeroConta == bankAccount.AccountCode
+                || c.Acctid == bankAccount.AccountCode)
+                && c.EmpresaId == empresaId);
 
                 if (dadosContaCorrente != null)
                 {
@@ -301,7 +644,7 @@ namespace Demonstrativo.Controllers
                 //saldoMensalViewModel.SaldoMensal = saldo;
 
                 var banco = _context.OfxBancos
-                       .FirstOrDefault(b => b.Codigo == Convert.ToInt32(extratoBancario.BankAccount.Bank.Code));
+                       .FirstOrDefault(b => b.Codigo == Convert.ToInt32(bankAccount.Bank.Code));
 
                 if (banco == null)
                 {
@@ -322,7 +665,7 @@ namespace Demonstrativo.Controllers
                 };
                 //varrendo arquivo e adicionado as ViewsModel
 
-                extratoBancario.Transactions.ToList().ForEach(dados =>
+                transactions.ToList().ForEach(dados =>
                 {
                     if (lancamentos.Any(c => c.Documento == dados.Id && c.ContaCorrenteId == dadosContaCorrente.Id) == false)
                     {
@@ -362,7 +705,7 @@ namespace Demonstrativo.Controllers
                         contaCorrenteViewModel = new OfxContaCorrenteViewModel()
                         {
                             OfxLancamentos = lancamentoOfxViewModel,
-                            NumeroConta = extratoBancario.BankAccount.AccountCode,
+                            NumeroConta = bankAccount.AccountCode,
                         };
 
                         extratoBancarioViewModel = new ExtratoBancarioViewModel()
