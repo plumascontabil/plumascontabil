@@ -27,11 +27,11 @@ namespace Demonstrativo
         public void ConfigureServices(IServiceCollection services)
         {
 
-         
+
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromHours(10);
+                options.IdleTimeout = TimeSpan.FromHours(24);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -60,9 +60,10 @@ namespace Demonstrativo
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
                 //options.Cookie.Expiration 
 
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(240);
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(240);
                 options.LoginPath = "/Usuario/Login";
                 options.LogoutPath = "/Usuario/Logout";
                 options.AccessDeniedPath = "/Usuario/AccessDenied";
@@ -109,7 +110,7 @@ namespace Demonstrativo
                     name: "default",
                     pattern: "{controller=Lancamento}/{action=Index}/{id?}");
             });
-           
+
         }
     }
 }
