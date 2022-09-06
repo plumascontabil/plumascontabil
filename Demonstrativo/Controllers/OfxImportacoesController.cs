@@ -174,6 +174,8 @@ namespace Demonstrativo.Controllers
 
             var bancoEscolhido = _context.OfxBancos.FirstOrDefault(f => f.Id == BancosId.Value);
 
+
+
             //Views Models
             var lancamentoOfxViewModel = new List<OfxLancamentoViewModel>();
             var contaCorrenteViewModel = new OfxContaCorrenteViewModel();
@@ -574,6 +576,82 @@ namespace Demonstrativo.Controllers
                     {
                         dados[i] = $"{dados[i].Replace("\r", "</PAYEEID>")}\r";
                     }
+                    if (dados[i].Contains("<SEVERITY>") && !dados[i].Contains("</SEVERITY>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</SEVERITY>")}\r";
+                    }
+                    if (dados[i].Contains("<CODE>") && !dados[i].Contains("</CODE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</CODE>")}\r";
+                    }
+                    if (dados[i].Contains("<LANGUAGE>") && !dados[i].Contains("</LANGUAGE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</LANGUAGE>")}\r";
+                    }
+                    if (dados[i].Contains("<DTSERVER>") && !dados[i].Contains("</DTSERVER>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTSERVER>")}\r";
+                    }
+                    if (dados[i].Contains("<ACCTTYPE>") && !dados[i].Contains("</ACCTTYPE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</ACCTTYPE>")}\r";
+                    }
+                    if (dados[i].Contains("<ACCTID>") && !dados[i].Contains("</ACCTID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</ACCTID>")}\r";
+                    }
+                    if (dados[i].Contains("<BANKID>") && !dados[i].Contains("</BANKID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</BANKID>")}\r";
+                    }
+                    if (dados[i].Contains("<MEMO>") && !dados[i].Contains("</MEMO>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</MEMO>")}\r";
+                    }
+                    if (dados[i].Contains("<CHECKNUM>") && !dados[i].Contains("</CHECKNUM>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</CHECKNUM>")}\r";
+                    }
+                    if (dados[i].Contains("<FITID>") && !dados[i].Contains("</FITID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</FITID>")}\r";
+                    }
+                    if (dados[i].Contains("<TRNAMT>") && !dados[i].Contains("</TRNAMT>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</TRNAMT>")}\r";
+                    }
+                    if (dados[i].Contains("<DTPOSTED>") && !dados[i].Contains("</DTPOSTED>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTPOSTED>")}\r";
+                    }
+                    if (dados[i].Contains("<TRNTYPE>") && !dados[i].Contains("</TRNTYPE>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</TRNTYPE>")}\r";
+                    }
+                    if (dados[i].Contains("<DTEND>") && !dados[i].Contains("</DTEND>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTEND>")}\r";
+                    }
+                    if (dados[i].Contains("<DTSTART>") && !dados[i].Contains("</DTSTART>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTSTART>")}\r";
+                    }
+                    if (dados[i].Contains("<DTASOF>") && !dados[i].Contains("</DTASOF>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</DTASOF>")}\r";
+                    }
+                    if (dados[i].Contains("<BALAMT>") && !dados[i].Contains("</BALAMT>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</BALAMT>")}\r";
+                    }
+                    if (dados[i].Contains("<CURDEF>") && !dados[i].Contains("</CURDEF>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</CURDEF>")}\r";
+                    }
+                    if (dados[i].Contains("<TRNUID>") && !dados[i].Contains("</TRNUID>"))
+                    {
+                        dados[i] = $"{dados[i].Replace("\r", "</TRNUID>")}\r";
+                    }
 
                 }
                 ofx = string.Join("\n", dados.ToList());
@@ -667,6 +745,8 @@ namespace Demonstrativo.Controllers
                 || c.Acctid == bankAccount.AccountCode)
                 && c.EmpresaId == empresaId);
 
+                var bancosEscolhidosMesmoCodigo = _context.OfxBancos.Where(f => f.Codigo == bankAccount.Bank.Code).ToList();
+
                 if (dadosContaCorrente != null)
                 {
                     if (dadosContaCorrente.Id != ContaCorrenteId.Value)
@@ -699,11 +779,19 @@ namespace Demonstrativo.Controllers
                 var banco = _context.OfxBancos
                        .FirstOrDefault(b => b.Codigo == Convert.ToInt32(bankAccount.Bank.Code));
 
+
+                //if (banco != null)
+                banco = bancosEscolhidosMesmoCodigo.Where(f => f.Codigo == Convert.ToInt32(bankAccount.Bank.Code) && bancoEscolhido.Id == f.Id).FirstOrDefault();
+
+
+
                 if (banco == null)
                 {
+
                     ViewBag.SemBanco = "Banco Inexistente";
                     return View("Index");
                 }
+
 
                 if (banco.Id != bancoEscolhido.Id)
                 {
